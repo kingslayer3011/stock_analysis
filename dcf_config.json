@@ -1,0 +1,8 @@
+{
+    "ticker":           "AAPL",
+    "wacc":             0.075,
+    "terminal_growth":  0.025,
+    "projection_years": 7,
+    "use_ebitda_base":  true,
+    "fcf_ratio":        0.55
+  }
