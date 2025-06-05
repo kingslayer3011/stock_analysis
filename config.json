@@ -1,0 +1,10 @@
+{
+    "ticker": "AAPL",
+    "risk_free_rate": 0.03,
+    "equity_risk_premium": 0.05,
+    "beta": 1.1,
+    "terminal_growth_rate": 0.02,
+    "projection_years": 5,
+    "peers": ["MSFT", "GOOGL"],
+    "output_file": "AAPL_report.pdf"
+  }

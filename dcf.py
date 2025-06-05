@@ -5,26 +5,15 @@ import pandas as pd
 from typing import Tuple, List, Dict
 
 def compute_terminal_value(last_fcf: float, g: float, r: float) -> float:
-    """
-    Calculates the terminal (continuing) value using the Gordon Growth model:
-      TV = FCF_last * (1 + g) / (r – g),  with r > g.
-    Raises ValueError if r <= g.
-    """
     if r <= g:
         raise ValueError(f"WACC (r={r:.2%}) must be greater than g={g:.2%} for terminal value.")
     return last_fcf * (1 + g) / (r - g)
 
-
 def discount_cash_flows(cash_flows: List[float], discount_rate: float) -> List[float]:
-    """
-    Given a list of future cash flows [CF1, CF2, ..., CFn],
-    returns [PV1, PV2, ..., PVn], where PV_t = CF_t / (1+r)^t.
-    """
     discounted = []
     for t, cf in enumerate(cash_flows, start=1):
         discounted.append(cf / ((1 + discount_rate) ** t))
     return discounted
-
 
 def run_dcf(
     df_hist: pd.DataFrame,

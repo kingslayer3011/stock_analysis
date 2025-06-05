@@ -6,31 +6,6 @@ import numpy as np
 from typing import Tuple
 
 
-def calculate_growth_stats(series: pd.Series) -> Tuple[float, float]:
-    """
-    Given a pd.Series of annual numbers indexed by year (e.g. Revenue),
-    returns:
-      - CAGR over the full span ([n_last / n_first]^(1/(N–1)) – 1)
-      - Latest year‐over‐year change (last / prior – 1)
-
-    If series has fewer than 2 points, returns (np.nan, np.nan).
-    """
-    try:
-        n_first = series.iloc[0]
-        n_last = series.iloc[-1]
-        periods = len(series) - 1
-        cagr = (n_last / n_first) ** (1 / periods) - 1
-    except Exception:
-        cagr = np.nan
-
-    try:
-        recent = series.iloc[-1] / series.iloc[-2] - 1
-    except Exception:
-        recent = np.nan
-
-    return cagr, recent
-
-
 # -------------------- Get Historical Data --------------------------------
 def get_historical_data(ticker: str):
     """
