@@ -3,8 +3,7 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from typing import Tuple
-
+from typing import Tuple, Optional
 
 # -------------------- Get Historical Data --------------------------------
 def get_historical_data(ticker: str):
@@ -124,3 +123,39 @@ def get_historical_data(ticker: str):
 
     except Exception as e:
         raise ValueError(f"Could not retrieve data for {ticker}. Error: {e}")
+
+
+# -------------------- Get Analyst Recommendations -------------------------
+def get_analyst_recommendations(ticker: str) -> pd.DataFrame:
+    """
+    Fetches analyst recommendations for the given ticker.
+    Returns a DataFrame with columns: ["Date", "Firm", "To Grade", "From Grade", "Action"].
+    """
+    t = yf.Ticker(ticker)
+    recs = t.recommendations
+    if recs is None or recs.empty:
+        raise ValueError(f"No analyst recommendations found for {ticker}.")
+
+    # Reset index to get Date as a column and filter relevant columns
+    recs = recs.reset_index()
+    columns_to_keep = ["Date", "Firm", "To Grade", "From Grade", "Action"]
+    # yfinance may use lower case and underscores for some columns, so handle this gracefully
+    recs.columns = [col.title().replace("_", " ") for col in recs.columns]
+    # Ensure all required columns exist
+    for col in columns_to_keep:
+        if col not in recs.columns:
+            recs[col] = np.nan
+    recs = recs[columns_to_keep]
+    recs = recs.sort_values(by="Date", ascending=True)
+    return recs
+
+def save_analyst_recommendations_to_csv(ticker: str, filename: Optional[str] = None) -> str:
+    """
+    Fetches analyst recommendations and saves them to a CSV file.
+    Returns the path of the saved file.
+    """
+    if filename is None:
+        filename = f"recommendations_{ticker.upper()}.csv"
+    recs_df = get_analyst_recommendations(ticker)
+    recs_df.to_csv(filename, index=False)
+    return filename

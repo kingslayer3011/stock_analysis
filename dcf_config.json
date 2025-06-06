@@ -1,5 +1,5 @@
 {
-    "ticker":           "STG.CO",
+    "ticker":           "NETC.CO",
     "wacc":             0.075,
     "terminal_growth":  0.025,
     "projection_years": 5,
