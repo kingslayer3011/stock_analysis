@@ -13,10 +13,15 @@ from dcf import *
 from reporter import *
 from sensitivity import *
 
-def save_dcf_results(dcf_df, dcf_valuation_info, output_folder):
+def save_dcf_results(df_dcf_results, output_folder, current_share_price):
     dcf_csv_path = os.path.join(output_folder, "dcf_results.csv")
-    dcf_df.to_csv(dcf_csv_path, index=False)
+    df_dcf_results["current_share_price"] = current_share_price
+    df_dcf_results["upside"] = 100 * (df_dcf_results["per_share_value"] - current_share_price) / current_share_price
+    df_dcf_results.to_csv(dcf_csv_path, index=False)
+    print(f"Saved DCF results to '{dcf_csv_path}'")
     summary_path = os.path.join(output_folder, "dcf_summary.json")
+    # Save only the first row as summary (for backwards compatibility)
+    dcf_valuation_info = df_dcf_results.iloc[0].to_dict()
     with open(summary_path, 'w') as f:
         json.dump(dcf_valuation_info, f, indent=2)
 
@@ -88,12 +93,10 @@ def main():
     # 6) Save historical data to CSV
     hist_csv_path = os.path.join(output_folder, "historical_data.csv")
     try:
-        #df_hist[df_hist['Revenue'].notna()].to_csv(hist_csv_path)
         df_hist.to_csv(hist_csv_path, index=True)
         print(f"Saved historical data to '{hist_csv_path}'")
     except Exception as e:
         print(f"WARNING: Could not save historical_data CSV: {e}", file=sys.stderr)
-
 
     # 8) Project future values and save CSV
     print("Projecting future values…")
@@ -103,28 +106,37 @@ def main():
     proj_csv_path = os.path.join(output_folder, "projected_values.csv")
     df_proj.to_csv(proj_csv_path, index=False)
     print(f"Saved projected values to '{proj_csv_path}'")
+    plot_all_variables(ticker, df_hist, df_proj, output_folder)
 
-
-    # 9) Run the main DCF calculation
-    print("Running DCF calculation…")
-    try:
-        dcf_df, dcf_valuation_info = run_dcf(
-            df_hist,
-            projection_years,
-            terminal_growth,
-            wacc,
-            use_ebitda_base,
-            fcf_ratio
-        )
-    except Exception as e:
-        print(f"ERROR in DCF calculation: {e}", file=sys.stderr)
+    # 9) Run DCF for each projection method and collect results
+    print("Running DCF calculation for all projection methods…")
+    last_actual_year = df_hist.index[-1].year if hasattr(df_hist.index[-1], 'year') else int(df_hist.index[-1])
+    shares_outstanding = val_info.get("number_shares")
+    dcf_results = []
+    for method in ["cagr", "slope"]:
+        try:
+            projected_fcf = read_projected_fcf(proj_csv_path, method=method)
+            dcf_df, dcf_valuation_info = run_dcf(
+                projected_fcf,
+                terminal_growth,
+                wacc,
+                last_actual_year,
+                shares_outstanding=shares_outstanding,
+                method=method
+            )
+            dcf_valuation_info["method"] = method
+            dcf_results.append(dcf_valuation_info)
+            # Optionally save each method's detailed DCF output if desired:
+            dcf_method_csv = os.path.join(output_folder, f"dcf_{method}_details.csv")
+            dcf_df.to_csv(dcf_method_csv, index=False)
+        except Exception as e:
+            print(f"WARNING: DCF calculation failed for method {method}: {e}", file=sys.stderr)
+    if not dcf_results:
+        print("ERROR: No successful DCF calculations!", file=sys.stderr)
         sys.exit(1)
-
-    # 10) Save DCF results
-    try:
-        save_dcf_results(dcf_df, dcf_valuation_info, output_folder)
-    except Exception as e:
-        print(f"WARNING: Could not save DCF results: {e}", file=sys.stderr)
+    df_dcf_results = pd.DataFrame(dcf_results)
+    current_share_price = val_info.get("share_price", np.nan)
+    save_dcf_results(df_dcf_results, output_folder, current_share_price)
 
     # 11) Run sensitivity analyses
     sens1_df = None
@@ -168,6 +180,7 @@ def main():
         generate_pdf_report(
             ticker,
             df_hist,
+            # Use the first DCF method for the report, or update as needed
             dcf_df,
             dcf_valuation_info,
             sens1_df,
@@ -182,4 +195,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

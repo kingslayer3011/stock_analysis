@@ -104,11 +104,11 @@ def plot_variable_projection(ticker, variable, df_hist, df_proj, output_folder):
     
     # Plot
     plt.figure(figsize=(8, 5))
-    plt.plot(years_hist, values_hist, 'o-', color='black', label='Historical')
+    plt.plot(years_hist.to_numpy(), values_hist.to_numpy(), 'o-', color='black', label='Historical')
     if not proj_cagr.empty:
-        plt.plot(proj_cagr.index, proj_cagr.values, 'r--', label='Projected (CAGR)')
+        plt.plot(proj_cagr.index.to_numpy(), proj_cagr.values, 'r--', label='Projected (CAGR)')
     if not proj_slope.empty:
-        plt.plot(proj_slope.index, proj_slope.values, 'b:', label='Projected (Regression Slope)')
+        plt.plot(proj_slope.index.to_numpy(), proj_slope.values, 'b:', label='Projected (Regression Slope)')
     plt.title(f"{ticker} - {variable}: Historical and Projected Values")
     plt.xlabel("Year")
     plt.ylabel(variable)
@@ -116,7 +116,8 @@ def plot_variable_projection(ticker, variable, df_hist, df_proj, output_folder):
     plt.grid(True)
     plt.tight_layout()
     # Save
-    filename = os.path.join(output_folder, f"{ticker}_{variable}_projection.png")
+    safe_var = variable.replace("/", "_").replace("\\", "_")
+    filename = os.path.join(output_folder, f"{ticker}_{safe_var}_projection.png")
     plt.savefig(filename)
     plt.close()
     print(f"Saved plot: {filename}")

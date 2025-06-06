@@ -1,8 +1,8 @@
 {
-    "ticker":           "AAPL",
+    "ticker":           "STG.CO",
     "wacc":             0.075,
     "terminal_growth":  0.025,
-    "projection_years": 7,
+    "projection_years": 5,
     "use_ebitda_base":  true,
     "fcf_ratio":        0.55
   }
