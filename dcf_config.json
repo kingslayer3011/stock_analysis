@@ -1,8 +1,10 @@
 {
     "ticker":           "NETC.CO",
-    "wacc":             0.075,
-    "terminal_growth":  0.025,
+    "wacc":             0.08,
+    "terminal_growth":  0.02,
     "projection_years": 5,
     "use_ebitda_base":  true,
-    "fcf_ratio":        0.55
+    "fcf_ratio":        0.55,
+    "expected_growth":  0.08,
+    "units": "millions"
   }
