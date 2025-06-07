@@ -94,6 +94,8 @@ def parse_args():
     parser.add_argument("--expected_growth", type=float, help="Expected FCF or EBITDA growth rate override.")
     parser.add_argument("--units", choices=["ones", "thousands", "millions", "billions"],
                         help="Units for output values (ones, thousands, millions, billions).")
+    parser.add_argument("--converge_growth", action="store_true",
+                        help="Enable converging projected growth rates toward the terminal growth rate.")
     return parser.parse_args()
 
 def load_config(path: str) -> dict:
@@ -125,6 +127,9 @@ def main():
         val = getattr(args, field)
         if val is not None:
             final_params[field] = val
+
+    # NEW: growth convergence option
+    converge_growth = args.converge_growth or final_params.get("converge_growth", False)
 
     ticker = final_params.get("ticker")
     if ticker is None:
@@ -164,12 +169,21 @@ def main():
         print(f"WARNING: Could not save historical_data CSV: {e}", file=sys.stderr)
 
     print("Projecting future values…")
-    df_proj = project_all(df_hist, projection_years)
+    df_proj = project_all(
+        df_hist,
+        projection_years,
+        terminal_growth=terminal_growth,
+        converge_growth=converge_growth
+    )
     proj_csv_path = os.path.join(output_folder, "projected_values.csv")
     df_proj_out = change_units(df_proj, [col for col in ["Revenue", "EBITDA", "FCF"] if col in df_proj.columns], to=units)
     df_proj_out = round_numeric_cols(df_proj_out)
     df_proj_out.to_csv(proj_csv_path, index=False)
     print(f"Saved projected values to '{proj_csv_path}'")
+
+    # --- NEW: Plot projected FCF growth rates ---
+    from projection import plot_projected_fcf_growth_rates
+    plot_projected_fcf_growth_rates(ticker, df_proj, output_folder)
 
     # === Run all DCF methods and collect results ===
     dcf_estimates_list = []
@@ -191,7 +205,8 @@ def main():
             wacc,
             use_ebitda_base,
             fcf_ratio,
-            expected_growth=None
+            expected_growth=None,
+            converge_growth=converge_growth
         )
         dcf_df_out = change_units(dcf_df, [col for col in unit_cols if col in dcf_df.columns], to=units)
         dcf_df_out = round_numeric_cols(dcf_df_out)
@@ -199,11 +214,11 @@ def main():
             dcf_valuation_info["per_share_value"] = dcf_valuation_info["npv"] / number_shares
         else:
             dcf_valuation_info["per_share_value"] = np.nan
-        save_dcf_results(dcf_df_out, dcf_valuation_info, output_folder, suffix="")
         dcf_estimates_list.append({
             "method": "historical_cagr",
             **dcf_valuation_info
         })
+        save_dcf_results(dcf_df_out, dcf_valuation_info, output_folder, suffix="")
     except Exception as e:
         print(f"ERROR in DCF calculation: {e}", file=sys.stderr)
         sys.exit(1)
@@ -218,7 +233,8 @@ def main():
             wacc,
             use_ebitda_base,
             fcf_ratio,
-            expected_growth="slope"
+            expected_growth="slope",
+            converge_growth=converge_growth
         )
         dcf_df_slope_out = change_units(dcf_df_slope, [col for col in unit_cols if col in dcf_df_slope.columns], to=units)
         dcf_df_slope_out = round_numeric_cols(dcf_df_slope_out)
@@ -226,11 +242,11 @@ def main():
             dcf_valuation_info_slope["per_share_value"] = dcf_valuation_info_slope["npv"] / number_shares
         else:
             dcf_valuation_info_slope["per_share_value"] = np.nan
-        save_dcf_results(dcf_df_slope_out, dcf_valuation_info_slope, output_folder, suffix="_slope")
         dcf_estimates_list.append({
             "method": "regression_slope",
             **dcf_valuation_info_slope
         })
+        save_dcf_results(dcf_df_slope_out, dcf_valuation_info_slope, output_folder, suffix="_slope")
         print(f"Saved DCF (regression slope) to '{os.path.join(output_folder, 'dcf_results_slope.csv')}'")
     except Exception as e:
         print(f"WARNING: Could not run/save DCF (regression slope): {e}", file=sys.stderr)
@@ -246,7 +262,8 @@ def main():
                 wacc,
                 use_ebitda_base,
                 fcf_ratio,
-                expected_growth=expected_growth
+                expected_growth=expected_growth,
+                converge_growth=converge_growth
             )
             dcf_df_exp_out = change_units(dcf_df_exp, [col for col in unit_cols if col in dcf_df_exp.columns], to=units)
             dcf_df_exp_out = round_numeric_cols(dcf_df_exp_out)
@@ -254,11 +271,11 @@ def main():
                 dcf_valuation_info_exp["per_share_value"] = dcf_valuation_info_exp["npv"] / number_shares
             else:
                 dcf_valuation_info_exp["per_share_value"] = np.nan
-            save_dcf_results(dcf_df_exp_out, dcf_valuation_info_exp, output_folder, suffix="_expected")
             dcf_estimates_list.append({
                 "method": f"expected_growth_{expected_growth:.4f}",
                 **dcf_valuation_info_exp
             })
+            save_dcf_results(dcf_df_exp_out, dcf_valuation_info_exp, output_folder, suffix="_expected")
             print(f"Saved DCF (expected growth) to '{os.path.join(output_folder, 'dcf_results_expected.csv')}'")
         except Exception as e:
             print(f"WARNING: Could not run/save DCF (expected growth): {e}", file=sys.stderr)
