@@ -1,11 +1,9 @@
 {
-    "ticker":           "NETC.CO",
-    "wacc":             0.08,
+    "ticker":           "ROCK-B.CO",
+    "wacc_min":             0.06,
     "terminal_growth":  0.02,
-    "projection_years": 5,
-    "use_ebitda_base":  true,
-    "fcf_ratio":        0.55,
-    "expected_growth":  0.08,
+    "projection_years": 10,
+    "man_inp_growth":  0.08,
     "units": "millions",
-    "converge_growth": true
+    "plot_projections": true
   }
