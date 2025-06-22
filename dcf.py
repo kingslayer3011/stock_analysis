@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from typing import Tuple, List, Dict
+import yfinance as yf
+import matplotlib.pyplot as plt
 
 def compute_terminal_value(last_fcf: float, g: float, r: float) -> float:
     if r <= g:
@@ -13,244 +15,140 @@ def discount_cash_flows(cash_flows: List[float], discount_rate: float) -> List[f
         discounted.append(cf / ((1 + discount_rate) ** t))
     return discounted
 
-def calculate_regression_slope(series):
-    y = pd.to_numeric(series, errors="coerce").values.astype(float)
-    x = np.arange(len(y))
-    mask = ~np.isnan(y)
-    if mask.sum() < 2:
-        return np.nan, np.nan
-    x = x[mask]
-    y = y[mask]
-    slope, intercept = np.polyfit(x, y, 1)
-    return float(slope), float(intercept)
+def estimate_wacc(ticker_symbol,
+                  cost_of_debt = 0.0253,   # e.g. 0.045 for 4.5%
+                  cost_of_equity = 0.1  # e.g. 0.09 for 9.0%
+                 ):
+    """
+    Estimate WACC by:
+      1. Pulling average Debt & Equity from the last 2 years' balance sheet
+      2. Taking cost_of_debt and cost_of_equity as given
+      3. Computing weights and WACC, plus a breakdown chart
+    """
+    # 1) Fetch and prepare balance-sheet data
+    tk = yf.Ticker(ticker_symbol)
+    bs = tk.balance_sheet.transpose().iloc[:2]
+    bs['Total_Debt'] = bs.get('Short Long Term Debt', 0) + bs.get('Long Term Debt', 0)
+    bs['Equity']     = bs['Total Assets'] - bs['Total_Debt'] - bs.get('Minority Interest', 0)
 
-def _get_growth_vector(initial_growth, terminal_growth, projection_years, converge_growth):
-    if not converge_growth or initial_growth is None or np.isnan(initial_growth):
-        return [initial_growth] * projection_years
-    else:
-        N = projection_years
-        growths = []
-        for i in range(1, N+1):
-            g = initial_growth * (1 - i/N) + terminal_growth * (i/N)
-            growths.append(g)
-        return growths
+    D_avg = bs['Total_Debt'].mean()
+    E_avg = bs['Equity'].mean()
+    V     = D_avg + E_avg
+    w_d   = D_avg / V
+    w_e   = E_avg / V
+
+    # 2) Calculate WACC
+    debt_contrib   = w_d * cost_of_debt
+    equity_contrib = w_e * cost_of_equity
+    wacc = debt_contrib + equity_contrib
+
+
+    # 4) Return summary
+    return {
+        'Debt (avg)':       D_avg,
+        'Equity (avg)':     E_avg,
+        'w_d':              w_d,
+        'w_e':              w_e,
+        'r_d (input)':      cost_of_debt,
+        'r_e (input)':      cost_of_equity,
+        'Debt contrib':     debt_contrib,
+        'Equity contrib':   equity_contrib,
+        'WACC':             wacc
+    }
 
 def run_dcf(
     df_hist: pd.DataFrame,
-    projection_years: int,
+    df_proj: pd.DataFrame,
     terminal_growth: float,
     wacc: float,
-    use_ebitda_base: bool = False,
-    fcf_to_ebitda_ratio: float = None,
-    expected_growth: float = None,  # can be float or the string "slope"
-    converge_growth: bool = False,  # NEW
+    forecast_horizon: int = None,
+    FCF_col: str = "FCF",
+    p_method: str = "cagr",
+    number_shares: int = 1,
+    share_price: float = 1.0,
 ) -> tuple:
     """
-    Runs a DCF based on historical FCF (or EBITDA + ratio) growth,
-    or using a user-supplied expected growth, or regression slope if expected_growth=="slope".
+    Computes DCF valuation using provided historical and projected values for a specified forecast horizon.
+
+    Args:
+        df_hist: Historical DataFrame (columns: Year, Revenue, EBITDA, FCF, ...)
+        df_proj: Projected DataFrame (columns: Year, Revenue, EBITDA, FCF, ...)
+        terminal_growth: Terminal growth rate (as a decimal, e.g., 0.025 for 2.5%)
+        wacc: Weighted Average Cost of Capital (as a decimal, e.g., 0.08 for 8%)
+        forecast_horizon: Number of projected years to include in DCF (first x years). If None, uses all available projections.
+        FCF_col: Name of Free Cash Flow column in df.
+        p_method: Projection method to filter on (e.g., "cagr").
+        number_shares: Number of shares outstanding.
+        share_price: Current share price for upside calculation.
 
     Returns:
-      full_df: DataFrame with historical and projected values with a 'Type' column and "Discount Factor".
-      valuation_summary: dict with keys ["sum_pv", "terminal_value", "npv", "per_share_value", "average_growth_rate"]
+        full_df: Combined DataFrame with DCF calculations (historical + selected projections)
+        valuation_summary: dict with valuation results
     """
+    # Filter projections by method and variable
+    proj_mask = (df_proj["method"] == p_method) & (df_proj["variable"] == FCF_col)
+    df_proj_fcf = df_proj.loc[proj_mask, ["Year", "value"]].copy()
+    df_proj_fcf.rename(columns={"value": FCF_col}, inplace=True)
 
-    # ========== Project Revenue ==========
-    last_revenue = df_hist["Revenue"].iloc[-1]
-    revenue_series = df_hist["Revenue"].dropna()
-    projected_revenue = []
-    # --- Compute revenue growth vector ---
-    if expected_growth == "slope":
-        s_rev = revenue_series
-        slope_rev, intercept_rev = calculate_regression_slope(s_rev)
-        projected_revenue = [
-            float(slope_rev * (len(s_rev)-1+i) + intercept_rev)
-            if slope_rev is not None and intercept_rev is not None else np.nan
-            for i in range(1, projection_years+1)
-        ]
-        growth_rate_rev = None  # Not used for revenue
+    # Limit to forecast_horizon if specified
+    if forecast_horizon is not None:
+        df_proj_fcf = df_proj_fcf.iloc[:forecast_horizon]
+
+    # Extract cash flows series
+    cash_flows = df_proj_fcf[FCF_col].copy().reset_index(drop=True)
+
+    # Calculate growth series and last projected FCF
+    growth_series = cash_flows.pct_change().dropna()
+    last_proj_fcf = cash_flows.iloc[-1]
+
+    # Calculate terminal value
+    if wacc > terminal_growth:
+        terminal_val = last_proj_fcf * (1 + terminal_growth) / (wacc - terminal_growth)
     else:
-        if expected_growth is not None:
-            growth_rate_rev = expected_growth
-        else:
-            try:
-                r_first = revenue_series.iloc[0]
-                r_last = revenue_series.iloc[-1]
-                periods_rv = len(revenue_series) - 1
-                growth_rate_rev = (r_last / r_first) ** (1 / periods_rv) - 1
-            except Exception:
-                growth_rate_rev = np.nan
-        # Optionally converge growth
-        rev_growth_vec = _get_growth_vector(growth_rate_rev, terminal_growth, projection_years, converge_growth)
-        projected_revenue = []
-        v = last_revenue
-        for g in rev_growth_vec:
-            v = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-            projected_revenue.append(v)
-
-    # ========== Project EBITDA & FCF ==========
-    if use_ebitda_base:
-        last_ebitda = df_hist["EBITDA"].iloc[-1]
-        eb_growth_vec = []
-        if expected_growth == "slope":
-            s = df_hist["EBITDA"].dropna()
-            slope, intercept = calculate_regression_slope(s)
-            projected_ebitda = [
-                float(slope * (len(s)-1+i) + intercept) if slope is not None and intercept is not None else np.nan
-                for i in range(1, projection_years+1)
-            ]
-            # FCF derived from EBITDA
-            projected_fcf = [
-                float(eb * fcf_to_ebitda_ratio) if eb is not None and not pd.isna(eb) else np.nan
-                for eb in projected_ebitda
-            ]
-            # Estimate implied ebitda growth for average_growth_rate
-            eb_growth_vec = []
-            eb_v = last_ebitda
-            for i in range(1, projection_years+1):
-                next_eb = float(slope * (len(s)-1+i) + intercept) if slope is not None and intercept is not None else np.nan
-                g = (next_eb/eb_v - 1) if eb_v and next_eb and not np.isnan(eb_v) and not np.isnan(next_eb) and eb_v != 0 else np.nan
-                eb_growth_vec.append(g)
-                eb_v = next_eb
-        else:
-            if expected_growth is not None:
-                growth_rate = expected_growth
-            else:
-                try:
-                    e_first = df_hist["EBITDA"].iloc[0]
-                    e_last = df_hist["EBITDA"].iloc[-1]
-                    periods_eb = len(df_hist["EBITDA"]) - 1
-                    growth_rate = (e_last / e_first) ** (1 / periods_eb) - 1
-                except Exception:
-                    growth_rate = np.nan
-            eb_growth_vec = _get_growth_vector(growth_rate, terminal_growth, projection_years, converge_growth)
-            projected_ebitda = []
-            v = last_ebitda
-            for g in eb_growth_vec:
-                v = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-                projected_ebitda.append(v)
-            projected_fcf = [eb * fcf_to_ebitda_ratio if eb is not None and not np.isnan(eb) else np.nan for eb in projected_ebitda]
-    else:
-        last_fcf = df_hist["FCF"].iloc[-1]
-        fcf_growth_vec = []
-        if expected_growth == "slope":
-            s = df_hist["FCF"].dropna()
-            slope, intercept = calculate_regression_slope(s)
-            projected_fcf = [
-                float(slope * (len(s)-1+i) + intercept) if slope is not None and intercept is not None else np.nan
-                for i in range(1, projection_years+1)
-            ]
-            # EBITDA for reporting
-            s_eb = df_hist["EBITDA"].dropna()
-            slope_eb, intercept_eb = calculate_regression_slope(s_eb)
-            projected_ebitda = [
-                float(slope_eb * (len(s_eb)-1+i) + intercept_eb) if slope_eb is not None and intercept_eb is not None else np.nan
-                for i in range(1, projection_years+1)
-            ]
-            # Estimate implied fcf growth
-            fcf_growth_vec = []
-            fcf_v = last_fcf
-            for i in range(1, projection_years+1):
-                next_fcf = float(slope * (len(s)-1+i) + intercept) if slope is not None and intercept is not None else np.nan
-                g = (next_fcf/fcf_v - 1) if fcf_v and next_fcf and not np.isnan(fcf_v) and not np.isnan(next_fcf) and fcf_v != 0 else np.nan
-                fcf_growth_vec.append(g)
-                fcf_v = next_fcf
-        else:
-            if expected_growth is not None:
-                growth_rate = expected_growth
-            else:
-                try:
-                    f_first = df_hist["FCF"].iloc[0]
-                    f_last = df_hist["FCF"].iloc[-1]
-                    periods_fc = len(df_hist["FCF"]) - 1
-                    growth_rate = (f_last / f_first) ** (1 / periods_fc) - 1
-                except Exception:
-                    growth_rate = np.nan
-            fcf_growth_vec = _get_growth_vector(growth_rate, terminal_growth, projection_years, converge_growth)
-            projected_fcf = []
-            v = last_fcf
-            for g in fcf_growth_vec:
-                v = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-                projected_fcf.append(v)
-            try:
-                e_first = df_hist["EBITDA"].iloc[0]
-                e_last = df_hist["EBITDA"].iloc[-1]
-                periods_eb = len(df_hist["EBITDA"]) - 1
-                eb_growth = (e_last / e_first) ** (1 / periods_eb) - 1
-                eb_growth_vec = _get_growth_vector(eb_growth, terminal_growth, projection_years, converge_growth)
-                projected_ebitda = []
-                v = e_last
-                for g in eb_growth_vec:
-                    v = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-                    projected_ebitda.append(v)
-            except Exception:
-                projected_ebitda = [np.nan for _ in range(projection_years)]
-
-    # ========== DCF Calculation ==========
-    last_proj_fcf = projected_fcf[-1]
-    terminal_val = None
-    try:
-        terminal_val = compute_terminal_value(last_proj_fcf, terminal_growth, wacc)
-    except Exception:
         terminal_val = np.nan
-    cash_flows_with_term = projected_fcf.copy()
-    if len(cash_flows_with_term) > 0:
-        cash_flows_with_term[-1] += terminal_val if terminal_val is not None else 0
-    else:
-        cash_flows_with_term = []
 
-    pv_vals = discount_cash_flows(cash_flows_with_term, wacc) if cash_flows_with_term else []
+    # Add terminal value to last projected FCF
+    cash_flows.iloc[-1] += terminal_val
 
-    # ========== Discount Factor Calculation (for projected part only) ==========
-    discount_factors = []
-    for i in range(1, projection_years + 1):
-        discount_factors.append(1 / ((1 + wacc) ** i))
+    # Discount cash flows
+    discount_factors = 1 / (1 + wacc) ** np.arange(1, len(cash_flows) + 1)
+    pv_vals = cash_flows * discount_factors
 
-    # ========== Historical Part ==========
-    hist_years = [idx.year for idx in df_hist.index]
-    hist_df = pd.DataFrame({
-        "Year": hist_years,
-        "Type": ["historical"] * len(df_hist),
-        "Revenue": df_hist["Revenue"].values,
-        "EBITDA": df_hist["EBITDA"].values,
-        "FCF": df_hist["FCF"].values,
-        "PV(FCF+TV)": [np.nan]*len(df_hist),
-        "Discount Factor": [np.nan]*len(df_hist)
-    })
+    # Build projected DataFrame with DCF metrics
+    df_proj_sub = df_proj_fcf.copy()
+    df_proj_sub["PV(FCF+TV)"] = pv_vals
+    df_proj_sub["Discount Factor"] = discount_factors
+    df_proj_sub["Type"] = "projected"
 
-    # ========== Projected Part ==========
-    last_year = df_hist.index[-1].year
-    years = [last_year + i for i in range(1, projection_years+1)]
-    dcf_df = pd.DataFrame({
-        "Year": years,
-        "Type": ["projected"] * projection_years,
-        "Revenue": projected_revenue,
-        "EBITDA": projected_ebitda,
-        "FCF": projected_fcf,
-        "PV(FCF+TV)": pv_vals,
-        "Discount Factor": discount_factors
-    })
+    # Build historical DataFrame for output
+    df_hist_sub = df_hist.reset_index()
+    df_hist_sub = df_hist_sub.rename(columns={"index": "Year"})
+    df_hist_sub = df_hist_sub[["Year", FCF_col]].copy()
+    df_hist_sub['Year'] = pd.to_datetime(df_hist_sub['Year']).dt.year
+    df_hist_sub["PV(FCF+TV)"] = np.nan
+    df_hist_sub["Discount Factor"] = np.nan
+    df_hist_sub["Type"] = "historical"
 
-    # ========== Combine ==========
-    full_df = pd.concat([hist_df, dcf_df], axis=0, ignore_index=True)
+    # Combine historical and projected
+    full_df = pd.concat([df_hist_sub, df_proj_sub.rename(columns={FCF_col: "FCF"})], ignore_index=True)
 
-    # ========== Valuation Summary ==========
+    # Valuation summary calculations
     sum_pv = float(np.nansum(pv_vals))
-    npv = sum_pv
-    # --- Compute average projected growth rate (for FCF, main DCF input) ---
-    if use_ebitda_base:
-        avg_growth = np.nanmean(eb_growth_vec) if eb_growth_vec else np.nan
-    else:
-        avg_growth = np.nanmean(fcf_growth_vec) if fcf_growth_vec else np.nan
+    avg_growth = float(np.nanmean(growth_series)) if not growth_series.empty else np.nan
+    per_share_value = sum_pv / number_shares
+    upside = 100 * (per_share_value - share_price) / share_price
 
     valuation_summary = {
         "sum_pv": sum_pv,
-        "terminal_value": terminal_val,
-        "npv": npv,
-        "per_share_value": np.nan,  # to be filled in main
+        "terminal_value": float(terminal_val),
+        "npv": sum_pv,
+        "per_share_value": per_share_value,
+        "upside": upside,
         "average_growth_rate": avg_growth,
     }
 
     return full_df, valuation_summary
+
 
 def perform_sensitivity_analysis(
     last_fcf: float,

@@ -1,161 +1,251 @@
-# data_fetcher.py
-
 import yfinance as yf
 import pandas as pd
 import numpy as np
 from typing import Tuple, Optional
+from functools import reduce
 
-# -------------------- Get Historical Data --------------------------------
-def get_historical_data(ticker: str):
+def safe_divide(numerator, denominator):
+    # if either is a Series with one element, convert to scalar
+    if isinstance(numerator, pd.Series) and len(numerator) == 1:
+        numerator = numerator.iloc[0]
+    if isinstance(denominator, pd.Series) and len(denominator) == 1:
+        denominator = denominator.iloc[0]
+    if pd.notna(numerator) and pd.notna(denominator) and denominator != 0:
+        return numerator / denominator
+    else:
+        return np.nan
+
+
+
+def calculate_historical_reinvestment_rate(cashflow: pd.DataFrame,
+                                           balance_sheet: pd.DataFrame,
+                                           income_statement: pd.DataFrame,
+                                           periods: int = None) -> pd.DataFrame:
     """
-    Fetches historical financial statement data for the given ticker.
-    Returns a DataFrame (indexed by Year, oldest→newest) with columns:
-      ["Revenue", "EBITDA", "Net Income", "FCF", "Total Debt", "Cash",
-       "FCF/EBITDA", "EBITDA/Revenue", "FCF/Revenue", "P/FCF", "EV/EBITDA"]
-    and a valuation_info dict with current summary stats.
+    Calculate historical reinvestment rates for given financial statements.
 
-    If any row (e.g. "Cash") is missing from a statement, its column will be filled with NaN.
+    Returns DataFrame indexed by period (column labels) with columns:
+    ['CapEx', 'Depreciation', 'DeltaWC', 'EBIT', 'TaxRate', 'NOPAT',
+     'ReinvestmentRate', 'ROE', 'RetentionRatio', 'ROC']
     """
-    t = yf.Ticker(ticker)
-    try:
-        # Attempt to pull each line item; if missing, we'll handle below.
-        raw_income = t.financials
-        raw_cashflow = t.cashflow
-        raw_balance = t.balance_sheet
+    common_cols = cashflow.columns.intersection(balance_sheet.columns).intersection(income_statement.columns)
+    common_cols = common_cols.sort_values()
+    if periods is not None:
+        common_cols = common_cols[:periods]
 
-        # Define helper to safely extract a row from a DataFrame
-        def safe_row(df: pd.DataFrame, row_name: str) -> pd.Series:
-            if (df is None) or (row_name not in df.index):
-                return None
-            return df.loc[row_name]
+    records = []
+    for col in common_cols:
+        cf = cashflow[col]
+        bs = balance_sheet[col]
+        is_ = income_statement[col]
 
-        hist_revenue = safe_row(raw_income, "Total Revenue")
-        hist_ebitda = safe_row(raw_income, "EBITDA")
-        hist_income = safe_row(raw_income, "Net Income")
-        hist_cashflow = safe_row(raw_cashflow, "Free Cash Flow")
-        hist_debt = safe_row(raw_balance, "Total Debt")
-        hist_cash = safe_row(raw_balance, "Cash")
+        capex = -cf.get('Capital Expenditures', cf.get('Capital Expenditure', 0))
 
-        # Build list of all available indices (timestamps)
-        indices_list = []
-        for series in [hist_revenue, hist_ebitda, hist_income, hist_cashflow, hist_debt, hist_cash]:
-            if series is not None:
-                indices_list.append(series.index)
+        depreciation = (
+            cf.get('Depreciation', cf.get('Depreciation And Amortization')) or
+            is_.get('Depreciation', is_.get('Depreciation And Amortization', 0))
+        )
 
-        if not indices_list:
-            raise ValueError("No financial data available for any line items.")
+        delta_wc = cf.get("Change In Working Capital", 0)
+        ebit = is_.get('EBIT', is_.get('Ebit', is_.get('Operating Income', 0)))
 
-        # Union all indices to get a complete timeline
-        common_index = indices_list[0]
-        for idx in indices_list[1:]:
-            common_index = common_index.union(idx)
-        common_index = common_index.sort_values()
+        tax_rate = is_.get('Tax Rate For Calcs')
+        if tax_rate is None:
+            tax_expense = is_.get('Tax Provision', 0)
+            pretax = is_.get('Pretax Income', ebit)
+            tax_rate = safe_divide(tax_expense, pretax)
+            if pd.isna(tax_rate):
+                tax_rate = 0.25  # fallback default
 
-        # Reindex each metric series to the common_index (fill missing with NaN)
-        def reindexed_or_empty(series: pd.Series) -> pd.Series:
-            if series is None:
-                return pd.Series(data=np.nan, index=common_index)
-            return series.reindex(common_index)
+        nopat = ebit * (1 - tax_rate) if pd.notna(ebit) else np.nan
 
-        s_revenue = reindexed_or_empty(hist_revenue)
-        s_ebitda = reindexed_or_empty(hist_ebitda)
-        s_income = reindexed_or_empty(hist_income)
-        s_cashflow = reindexed_or_empty(hist_cashflow)
-        s_debt = reindexed_or_empty(hist_debt)
-        s_cash = reindexed_or_empty(hist_cash)
+        reinvest_rate = safe_divide((capex + depreciation + delta_wc), nopat)
 
-        # Combine into a single DataFrame (rows = dates; columns = metrics)
-        df = pd.DataFrame({
-            "Revenue": s_revenue,
-            "EBITDA": s_ebitda,
-            "Net Income": s_income,
-            "FCF": s_cashflow,
-            "Total Debt": s_debt,
-            "Cash": s_cash
+        net_income = is_.get('Net Income')
+        dividends = cf.get('Common Stock Dividend Paid', cf.get('Cash Dividends Paid', 0))
+        stockholders_equity = bs.get('Stockholders Equity', bs.get('Common Stock Equity', np.nan))
+        invested_capital = bs.get('Invested Capital', np.nan)
+
+        retention_ratio = 1 - safe_divide(dividends, net_income) if pd.notna(net_income) else np.nan
+        roe = safe_divide(net_income, stockholders_equity)
+        roc = safe_divide(nopat, invested_capital)
+
+        records.append({
+            'Period': col,
+            'CapEx': capex,
+            'Depreciation': depreciation,
+            'DeltaWC': delta_wc,
+            'EBIT': ebit,
+            'TaxRate': tax_rate,
+            'NOPAT': nopat,
+            'ReinvestmentRate': reinvest_rate,
+            'RetentionRatio': retention_ratio,
+            'ROE': roe,
+            'ROC': roc
         })
 
-        # Ensure the index is named "Year" (timestamps)
-        df.index.name = "Year"
-
-        # Sort ascending so oldest→newest
-        df = df.sort_index(ascending=True)
-
-        # Compute additional ratio columns
-        df["FCF/EBITDA"] = df["FCF"] / df["EBITDA"]
-        df["EBITDA/Revenue"] = df["EBITDA"] / df["Revenue"]
-        df["FCF/Revenue"] = df["FCF"] / df["Revenue"]
-
-        # For P/FCF and EV/EBITDA, we need current market/enterprise values
-        share_price = t.info.get("currentPrice", np.nan)
-        number_shares = t.info.get("sharesOutstanding", np.nan)
-        if not np.isnan(share_price) and not np.isnan(number_shares):
-            market_cap = share_price * number_shares
-        else:
-            market_cap = np.nan
-
-        enterprise_value = t.info.get("enterpriseValue", np.nan)
-
-        df["P/FCF"] = (market_cap / df["FCF"]).replace([np.inf, -np.inf], np.nan)
-        df["EV/EBITDA"] = (enterprise_value / df["EBITDA"]).replace([np.inf, -np.inf], np.nan)
-
-        # For valuation_info, take the latest (newest) "Total Debt" and "Cash"
-        try:
-            latest_debt = s_debt.dropna().iloc[-1]
-        except Exception:
-            latest_debt = np.nan
-
-        try:
-            latest_cash = s_cash.dropna().iloc[-1]
-        except Exception:
-            latest_cash = np.nan
-
-        valuation_info = {
-            "market_cap": market_cap,
-            "share_price": share_price,
-            "number_shares": number_shares,
-            "enterprise_value": enterprise_value,
-            "total_debt": latest_debt,
-            "cash": latest_cash,
-            "net_debt": (latest_debt - latest_cash) if (not np.isnan(latest_debt) and not np.isnan(latest_cash)) else np.nan
-        }
-
-        return df, valuation_info
-
-    except Exception as e:
-        raise ValueError(f"Could not retrieve data for {ticker}. Error: {e}")
+    result = pd.DataFrame(records).set_index('Period')
+    return result
 
 
-# -------------------- Get Analyst Recommendations -------------------------
-def get_analyst_recommendations(ticker: str) -> pd.DataFrame:
+def get_historical_data(ticker: str):
     """
-    Fetches analyst recommendations for the given ticker.
-    Returns a DataFrame with columns: ["Date", "Firm", "To Grade", "From Grade", "Action"].
+    Fetch historical and TTM financial data and key metrics.
+    Returns:
+        - df: DataFrame with yearly and TTM rows
+        - valuation_info: Dict of current market valuation metrics
+    """
+    t = yf.Ticker(ticker)
+
+    raw_income        = t.financials
+    raw_cashflow      = t.cashflow
+    raw_balance       = t.balance_sheet
+    raw_income_ttm    = t.ttm_financials
+    raw_cashflow_ttm  = t.ttm_cashflow
+    raw_balance_ttm   = t.quarterly_balancesheet
+
+    def safe_row(df, row_name): 
+        return df.loc[row_name] if df is not None and row_name in df.index else None
+
+    # Historical lines
+    hist_revenue    = safe_row(raw_income, "Total Revenue")
+    hist_ebitda     = safe_row(raw_income, "EBITDA")
+    hist_income     = safe_row(raw_income, "Net Income")
+    hist_fcf        = safe_row(raw_cashflow, "Free Cash Flow")
+    hist_ocf        = safe_row(raw_cashflow, "Operating Cash Flow")
+    hist_net_debt   = safe_row(raw_cashflow, "Net Issuance Payments Of Debt")
+    hist_capex      = safe_row(raw_cashflow, "Capital Expenditures") or safe_row(raw_cashflow, "Capital Expenditure")
+    hist_debt       = safe_row(raw_balance, "Total Debt")
+    hist_cash       = safe_row(raw_balance, "Cash")
+
+    # Create unified index
+    indices = [s.index for s in [hist_revenue, hist_ebitda, hist_income, hist_fcf, hist_ocf, hist_net_debt, hist_capex, hist_debt, hist_cash] if s is not None]
+    if indices:
+        common_index = reduce(lambda x, y: x.union(y), indices).sort_values()
+    else:
+        common_index = pd.Index([])
+
+    def reindexed_or_empty(series):
+        return series.reindex(common_index) if series is not None else pd.Series(np.nan, index=common_index)
+
+    # Reindex
+    df = pd.DataFrame({
+        "Revenue": reindexed_or_empty(hist_revenue),
+        "EBITDA": reindexed_or_empty(hist_ebitda),
+        "Net Income": reindexed_or_empty(hist_income),
+        "FCF": reindexed_or_empty(hist_fcf),
+        "Total Debt": reindexed_or_empty(hist_debt),
+        "Cash": reindexed_or_empty(hist_cash)
+    })
+    df.index.name = "Year"
+    df = df.sort_index()
+
+    s_ocf      = reindexed_or_empty(hist_ocf)
+    s_net_debt = reindexed_or_empty(hist_net_debt)
+    s_capex    = reindexed_or_empty(hist_capex)
+
+    # Metrics with safe division
+    df["FCF/EBITDA"] = np.where(
+        (df["EBITDA"] != 0) & pd.notna(df["EBITDA"]) & pd.notna(df["FCF"]),
+        df["FCF"] / df["EBITDA"],
+        np.nan
+    )
+    mean_ratio = df["FCF/EBITDA"].mean()
+
+    df["FCF_from_EBITDA"] = df["EBITDA"] * mean_ratio
+
+    df["EBITDA/Revenue"] = np.where(
+        (df["Revenue"] != 0) & pd.notna(df["Revenue"]) & pd.notna(df["EBITDA"]),
+        df["EBITDA"] / df["Revenue"],
+        np.nan
+    )
+    df["FCF/Revenue"] = np.where(
+        (df["Revenue"] != 0) & pd.notna(df["Revenue"]) & pd.notna(df["FCF"]),
+        df["FCF"] / df["Revenue"],
+        np.nan
+    )
+
+    sp    = t.info.get("currentPrice", np.nan)
+    sh    = t.info.get("sharesOutstanding", np.nan)
+    mcap  = sp * sh if not np.isnan(sp) and not np.isnan(sh) else np.nan
+    ev    = t.info.get("enterpriseValue", np.nan)
+
+    df["P/FCF"] = np.where(
+        (df["FCF"] != 0) & pd.notna(df["FCF"]) & pd.notna(mcap),
+        mcap / df["FCF"],
+        np.nan
+    )
+    df["EV/EBITDA"] = np.where(
+        (df["EBITDA"] != 0) & pd.notna(df["EBITDA"]) & pd.notna(ev),
+        ev / df["EBITDA"],
+        np.nan
+    )
+
+    df["FCFE"] = s_ocf - (-s_capex) + (-s_net_debt)
+
+    latest_debt = df["Total Debt"].dropna().iloc[-1] if not df["Total Debt"].dropna().empty else np.nan
+    latest_cash = df["Cash"].dropna().iloc[-1] if not df["Cash"].dropna().empty else np.nan
+    valuation_info = {
+        "market_cap":       mcap,
+        "share_price":      sp,
+        "number_shares":    sh,
+        "enterprise_value": ev,
+        "total_debt":       latest_debt,
+        "cash":             latest_cash,
+        "net_debt":         (latest_debt - latest_cash) if pd.notna(latest_debt) and pd.notna(latest_cash) else np.nan
+    }
+
+    # Reinvestment metrics
+    reinvest_df = calculate_historical_reinvestment_rate(raw_cashflow, raw_balance, raw_income)
+    df.index = pd.to_datetime(df.index).normalize()
+    reinvest_df.index = pd.to_datetime(reinvest_df.index).normalize()
+    df = df.merge(reinvest_df, how="left", left_index=True, right_index=True)
+
+    # ===== TTM Section =====
+    def safe_value(df, row):
+        if df is not None and row in df.index:
+            val = df.loc[row]
+            if isinstance(val, pd.Series):
+                return val.iloc[0]
+            return val
+        return np.nan
+
+
+    ttm_row = {
+        "Revenue":     safe_value(raw_income_ttm, "Total Revenue"),
+        "EBITDA":      safe_value(raw_income_ttm, "EBITDA"),
+        "Net Income":  safe_value(raw_income_ttm, "Net Income"),
+        "FCF":         safe_value(raw_cashflow_ttm, "Free Cash Flow"),
+        "Total Debt":  safe_value(raw_balance_ttm, "Total Debt"),
+        "Cash":        safe_value(raw_balance_ttm, "Cash"),
+    }
+
+    ttm_row["FCF/EBITDA"] = safe_divide(ttm_row["FCF"], ttm_row["EBITDA"])
+    ttm_row["FCF_from_EBITDA"] = (
+        ttm_row["EBITDA"] * mean_ratio if pd.notna(ttm_row["EBITDA"]) else np.nan
+    )
+    ttm_row["EBITDA/Revenue"] = safe_divide(ttm_row["EBITDA"], ttm_row["Revenue"])
+    ttm_row["FCF/Revenue"] = safe_divide(ttm_row["FCF"], ttm_row["Revenue"])
+    ttm_row["P/FCF"] = safe_divide(mcap, ttm_row["FCF"])
+    ttm_row["EV/EBITDA"] = safe_divide(ev, ttm_row["EBITDA"])
+
+    # Add TTM row at the end
+    ttm_index = raw_income_ttm.columns[0]
+    ttm_df = pd.DataFrame(ttm_row, index=[ttm_index])
+    full_df = pd.concat([df, ttm_df], axis=0)
+
+    return full_df, valuation_info
+
+
+
+def get_analyst_recommendations(ticker: str) -> Optional[pd.DataFrame]:
+    """
+    Fetch analyst recommendations from Yahoo Finance.
+    Returns DataFrame or None if unavailable.
     """
     t = yf.Ticker(ticker)
     recs = t.recommendations
-    if recs is None or recs.empty:
-        raise ValueError(f"No analyst recommendations found for {ticker}.")
 
-    # Reset index to get Date as a column and filter relevant columns
-    recs = recs.reset_index()
-    columns_to_keep = ["Date", "Firm", "To Grade", "From Grade", "Action"]
-    # yfinance may use lower case and underscores for some columns, so handle this gracefully
-    recs.columns = [col.title().replace("_", " ") for col in recs.columns]
-    # Ensure all required columns exist
-    for col in columns_to_keep:
-        if col not in recs.columns:
-            recs[col] = np.nan
-    recs = recs[columns_to_keep]
-    recs = recs.sort_values(by="Date", ascending=True)
-    return recs
 
-def save_analyst_recommendations_to_csv(ticker: str, filename: Optional[str] = None) -> str:
-    """
-    Fetches analyst recommendations and saves them to a CSV file.
-    Returns the path of the saved file.
-    """
-    if filename is None:
-        filename = f"recommendations_{ticker.upper()}.csv"
-    recs_df = get_analyst_recommendations(ticker)
-    recs_df.to_csv(filename, index=False)
-    return filename
+
+# Add your main() and CLI or calling logic as needed

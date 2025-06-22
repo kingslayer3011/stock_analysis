@@ -13,16 +13,10 @@ from dcf import *
 from reporter import *
 from sensitivity import *
 
+import yfinance as yf
+import matplotlib.pyplot as plt
+
 def change_units(df, columns, to="ones"):
-    """
-    Change the units of specified columns in a dataframe.
-    Args:
-        df: DataFrame containing columns to convert
-        columns: list of column names to convert
-        to: target units, "millions" or "billions" or "thousands" or "ones"
-    Returns:
-        DataFrame with converted columns (values and column names updated)
-    """
     scale = 1
     suffix = ""
     if to == "millions":
@@ -44,16 +38,11 @@ def change_units(df, columns, to="ones"):
     for col in columns:
         if col in df.columns:
             df[col] = df[col] * scale
-            # Update column name with suffix if not already present
             if suffix and not df.columns[df.columns.get_loc(col)].endswith(suffix):
                 df.rename(columns={col: col + suffix}, inplace=True)
     return df
 
 def custom_round(val):
-    """
-    Round values > 100 to 0 decimals, <= 100 to 2 decimals.
-    Handles pd.Series and pd.DataFrame as well as scalars.
-    """
     if isinstance(val, pd.Series):
         return val.apply(custom_round)
     elif isinstance(val, pd.DataFrame):
@@ -81,10 +70,19 @@ def save_dcf_results(dcf_df, dcf_valuation_info, output_folder, suffix=""):
     with open(summary_path, 'w') as f:
         json.dump(dcf_valuation_info, f, indent=2)
 
+def save_wacc_estimate(wacc_estimate_results, output_folder, suffix=""):
+    if wacc_estimate_results is None:
+        return
+    wacc_csv_path = os.path.join(output_folder, f"wacc_estimate{suffix}.csv")
+    wacc_json_path = os.path.join(output_folder, f"wacc_estimate{suffix}.json")
+    wacc_df = pd.DataFrame([wacc_estimate_results])
+    wacc_df.to_csv(wacc_csv_path, index=False)
+    with open(wacc_json_path, 'w') as f:
+        json.dump(wacc_estimate_results, f, indent=2)
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Run the DCF and related analyses.")
     parser.add_argument("--config", help="Path to JSON config file.")
-    # CLI overrides
     parser.add_argument("--ticker", help="Ticker symbol (overrides config).")
     parser.add_argument("--wacc", type=float, help="WACC override.")
     parser.add_argument("--terminal_growth", type=float, help="Terminal growth override.")
@@ -105,16 +103,14 @@ def load_config(path: str) -> dict:
     with open(path, 'r') as f:
         return json.load(f)
 
+
 def main():
     args = parse_args()
 
-    if args.config is None:
-        print("ERROR: Must specify --config <path to JSON config>", file=sys.stderr)
-        sys.exit(1)
+    # Load base configuration
+    with open("dcf_config.json", "r") as f:
+        config = json.load(f)
 
-    config = load_config(args.config)
-
-    # Determine units: CLI overrides config, config overrides default
     cli_units = args.units
     config_units = config.get("units", None)
     units = cli_units if cli_units is not None else (config_units if config_units is not None else "ones")
@@ -128,229 +124,138 @@ def main():
         if val is not None:
             final_params[field] = val
 
-    # NEW: growth convergence option
-    converge_growth = args.converge_growth or final_params.get("converge_growth", False)
-
     ticker = final_params.get("ticker")
-    if ticker is None:
+    if not ticker:
         print("ERROR: 'ticker' must be specified either in the config or via --ticker", file=sys.stderr)
         sys.exit(1)
 
-    wacc = final_params["wacc"]
+    # Fetch company name via yfinance
+    try:
+        ticker_obj = yf.Ticker(ticker)
+        company_name = ticker_obj.info.get('longName') or ticker_obj.info.get('shortName') or ticker
+        print(f"Analyzing {company_name} ({ticker})...")
+    except Exception as e:
+        company_name = ticker
+        print(f"Warning: Could not fetch company name for {ticker}: {e}")
+
+    wacc_config = final_params["wacc_min"]
     terminal_growth = final_params["terminal_growth"]
     projection_years = final_params["projection_years"]
-    use_ebitda_base = final_params.get("use_ebitda_base", False)
-    fcf_ratio = final_params.get("fcf_ratio", None)
-    expected_growth = final_params.get("expected_growth", None)
+    plot_projections = final_params.get("plot_projections", None)
+    cost_of_debt = final_params.get("cost_of_debt", 0.0253)
+    cost_of_equity = final_params.get("cost_of_equity", 0.08)
 
-    output_folder = f"{ticker}_results"
-    try:
-        os.makedirs(output_folder, exist_ok=True)
-    except Exception as e:
-        print(f"ERROR: Could not create output folder '{output_folder}': {e}", file=sys.stderr)
-        sys.exit(1)
+    output_folder = f"ticker_results"
+    os.makedirs(output_folder, exist_ok=True)
 
-    print(f"Fetching historical data for '{ticker}'…")
-    try:
-        df_hist, val_info = get_historical_data(ticker)
-        df_hist = df_hist[df_hist['Revenue'].notna()]
-    except Exception as e:
-        print(f"ERROR: Could not retrieve historical data for '{ticker}': {e}", file=sys.stderr)
-        sys.exit(1)
+    output_folder = os.path.join(output_folder, f"{ticker}_results")
+    os.makedirs(output_folder, exist_ok=True)
 
-    hist_csv_path = os.path.join(output_folder, "historical_data.csv")
-    unit_cols_hist = [col for col in ["Revenue", "EBITDA", "FCF"] if col in df_hist.columns]
-    df_hist_out = change_units(df_hist, unit_cols_hist, to=units)
-    df_hist_out = round_numeric_cols(df_hist_out)
-    try:
-        df_hist_out.to_csv(hist_csv_path, index=True)
-        print(f"Saved historical data to '{hist_csv_path}'")
-    except Exception as e:
-        print(f"WARNING: Could not save historical_data CSV: {e}", file=sys.stderr)
+    # Estimate WACC once before running DCF
+    wacc_estimate_results = estimate_wacc(
+        ticker,
+        cost_of_debt=cost_of_debt,
+        cost_of_equity=cost_of_equity
+    )
+    # Use the higher of user/config WACC and estimated WACC for ALL DCFs
+    wacc_used = max(wacc_config, wacc_estimate_results["WACC"])
+    print(f"Using WACC={wacc_used:.4f} (max of input={wacc_config:.4f} and estimated={wacc_estimate_results['WACC']:.4f})")
+    save_wacc_estimate(wacc_estimate_results, output_folder)
 
-    print("Projecting future values…")
+    df_hist, val_info = get_historical_data(ticker)
+    df_hist = df_hist[df_hist['Revenue'].notna()]
+
+    # Save historical
+    df_hist.to_csv(os.path.join(output_folder, "historical_data.csv"), index=True)
+
+    # Run projections
     df_proj = project_all(
         df_hist,
         projection_years,
         terminal_growth=terminal_growth,
-        converge_growth=converge_growth
+        converge_growth=False,
+        man_inp_growth=config.get("man_inp_growth", None)
     )
+
+    df_proj_converge = project_all(
+        df_hist,
+        projection_years,
+        terminal_growth=terminal_growth,
+        converge_growth=True,
+        man_inp_growth=config.get("man_inp_growth", None)
+    )
+
+    if plot_projections:
+        for df_p, suffix in [(df_proj, ""), (df_proj_converge, "_converge")]:
+            plot_folder = os.path.join(output_folder, f"proj_plots{suffix}")
+            os.makedirs(plot_folder, exist_ok=True)
+            plot_all_variables(ticker, df_hist, df_p, plot_folder)
+            plot_projected_fcf_growth_rates(ticker, df_p, plot_folder)
+
     proj_csv_path = os.path.join(output_folder, "projected_values.csv")
-    df_proj_out = change_units(df_proj, [col for col in ["Revenue", "EBITDA", "FCF"] if col in df_proj.columns], to=units)
-    df_proj_out = round_numeric_cols(df_proj_out)
-    df_proj_out.to_csv(proj_csv_path, index=False)
-    print(f"Saved projected values to '{proj_csv_path}'")
+    df_proj_out = change_units(df_proj, [c for c in ["Revenue", "EBITDA", "FCF"] if c in df_proj.columns], to=units)
+    round_numeric_cols(df_proj_out).to_csv(proj_csv_path, index=False)
 
-    # --- NEW: Plot projected FCF growth rates ---
-    from projection import plot_projected_fcf_growth_rates
-    plot_projected_fcf_growth_rates(ticker, df_proj, output_folder)
-
-    # === Run all DCF methods and collect results ===
+    # === Run DCF for multiple forecast horizons ===
+    horizons = [5, 10]
     dcf_estimates_list = []
-    number_shares = val_info.get("number_shares")
-    if number_shares is None or number_shares == 0 or pd.isna(number_shares):
-        print("WARNING: Number of shares is missing or invalid. Per-share value will be empty.")
-        number_shares = None
-
-    # Columns to convert for DCF outputs (historical and projected)
     unit_cols = ["Revenue", "EBITDA", "FCF", "PV(FCF+TV)"]
+    number_shares = val_info.get("number_shares")
+    share_price = val_info.get("share_price")
 
-    # 1. DCF (historical CAGR)
-    print("Running DCF calculation (historical CAGR)…")
-    try:
-        dcf_df, dcf_valuation_info = run_dcf(
-            df_hist,
-            projection_years,
-            terminal_growth,
-            wacc,
-            use_ebitda_base,
-            fcf_ratio,
-            expected_growth=None,
-            converge_growth=converge_growth
-        )
-        dcf_df_out = change_units(dcf_df, [col for col in unit_cols if col in dcf_df.columns], to=units)
-        dcf_df_out = round_numeric_cols(dcf_df_out)
-        if number_shares:
-            dcf_valuation_info["per_share_value"] = dcf_valuation_info["npv"] / number_shares
-        else:
-            dcf_valuation_info["per_share_value"] = np.nan
-        dcf_estimates_list.append({
-            "method": "historical_cagr",
-            **dcf_valuation_info
-        })
-        save_dcf_results(dcf_df_out, dcf_valuation_info, output_folder, suffix="")
-    except Exception as e:
-        print(f"ERROR in DCF calculation: {e}", file=sys.stderr)
-        sys.exit(1)
+    proj_sets = [
+        ("standard", df_proj, ""),
+        ("converged", df_proj_converge, "_converge"),
+    ]
 
-    # 2. DCF (regression slope)
-    print("Running DCF calculation (regression slope)…")
-    try:
-        dcf_df_slope, dcf_valuation_info_slope = run_dcf(
-            df_hist,
-            projection_years,
-            terminal_growth,
-            wacc,
-            use_ebitda_base,
-            fcf_ratio,
-            expected_growth="slope",
-            converge_growth=converge_growth
-        )
-        dcf_df_slope_out = change_units(dcf_df_slope, [col for col in unit_cols if col in dcf_df_slope.columns], to=units)
-        dcf_df_slope_out = round_numeric_cols(dcf_df_slope_out)
-        if number_shares:
-            dcf_valuation_info_slope["per_share_value"] = dcf_valuation_info_slope["npv"] / number_shares
-        else:
-            dcf_valuation_info_slope["per_share_value"] = np.nan
-        dcf_estimates_list.append({
-            "method": "regression_slope",
-            **dcf_valuation_info_slope
-        })
-        save_dcf_results(dcf_df_slope_out, dcf_valuation_info_slope, output_folder, suffix="_slope")
-        print(f"Saved DCF (regression slope) to '{os.path.join(output_folder, 'dcf_results_slope.csv')}'")
-    except Exception as e:
-        print(f"WARNING: Could not run/save DCF (regression slope): {e}", file=sys.stderr)
+    fcf_cols = ["FCFE"]
 
-    # 3. DCF (expected growth if specified and not "slope")
-    if expected_growth is not None and expected_growth != "slope":
-        print(f"Running DCF calculation (expected growth rate = {expected_growth:.2%})…")
-        try:
-            dcf_df_exp, dcf_valuation_info_exp = run_dcf(
-                df_hist,
-                projection_years,
-                terminal_growth,
-                wacc,
-                use_ebitda_base,
-                fcf_ratio,
-                expected_growth=expected_growth,
-                converge_growth=converge_growth
-            )
-            dcf_df_exp_out = change_units(dcf_df_exp, [col for col in unit_cols if col in dcf_df_exp.columns], to=units)
-            dcf_df_exp_out = round_numeric_cols(dcf_df_exp_out)
-            if number_shares:
-                dcf_valuation_info_exp["per_share_value"] = dcf_valuation_info_exp["npv"] / number_shares
-            else:
-                dcf_valuation_info_exp["per_share_value"] = np.nan
-            dcf_estimates_list.append({
-                "method": f"expected_growth_{expected_growth:.4f}",
-                **dcf_valuation_info_exp
-            })
-            save_dcf_results(dcf_df_exp_out, dcf_valuation_info_exp, output_folder, suffix="_expected")
-            print(f"Saved DCF (expected growth) to '{os.path.join(output_folder, 'dcf_results_expected.csv')}'")
-        except Exception as e:
-            print(f"WARNING: Could not run/save DCF (expected growth): {e}", file=sys.stderr)
+    projection_methods = [
+        ("cagr", "_cagr", "historical_cagr"),
+        ("slope", "_slope", "regression_slope"),
+        ("man_inp_growth", "_manual_input", "manual_input_growth"),
+    ]
 
-    # === Save all DCF estimates as a DataFrame ===
+    for horizon in horizons:
+        for proj_name, proj_df, proj_suffix in proj_sets:
+            for fcf_col in fcf_cols:
+                for p_method, method_suffix, method_name in projection_methods:
+                    suffix = f"{method_suffix}_{fcf_col}{proj_suffix}_h{horizon}"
+                    label = method_name.replace("_", " ").title()
+                 
+                    dcf_df, dcf_info = run_dcf(
+                        df_hist,
+                        proj_df,
+                        terminal_growth,
+                        wacc_used,
+                        forecast_horizon=horizon,
+                        FCF_col=fcf_col,
+                        p_method=p_method,
+                        number_shares=number_shares,
+                        share_price=share_price
+                    )
+
+                    dcf_out = change_units(dcf_df, [c for c in unit_cols if c in dcf_df.columns], to=units)
+                    save_dcf_results(dcf_out, dcf_info, output_folder, suffix=suffix)
+            
+                    dcf_estimates_list.append({
+                        "ticker": ticker,
+                        "name": company_name,
+                        "horizon": horizon,
+                        "proj_type": proj_name,
+                        "fcf_source": fcf_col,
+                        "p_method": p_method,
+                        "method_label": label,
+                        "used_wacc": wacc_used,
+                        **dcf_info
+                    })
+
     dcf_estimates = pd.DataFrame(dcf_estimates_list)
-    # Convert units for summary columns except per_share_value
-    cols_to_convert = [col for col in ["sum_pv", "terminal_value", "npv"] if col in dcf_estimates.columns]
-    dcf_estimates_out = dcf_estimates.copy()
-    if cols_to_convert:
-        dcf_estimates_out = change_units(dcf_estimates_out, cols_to_convert, to=units)
-    dcf_estimates_out = round_numeric_cols(dcf_estimates_out)
-    dcf_estimates_path = os.path.join(output_folder, "dcf_estimates.csv")
-    dcf_estimates_out.to_csv(dcf_estimates_path, index=False)
-    print(f"Saved summary of all DCF estimates to '{dcf_estimates_path}'")
-
-    # === Continue with sensitivity and reporting as before ===
-    sens1_df = None
-    if use_ebitda_base:
-        print("Running sensitivity #1 (Growth vs. FCF/EBITDA)…")
-        try:
-            sens1_df = perform_sensitivity_analysis(
-                last_fcf=val_info.get("last_fcf"),
-                wacc=wacc,
-                terminal_growth=terminal_growth,
-                projection_years=projection_years,
-                fcf_to_ebitda_ratio=fcf_ratio,
-                market_cap=val_info.get("market_cap", 0),
-            )
-            sens1_csv = os.path.join(output_folder, "sensitivity_growth_vs_ratio.csv")
-            sens1_df_out = change_units(sens1_df, [col for col in unit_cols if col in sens1_df.columns], to=units)
-            sens1_df_out = round_numeric_cols(sens1_df_out)
-            sens1_df_out.to_csv(sens1_csv)
-            print(f"Saved sensitivity #1 to '{sens1_csv}'")
-        except Exception as e:
-            print(f"WARNING: Could not save sensitivity #1: {e}", file=sys.stderr)
-
-    print("Running sensitivity #2 (WACC vs. Terminal Growth)…")
-    sens2_df = None
-    try:
-        sens2_df = perform_additional_sensitivity(
-            df_hist=df_hist,
-            market_cap=val_info.get("market_cap", 0),
-            wacc=wacc,
-            terminal_growth=terminal_growth,
-            projection_years=projection_years,
-            fcf_to_ebitda_ratio=fcf_ratio,
-        )
-        sens2_csv = os.path.join(output_folder, "sensitivity_wacc_vs_growth.csv")
-        sens2_df_out = change_units(sens2_df, [col for col in unit_cols if col in sens2_df.columns], to=units)
-        sens2_df_out = round_numeric_cols(sens2_df_out)
-        sens2_df_out.to_csv(sens2_csv)
-        print(f"Saved sensitivity #2 to '{sens2_csv}'")
-    except Exception as e:
-        print(f"WARNING: Could not save sensitivity #2: {e}", file=sys.stderr)
-
-    print("Generating PDF report…")
-    try:
-        # For reporting, convert historical to units as well (for consistency in PDF)
-        df_hist_report = change_units(df_hist, unit_cols_hist, to=units)
-        df_hist_report = round_numeric_cols(df_hist_report)
-        generate_pdf_report(
-            ticker,
-            df_hist_report,
-            dcf_df_out,
-            dcf_valuation_info,
-            sens1_df,
-            sens2_df,
-            output_folder
-        )
-    except Exception as e:
-        print(f"ERROR generating PDF report: {e}", file=sys.stderr)
-        sys.exit(1)
-
-    print(f"All outputs have been saved into the folder: '{output_folder}'")
+    to_conv = [c for c in ["sum_pv", "terminal_value", "npv"] if c in dcf_estimates]
+    if to_conv:
+        dcf_estimates = change_units(dcf_estimates, to_conv, to=units)
+    dcf_estimates = round_numeric_cols(dcf_estimates)
+    dcf_estimates.to_csv(os.path.join(output_folder, "dcf_estimates.csv"), index=False)
 
 if __name__ == "__main__":
     main()
