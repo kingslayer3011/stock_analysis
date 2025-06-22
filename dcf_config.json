@@ -5,5 +5,5 @@
     "projection_years": 10,
     "man_inp_growth":  0.08,
     "units": "millions",
-    "plot_projections": true
+    "plot_projections": false
   }

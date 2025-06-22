@@ -232,20 +232,9 @@ def get_historical_data(ticker: str):
     # Add TTM row at the end
     ttm_index = raw_income_ttm.columns[0]
     ttm_df = pd.DataFrame(ttm_row, index=[ttm_index])
+    df['ttm'] = 0
+    ttm_df['ttm'] = 1 
     full_df = pd.concat([df, ttm_df], axis=0)
 
     return full_df, valuation_info
 
-
-
-def get_analyst_recommendations(ticker: str) -> Optional[pd.DataFrame]:
-    """
-    Fetch analyst recommendations from Yahoo Finance.
-    Returns DataFrame or None if unavailable.
-    """
-    t = yf.Ticker(ticker)
-    recs = t.recommendations
-
-
-
-# Add your main() and CLI or calling logic as needed

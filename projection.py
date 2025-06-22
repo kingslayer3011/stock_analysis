@@ -4,6 +4,7 @@ from scipy.stats import linregress
 import os
 import numpy as np
 import pandas as pd
+import debugpy
 
 def calculate_growth_stats(series: pd.Series):
     try:
@@ -69,55 +70,108 @@ def _get_growth_vector(initial_growth, terminal_growth, projection_years, conver
             growths.append(g)
         return growths
 
-def project_cagr(series, last_year, projection_years, terminal_growth=None, converge_growth=False):
+def project_cagr(series, last_year, projection_years, terminal_growth=None, converge_growth=False, last_value=None):
+    """
+    Projects values using CAGR, optionally converging to a terminal growth rate.
+    last_value: Optionally specify the starting value for projections (default: last non-NA in series).
+    """
     cagr, _ = calculate_growth_stats(series)
-    last_value = series.dropna().iloc[-1] if len(series.dropna()) > 0 else np.nan
+    if last_value is None:
+        last_value = series.dropna().iloc[-1] if len(series.dropna()) > 0 else np.nan
     projections = []
-    growth_vec = _get_growth_vector(cagr, terminal_growth, projection_years, converge_growth)
-    v = last_value
-    for i, g in enumerate(growth_vec):
-        year = last_year + i + 1
-        v = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-        projections.append({'Year': year, 'method': 'cagr', 'value': v, 'parameter_value': cagr, 'growth_rate': g})
+    growth_vector = _get_growth_vector(cagr, terminal_growth, projection_years, converge_growth)
+    for projection_index, growth_rate in enumerate(growth_vector):
+        projected_year = last_year + projection_index + 1
+        last_value = (
+            last_value * (1 + growth_rate)
+            if last_value is not None and not np.isnan(last_value) and growth_rate is not None and not np.isnan(growth_rate)
+            else np.nan
+        )
+        projections.append({
+            'Year': projected_year,
+            'method': 'cagr',
+            'value': last_value,
+            'parameter_value': cagr,
+            'growth_rate': growth_rate
+        })
     return projections
 
-def project_slope(series, last_year, projection_years, terminal_growth=None, converge_growth=False):
-    s = series.dropna()
-    if len(s) < 2:
-        return [{'Year': last_year + i, 'method': 'slope', 'value': np.nan, 'parameter_value': np.nan, 'growth_rate': np.nan} for i in range(1, projection_years + 1)]
-    slope, intercept = calc_linreg_slope(s)
+def project_slope(series, last_year, projection_years, terminal_growth=None, converge_growth=False, last_value=None):
+    """
+    Projects values using regression slope, optionally converging to a terminal growth rate.
+    last_value: Optionally specify the starting value for projections (default: last non-NA in series).
+    """
+    clean_series = series.dropna()
+    if len(clean_series) < 2:
+        return [
+            {
+                'Year': last_year + i,
+                'method': 'slope',
+                'value': np.nan,
+                'parameter_value': np.nan,
+                'growth_rate': np.nan
+            }
+            for i in range(1, projection_years + 1)
+        ]
+    slope, intercept = calc_linreg_slope(clean_series)
+    if last_value is None:
+        last_value = clean_series.iloc[-1]
     projections = []
-    v = s.iloc[-1]
-    for i in range(1, projection_years + 1):
-        year = last_year + i
-        x_proj = len(s) - 1 + i
-        value = slope * x_proj + intercept
-        g = (value/v - 1) if v and value and not np.isnan(v) and not np.isnan(value) and v != 0 else np.nan
-        projections.append({'Year': year, 'method': 'slope', 'value': value, 'parameter_value': slope, 'growth_rate': g})
-        v = value
+    for projection_index in range(1, projection_years + 1):
+        projected_year = last_year + projection_index
+        regression_x = len(clean_series) - 1 + projection_index
+        projected_value = slope * regression_x + intercept
+        projected_growth = (
+            (projected_value / last_value - 1)
+            if last_value and projected_value and not np.isnan(last_value) and not np.isnan(projected_value) and last_value != 0
+            else np.nan
+        )
+        projections.append({
+            'Year': projected_year,
+            'method': 'slope',
+            'value': projected_value,
+            'parameter_value': slope,
+            'growth_rate': projected_growth
+        })
+        last_value = projected_value
     if converge_growth and terminal_growth is not None:
-        growths = [p['growth_rate'] for p in projections]
-        growth_vec = _get_growth_vector(growths[0], terminal_growth, projection_years, True)
-        v = s.iloc[-1]
-        for i, g in enumerate(growth_vec):
-            value = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-            projections[i]['value'] = value
-            projections[i]['growth_rate'] = g
-            v = value
+        initial_growth = projections[0]['growth_rate']
+        growth_vector = _get_growth_vector(initial_growth, terminal_growth, projection_years, True)
+        last_value = clean_series.iloc[-1]
+        for i, growth_rate in enumerate(growth_vector):
+            projected_value = (
+                last_value * (1 + growth_rate)
+                if last_value is not None and not np.isnan(last_value) and growth_rate is not None and not np.isnan(growth_rate)
+                else np.nan
+            )
+            projections[i]['value'] = projected_value
+            projections[i]['growth_rate'] = growth_rate
+            last_value = projected_value
     return projections
 
-def project_man_inp_growth(series, last_year, projection_years, man_inp_growth, terminal_growth=None, converge_growth=False):
+def project_man_inp_growth(series, last_year, projection_years, man_inp_growth, terminal_growth=None, converge_growth=False, last_value=None):
     """
     Projects values using a fixed manually input growth (float) or converged growth vector.
+    last_value: Optionally specify the starting value for projections (default: last non-NA in series).
     """
-    last_value = series.dropna().iloc[-1] if len(series.dropna()) > 0 else np.nan
+    if last_value is None:
+        last_value = series.dropna().iloc[-1] if len(series.dropna()) > 0 else np.nan
     projections = []
     growth_vec = _get_growth_vector(man_inp_growth, terminal_growth, projection_years, converge_growth)
-    v = last_value
-    for i, g in enumerate(growth_vec):
+    for i, growth_rate in enumerate(growth_vec):
         year = last_year + i + 1
-        v = v * (1 + g) if v is not None and not np.isnan(v) and g is not None and not np.isnan(g) else np.nan
-        projections.append({'Year': year, 'method': 'man_inp_growth', 'value': v, 'parameter_value': man_inp_growth, 'growth_rate': g})
+        last_value = (
+            last_value * (1 + growth_rate)
+            if last_value is not None and not np.isnan(last_value) and growth_rate is not None and not np.isnan(growth_rate)
+            else np.nan
+        )
+        projections.append({
+            'Year': year,
+            'method': 'man_inp_growth',
+            'value': last_value,
+            'parameter_value': man_inp_growth,
+            'growth_rate': growth_rate
+        })
     return projections
 
 def project_all(df_hist, projection_years, terminal_growth=None, converge_growth=False, man_inp_growth=None):
@@ -130,28 +184,44 @@ def project_all(df_hist, projection_years, terminal_growth=None, converge_growth
     valid_idx = pd.to_datetime(df_hist.index, errors='coerce').dropna()
     df_full_years = df_hist.loc[valid_idx]
 
-    # 2) Compute last_year from full-year data
-    last_year = pd.to_datetime(df_full_years.index).year.max()
+    # 2) Compute last_year from full-year data (where ttm == 0)
+    df_full_years_no_ttm = df_full_years[df_full_years.get('ttm', 0) == 0]
+    last_year = pd.to_datetime(df_full_years_no_ttm.index).year.max()
 
+    # 3) Get TTM row (where ttm == 1) for last_value
+    if 'ttm' in df_full_years.columns:
+        ttm_rows = df_full_years[df_full_years['ttm'] == 1]
+    else:
+        ttm_rows = pd.DataFrame()
     results = []
     for col in df_full_years.columns:
-        s = df_full_years[col]
+        if col == 'ttm':
+            continue  # skip the ttm indicator column itself
+
+        s = df_full_years[df_full_years['ttm'] == 0][col]
+
+        # Use TTM value as last_value if available, else fallback to last non-NA
+        if not ttm_rows.empty and col in ttm_rows.columns:
+            ttm_val = ttm_rows[col].dropna()
+            last_value = ttm_val.iloc[0] if len(ttm_val) > 0 else s.dropna().iloc[-1] if len(s.dropna()) > 0 else np.nan
+        else:
+            last_value = s.dropna().iloc[-1] if len(s.dropna()) > 0 else np.nan
 
         # CAGR‐based projections
-        cagr_proj = project_cagr(s, last_year, projection_years, terminal_growth, converge_growth)
+        cagr_proj = project_cagr(s, last_year, projection_years, terminal_growth, converge_growth, last_value=last_value)
         for p in cagr_proj:
             results.append({'variable': col, **p})
 
         # Regression‐slope projections
-        slope_proj = project_slope(s, last_year, projection_years, terminal_growth, converge_growth)
+        slope_proj = project_slope(s, last_year, projection_years, terminal_growth, converge_growth, last_value=last_value)
         for p in slope_proj:
             results.append({'variable': col, **p})
 
         # Manual‐input projections
-        man_inp_proj = project_man_inp_growth(s, last_year, projection_years, man_inp_growth, terminal_growth, converge_growth)
+        man_inp_proj = project_man_inp_growth(s, last_year, projection_years, man_inp_growth, terminal_growth, converge_growth, last_value=last_value)
         for p in man_inp_proj:
             results.append({'variable': col, **p})
-
+    debugpy.breakpoint()
     df_proj = pd.DataFrame(results)
     return df_proj[['Year', 'variable', 'method', 'value', 'parameter_value', 'growth_rate']]
 
@@ -227,3 +297,5 @@ def plot_projected_fcf_growth_rates(ticker, df_proj, output_folder, terminal_gro
     plt.savefig(filename)
     plt.close()
     print(f"Saved plot: {filename}")
+
+
