@@ -4,6 +4,13 @@ import numpy as np
 from typing import Tuple, Optional
 from functools import reduce
 
+"""
+import debugpy
+debugpy.listen(("localhost", 5680))  # You can use any open port, e.g., 5678
+print("Waiting for debugger attach...")
+debugpy.wait_for_client()  # This will pause execution until you attach the debugger
+"""
+
 def safe_divide(numerator, denominator):
     # if either is a Series with one element, convert to scalar
     if isinstance(numerator, pd.Series) and len(numerator) == 1:
@@ -229,12 +236,47 @@ def get_historical_data(ticker: str):
     ttm_row["P/FCF"] = safe_divide(mcap, ttm_row["FCF"])
     ttm_row["EV/EBITDA"] = safe_divide(ev, ttm_row["EBITDA"])
 
+    # Calculate TTM change in debt
+    if raw_balance_ttm is not None and not raw_balance_ttm.empty:
+        # Find the latest quarter where debt is not nan
+        debt_series = raw_balance_ttm.loc["Total Debt"] if "Total Debt" in raw_balance_ttm.index else pd.Series(dtype=float)
+        non_nan_quarters = debt_series.dropna().index
+        if len(non_nan_quarters) > 0:
+            latest_qtr = non_nan_quarters[0]
+            latest_qtr_date = pd.to_datetime(latest_qtr)
+            prev_year_qtr_date = latest_qtr_date - pd.DateOffset(years=1)
+            # Find the closest quarter a year ago
+            prev_year_qtr = raw_balance_ttm.columns[raw_balance_ttm.columns == prev_year_qtr_date.strftime("%Y-%m-%d")]
+            if len(prev_year_qtr) == 0:
+                # If exact match not found, find closest previous quarter
+                prev_year_qtr = raw_balance_ttm.columns[raw_balance_ttm.columns <= prev_year_qtr_date.strftime("%Y-%m-%d")]
+                if len(prev_year_qtr) > 0:
+                    prev_year_qtr = prev_year_qtr[-1]
+                else:
+                    prev_year_qtr = None
+            else:
+                prev_year_qtr = prev_year_qtr[0]
+            prev_year_qtr = prev_year_qtr.strftime("%Y-%m-%d")
+
+            latest_debt = safe_value(raw_balance_ttm[latest_qtr], "Total Debt")
+            prev_year_debt = safe_value(raw_balance_ttm[prev_year_qtr], "Total Debt") if prev_year_qtr is not None else np.nan
+            change_in_debt_ttm = latest_debt - prev_year_debt if pd.notna(latest_debt) and pd.notna(prev_year_debt) else np.nan
+        else:
+            change_in_debt_ttm = np.nan
+    else:
+        change_in_debt_ttm = np.nan
+
+    # Add to TTM row
+    ttm_row["Change in Debt"] = change_in_debt_ttm
+    ttm_row["FCFE"] = ttm_row["FCF"] + ttm_row["Change in Debt"] 
+    
     # Add TTM row at the end
     ttm_index = raw_income_ttm.columns[0]
     ttm_df = pd.DataFrame(ttm_row, index=[ttm_index])
     df['ttm'] = 0
     ttm_df['ttm'] = 1 
     full_df = pd.concat([df, ttm_df], axis=0)
+
 
     return full_df, valuation_info
 

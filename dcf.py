@@ -4,11 +4,12 @@ from typing import Tuple, List, Dict
 import yfinance as yf
 import matplotlib.pyplot as plt
 
+"""
 import debugpy
 debugpy.listen(("localhost", 5680))  # You can use any open port, e.g., 5678
 print("Waiting for debugger attach...")
 debugpy.wait_for_client()  # This will pause execution until you attach the debugger
-
+"""
 
 
 def compute_terminal_value(last_fcf: float, g: float, r: float) -> float:
@@ -94,7 +95,7 @@ def run_dcf(
     """
     # Filter projections by method and variable
     proj_mask = (df_proj["method"] == p_method) & (df_proj["variable"] == FCF_col)
-    df_proj_fcf = df_proj.loc[proj_mask, ["Year", "value"]].copy()
+    df_proj_fcf = df_proj.loc[proj_mask, ["Year", "value", "growth_rate"]].copy()
     df_proj_fcf.rename(columns={"value": FCF_col}, inplace=True)
 
     # Limit to forecast_horizon if specified
@@ -114,30 +115,44 @@ def run_dcf(
     else:
         terminal_val = np.nan
 
-    # Add terminal value to last projected FCF
-    cash_flows.iloc[-1] += terminal_val
-
-    # Discount cash flows
+    # Discount cash flows (excluding terminal value for now)
     discount_factors = 1 / (1 + wacc) ** np.arange(1, len(cash_flows) + 1)
     pv_vals = cash_flows * discount_factors
 
+    # Discount terminal value using the last year's discount factor
+    terminal_discount_factor = discount_factors[-1]
+    pv_terminal = terminal_val * terminal_discount_factor
+
     # Build projected DataFrame with DCF metrics
-    df_proj_sub = df_proj_fcf.copy()
-    df_proj_sub["PV(FCF+TV)"] = pv_vals
+    df_proj_sub = df_proj_fcf.copy().reset_index(drop=True)
+    df_proj_sub["PV"] = pv_vals
     df_proj_sub["Discount Factor"] = discount_factors
-    df_proj_sub["Type"] = "projected"
+    df_proj_sub["Type"] = "Projected calendar year"
+
+    # Add terminal value as a separate row
+    terminal_row = {
+        "Year": None,
+        FCF_col: terminal_val,
+        "growth_rate": terminal_growth,
+        "PV": pv_terminal,
+        "Discount Factor": terminal_discount_factor,
+        "Type": "Terminal value"
+    }
+    df_proj_sub = pd.concat([df_proj_sub, pd.DataFrame([terminal_row])], ignore_index=True)
 
     # Build historical DataFrame for output
     df_hist_sub = df_hist.reset_index()
     df_hist_sub = df_hist_sub.rename(columns={"index": "Year"})
-    df_hist_sub = df_hist_sub[["Year", FCF_col]].copy()
+    df_hist_sub = df_hist_sub[["Year", FCF_col, "ttm"]].copy()
     df_hist_sub['Year'] = pd.to_datetime(df_hist_sub['Year']).dt.year
-    df_hist_sub["PV(FCF+TV)"] = np.nan
+    df_hist_sub["growth_rate"] = df_hist_sub[FCF_col].pct_change().fillna(0)
+    df_hist_sub["PV"] = np.nan
     df_hist_sub["Discount Factor"] = np.nan
-    df_hist_sub["Type"] = "historical"
+    df_hist_sub["Type"] = np.where(df_hist_sub["ttm"] == 1, "Historical ttm", "Historical calendar year")
+    df_hist_sub = df_hist_sub.drop(columns=["ttm"])
 
     # Combine historical and projected
-    full_df = pd.concat([df_hist_sub, df_proj_sub.rename(columns={FCF_col: "FCF"})], ignore_index=True)
+    full_df = pd.concat([df_hist_sub, df_proj_sub], ignore_index=True)
 
     # Valuation summary calculations
     sum_pv = float(np.nansum(pv_vals))
@@ -153,7 +168,7 @@ def run_dcf(
         "upside": upside,
         "average_growth_rate": avg_growth,
     }
-    debugpy.breakpoint()
+
     return full_df, valuation_summary
 
 
