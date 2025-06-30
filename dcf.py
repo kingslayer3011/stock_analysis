@@ -4,6 +4,13 @@ from typing import Tuple, List, Dict
 import yfinance as yf
 import matplotlib.pyplot as plt
 
+import debugpy
+debugpy.listen(("localhost", 5680))  # You can use any open port, e.g., 5678
+print("Waiting for debugger attach...")
+debugpy.wait_for_client()  # This will pause execution until you attach the debugger
+
+
+
 def compute_terminal_value(last_fcf: float, g: float, r: float) -> float:
     if r <= g:
         raise ValueError(f"WACC (r={r:.2%}) must be greater than g={g:.2%} for terminal value.")
@@ -146,7 +153,7 @@ def run_dcf(
         "upside": upside,
         "average_growth_rate": avg_growth,
     }
-
+    debugpy.breakpoint()
     return full_df, valuation_summary
 
 

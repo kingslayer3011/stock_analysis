@@ -147,6 +147,7 @@ def project_slope(series, last_year, projection_years, terminal_growth=None, con
             projections[i]['value'] = projected_value
             projections[i]['growth_rate'] = growth_rate
             last_value = projected_value
+
     return projections
 
 def project_man_inp_growth(series, last_year, projection_years, man_inp_growth, terminal_growth=None, converge_growth=False, last_value=None):
@@ -186,13 +187,21 @@ def project_all(df_hist, projection_years, terminal_growth=None, converge_growth
 
     # 2) Compute last_year from full-year data (where ttm == 0)
     df_full_years_no_ttm = df_full_years[df_full_years.get('ttm', 0) == 0]
-    last_year = pd.to_datetime(df_full_years_no_ttm.index).year.max()
+    if not df_full_years_no_ttm.empty:
+        last_year = pd.to_datetime(df_full_years_no_ttm.index).year.max()
+    else:
+        last_year = None
 
     # 3) Get TTM row (where ttm == 1) for last_value
     if 'ttm' in df_full_years.columns:
         ttm_rows = df_full_years[df_full_years['ttm'] == 1]
+        if not ttm_rows.empty:
+            quarter = "Q" + str(ttm_rows.index.to_series().dt.quarter.values[0])
+        else:
+            quarter = None
     else:
         ttm_rows = pd.DataFrame()
+        quarter = None
     results = []
     for col in df_full_years.columns:
         if col == 'ttm':
@@ -221,8 +230,32 @@ def project_all(df_hist, projection_years, terminal_growth=None, converge_growth
         man_inp_proj = project_man_inp_growth(s, last_year, projection_years, man_inp_growth, terminal_growth, converge_growth, last_value=last_value)
         for p in man_inp_proj:
             results.append({'variable': col, **p})
-    debugpy.breakpoint()
+
+    # After the main projection loop, add TTM row(s) if present
+    if not ttm_rows.empty:
+        for col in df_full_years.columns:
+            if col == 'ttm':
+                continue
+            ttm_val = ttm_rows[col].dropna()
+            if len(ttm_val) > 0:
+                ttm_date = ttm_val.index[0]
+                ttm_quarter = "Q" + str(ttm_date.quarter)
+                results.append({
+                    'Year': last_year,
+                    'variable': col,
+                    'method': 'ttm',
+                    'value': ttm_val.iloc[0],
+                    'parameter_value': np.nan,
+                    'growth_rate': np.nan
+                })
+
+
     df_proj = pd.DataFrame(results)
+    if 'quarter' in locals() and isinstance(quarter, str):
+        df_proj["period"] = df_proj["Year"].astype(str) + " + " + quarter
+    else:
+        df_proj["period"] = df_proj["Year"].astype(str)
+    
     return df_proj[['Year', 'variable', 'method', 'value', 'parameter_value', 'growth_rate']]
 
 def plot_variable_projection(ticker, variable, df_hist, df_proj, output_folder):
