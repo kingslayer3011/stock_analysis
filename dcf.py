@@ -146,6 +146,7 @@ def run_dcf(
     df_hist_sub = df_hist_sub[["Year", FCF_col, "ttm"]].copy()
     df_hist_sub['Year'] = pd.to_datetime(df_hist_sub['Year']).dt.year
     df_hist_sub["growth_rate"] = df_hist_sub[FCF_col].pct_change().fillna(0)
+    df_hist_sub["growth_rate"] = df_hist_sub["growth_rate"].infer_objects(copy=False)
     df_hist_sub["PV"] = np.nan
     df_hist_sub["Discount Factor"] = np.nan
     df_hist_sub["Type"] = np.where(df_hist_sub["ttm"] == 1, "Historical ttm", "Historical calendar year")

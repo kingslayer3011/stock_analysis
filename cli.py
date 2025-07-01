@@ -145,7 +145,7 @@ def main():
     cost_of_debt = final_params.get("cost_of_debt", 0.0253)
     cost_of_equity = final_params.get("cost_of_equity", 0.08)
 
-    output_folder = f"ticker_results"
+    output_folder = f"dcf_results"
     os.makedirs(output_folder, exist_ok=True)
 
     output_folder = os.path.join(output_folder, f"{ticker}_results")

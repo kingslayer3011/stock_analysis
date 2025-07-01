@@ -35,7 +35,7 @@ for ticker in tickers:
     os.remove(temp_config_file_path)
 
     # Locate output file
-    output_folder = os.path.join(f"ticker_results", f"{ticker}_results")
+    output_folder = os.path.join(f"dcf_results", f"{ticker}_results")
     result_path = os.path.join(output_folder, "dcf_estimates.csv")
 
     if os.path.exists(result_path):
