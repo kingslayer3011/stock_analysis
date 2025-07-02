@@ -6,6 +6,13 @@ import numpy as np
 import pandas as pd
 import debugpy
 
+"""
+import debugpy
+debugpy.listen(("localhost", 5682))  # You can use any open port, e.g., 5678
+print("Waiting for debugger attach...")
+debugpy.wait_for_client()  # This will pause execution until you attach the debugger
+"""
+
 def calculate_growth_stats(series: pd.Series):
     try:
         series = series.dropna()
@@ -76,11 +83,17 @@ def project_cagr(series, last_year, projection_years, terminal_growth=None, conv
     last_value: Optionally specify the starting value for projections (default: last non-NA in series).
     """
     cagr, _ = calculate_growth_stats(series)
+    # Cap CAGR at 0.15 if above
+    if cagr is not None and not np.isnan(cagr) and cagr > 0.15:
+        cagr = 0.15
     if last_value is None:
         last_value = series.dropna().iloc[-1] if len(series.dropna()) > 0 else np.nan
     projections = []
     growth_vector = _get_growth_vector(cagr, terminal_growth, projection_years, converge_growth)
     for projection_index, growth_rate in enumerate(growth_vector):
+        # Cap each projected growth rate at 0.15 as well
+        if growth_rate is not None and not np.isnan(growth_rate) and growth_rate > 0.15:
+            growth_rate = 0.15
         projected_year = last_year + projection_index + 1
         last_value = (
             last_value * (1 + growth_rate)
@@ -290,8 +303,8 @@ def plot_variable_projection(ticker, variable, df_hist, df_proj, output_folder):
 
 def plot_all_variables(ticker, df_hist, df_proj, output_folder):
     variables = [
-    "Revenue", "EBITDA", "Net Income", "FCF", "FCFE", "CapEx",
-    "TaxRate", "NOPAT", "ReinvestmentRate", "RetentionRatio", "ROE", "ROC"]
+    "Revenue", "EBITDA", "Net Income", "FCF", "FCFF", "CapEx",
+    "effective_tax_rate", "Delta WC", "Depreciation And Amortization"]
 
     for variable in variables:
         plot_variable_projection(ticker, variable, df_hist, df_proj, output_folder)

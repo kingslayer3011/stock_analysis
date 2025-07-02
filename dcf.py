@@ -3,14 +3,14 @@ import pandas as pd
 from typing import Tuple, List, Dict
 import yfinance as yf
 import matplotlib.pyplot as plt
+import debugpy
 
 """
 import debugpy
-debugpy.listen(("localhost", 5680))  # You can use any open port, e.g., 5678
+debugpy.listen(("localhost", 5682))  # You can use any open port, e.g., 5678
 print("Waiting for debugger attach...")
 debugpy.wait_for_client()  # This will pause execution until you attach the debugger
 """
-
 
 def compute_terminal_value(last_fcf: float, g: float, r: float) -> float:
     if r <= g:
@@ -25,7 +25,7 @@ def discount_cash_flows(cash_flows: List[float], discount_rate: float) -> List[f
 
 def estimate_wacc(ticker_symbol,
                   cost_of_debt = 0.0253,   # e.g. 0.045 for 4.5%
-                  cost_of_equity = 0.1  # e.g. 0.09 for 9.0%
+                  cost_of_equity = 0.12  # e.g. 0.09 for 9.0%
                  ):
     """
     Estimate WACC by:
@@ -50,7 +50,6 @@ def estimate_wacc(ticker_symbol,
     equity_contrib = w_e * cost_of_equity
     wacc = debt_contrib + equity_contrib
 
-
     # 4) Return summary
     return {
         'Debt (avg)':       D_avg,
@@ -73,8 +72,9 @@ def run_dcf(
     FCF_col: str = "FCF",
     p_method: str = "cagr",
     number_shares: int = 1,
-    share_price: float = 1.0,
+    share_price: float = 1.0
 ) -> tuple:
+    
     """
     Computes DCF valuation using provided historical and projected values for a specified forecast horizon.
 
@@ -93,11 +93,11 @@ def run_dcf(
         full_df: Combined DataFrame with DCF calculations (historical + selected projections)
         valuation_summary: dict with valuation results
     """
+ 
     # Filter projections by method and variable
     proj_mask = (df_proj["method"] == p_method) & (df_proj["variable"] == FCF_col)
-    df_proj_fcf = df_proj.loc[proj_mask, ["Year", "value", "growth_rate"]].copy()
-    df_proj_fcf.rename(columns={"value": FCF_col}, inplace=True)
-
+    df_proj_fcf = df_proj.loc[proj_mask, ["Year", 'value', "growth_rate"]].copy()
+    df_proj_fcf.rename(columns={'value': FCF_col}, inplace=True)
     # Limit to forecast_horizon if specified
     if forecast_horizon is not None:
         df_proj_fcf = df_proj_fcf.iloc[:forecast_horizon]
@@ -106,7 +106,8 @@ def run_dcf(
     cash_flows = df_proj_fcf[FCF_col].copy().reset_index(drop=True)
 
     # Calculate growth series and last projected FCF
-    growth_series = cash_flows.pct_change().dropna()
+    growth_series = cash_flows.pct_change(fill_method=None).dropna()
+    avg_growth = float(np.nanmean(growth_series)) if not growth_series.empty else np.nan
     last_proj_fcf = cash_flows.iloc[-1]
 
     # Calculate terminal value
@@ -116,9 +117,9 @@ def run_dcf(
         terminal_val = np.nan
 
     # Discount cash flows (excluding terminal value for now)
-    discount_factors = 1 / (1 + wacc) ** np.arange(1, len(cash_flows) + 1)
+    discount_factors = 1 / ((1 + wacc) ** np.arange(1, len(cash_flows) + 1))
     pv_vals = cash_flows * discount_factors
-
+  
     # Discount terminal value using the last year's discount factor
     terminal_discount_factor = discount_factors[-1]
     pv_terminal = terminal_val * terminal_discount_factor
@@ -145,7 +146,7 @@ def run_dcf(
     df_hist_sub = df_hist_sub.rename(columns={"index": "Year"})
     df_hist_sub = df_hist_sub[["Year", FCF_col, "ttm"]].copy()
     df_hist_sub['Year'] = pd.to_datetime(df_hist_sub['Year']).dt.year
-    df_hist_sub["growth_rate"] = df_hist_sub[FCF_col].pct_change().fillna(0)
+    df_hist_sub["growth_rate"] = df_hist_sub[FCF_col].pct_change(fill_method=None).fillna(0)
     df_hist_sub["growth_rate"] = df_hist_sub["growth_rate"].infer_objects(copy=False)
     df_hist_sub["PV"] = np.nan
     df_hist_sub["Discount Factor"] = np.nan
@@ -156,15 +157,17 @@ def run_dcf(
     full_df = pd.concat([df_hist_sub, df_proj_sub], ignore_index=True)
 
     # Valuation summary calculations
-    sum_pv = float(np.nansum(pv_vals))
-    avg_growth = float(np.nanmean(growth_series)) if not growth_series.empty else np.nan
-    per_share_value = sum_pv / number_shares
+    enterprise_value = float(np.nansum(pv_vals)) + float(pv_terminal)
+    equity_value = enterprise_value - df_hist['Net Debt'].dropna().iloc[-1]
+    per_share_value = equity_value / number_shares
     upside = 100 * (per_share_value - share_price) / share_price
 
     valuation_summary = {
-        "sum_pv": sum_pv,
+        "enterprise_value": enterprise_value,
         "terminal_value": float(terminal_val),
-        "npv": sum_pv,
+        "npv": enterprise_value,
+        "net_debt": df_hist['Net Debt'].dropna().iloc[-1],
+        "equity_value": equity_value,
         "per_share_value": per_share_value,
         "upside": upside,
         "average_growth_rate": avg_growth,
@@ -267,4 +270,6 @@ def perform_additional_sensitivity(
     )
     df_heat2.index.name = "WACC"
     df_heat2.columns.name = "Terminal Growth"
+
+    
     return df_heat2

@@ -1,9 +1,11 @@
 {
-    "ticker":           "ROCK-B.CO",
+    "ticker":           "GMAB.CO",
     "wacc_min":             0.06,
     "terminal_growth":  0.02,
     "projection_years": 10,
-    "man_inp_growth":  0.08,
+    "man_inp_growth":  0.05,
+    "cost_of_equity": 0.12,
+    "cost_of_debt": 0.0253,
     "units": "millions",
     "plot_projections": false
   }

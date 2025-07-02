@@ -143,7 +143,7 @@ def main():
     projection_years = final_params["projection_years"]
     plot_projections = final_params.get("plot_projections", None)
     cost_of_debt = final_params.get("cost_of_debt", 0.0253)
-    cost_of_equity = final_params.get("cost_of_equity", 0.08)
+    cost_of_equity = final_params.get("cost_of_equity", 0.12)
 
     output_folder = f"dcf_results"
     os.makedirs(output_folder, exist_ok=True)
@@ -208,7 +208,7 @@ def main():
         ("converged", df_proj_converge, "_converge"),
     ]
 
-    fcf_cols = ["FCFE"]
+    fcf_cols = ["FCFF"]
 
     projection_methods = [
         ("cagr", "_cagr", "historical_cagr"),
@@ -238,7 +238,8 @@ def main():
                     dcf_out = change_units(dcf_df, [c for c in unit_cols if c in dcf_df.columns], to=units)
                     save_dcf_results(dcf_out, dcf_info, output_folder, suffix=suffix)
             
-                    dcf_estimates_list.append({
+                    # Insert current share price after per_share_value
+                    dcf_row = {
                         "ticker": ticker,
                         "name": company_name,
                         "horizon": horizon,
@@ -247,14 +248,28 @@ def main():
                         "p_method": p_method,
                         "method_label": label,
                         "used_wacc": wacc_used,
-                        **dcf_info
-                    })
+                    }
+                    # dcf_info contains: enterprise_value, terminal_value, npv, per_share_value, upside, average_growth_rate
+                    # We want: ... per_share_value, current_share_price, upside ...
+                    for k in ["enterprise_value", "terminal_value", "npv"]:
+                        dcf_row[k] = dcf_info[k]
+                    dcf_row["per_share_value"] = dcf_info["per_share_value"]
+                    dcf_row["current_share_price"] = share_price
+                    dcf_row["upside"] = dcf_info["upside"]
+                    dcf_row["average_growth_rate"] = dcf_info["average_growth_rate"]
+                    dcf_estimates_list.append(dcf_row)
 
     dcf_estimates = pd.DataFrame(dcf_estimates_list)
-    to_conv = [c for c in ["sum_pv", "terminal_value", "npv"] if c in dcf_estimates]
+    to_conv = [c for c in ["enterprise_value", "terminal_value", "npv"] if c in dcf_estimates]
     if to_conv:
         dcf_estimates = change_units(dcf_estimates, to_conv, to=units)
     dcf_estimates = round_numeric_cols(dcf_estimates)
+    # Ensure column order: ... per_share_value, current_share_price, upside ...
+    col_order = [
+        "ticker", "name", "horizon", "proj_type", "fcf_source", "p_method", "method_label", "used_wacc",
+        "enterprise_value", "terminal_value", "npv", "per_share_value", "current_share_price", "upside", "average_growth_rate"
+    ]
+    dcf_estimates = dcf_estimates[[c for c in col_order if c in dcf_estimates.columns]]
     dcf_estimates.to_csv(os.path.join(output_folder, "dcf_estimates.csv"), index=False)
 
 if __name__ == "__main__":
