@@ -12,9 +12,11 @@ from projection import *
 from dcf import *
 from reporter import *
 from sensitivity import *
+from data_fetcher import plot_fcff_components
 
 import yfinance as yf
 import matplotlib.pyplot as plt
+import dcf
 
 def change_units(df, columns, to="ones"):
     scale = 1
@@ -64,9 +66,12 @@ def round_numeric_cols(df):
     return df
 
 def save_dcf_results(dcf_df, dcf_valuation_info, output_folder, suffix=""):
-    dcf_csv_path = os.path.join(output_folder, f"dcf_results{suffix}.csv")
+    # Ensure results are saved in a subfolder called 'dcf_results'
+    dcf_results_folder = os.path.join(output_folder, "dcf_results")
+    os.makedirs(dcf_results_folder, exist_ok=True)
+    dcf_csv_path = os.path.join(dcf_results_folder, f"dcf_results{suffix}.csv")
     dcf_df.to_csv(dcf_csv_path, index=False)
-    summary_path = os.path.join(output_folder, f"dcf_summary{suffix}.json")
+    summary_path = os.path.join(dcf_results_folder, f"dcf_summary{suffix}.json")
     with open(summary_path, 'w') as f:
         json.dump(dcf_valuation_info, f, indent=2)
 
@@ -76,7 +81,7 @@ def save_wacc_estimate(wacc_estimate_results, output_folder, suffix=""):
     wacc_csv_path = os.path.join(output_folder, f"wacc_estimate{suffix}.csv")
     wacc_json_path = os.path.join(output_folder, f"wacc_estimate{suffix}.json")
     wacc_df = pd.DataFrame([wacc_estimate_results])
-    wacc_df.to_csv(wacc_csv_path, index=False)
+    #wacc_df.to_csv(wacc_csv_path, index=False)
     with open(wacc_json_path, 'w') as f:
         json.dump(wacc_estimate_results, f, indent=2)
 
@@ -86,14 +91,15 @@ def parse_args():
     parser.add_argument("--ticker", help="Ticker symbol (overrides config).")
     parser.add_argument("--wacc", type=float, help="WACC override.")
     parser.add_argument("--terminal_growth", type=float, help="Terminal growth override.")
-    parser.add_argument("--projection_years", type=int, help="Projection years override.")
-    parser.add_argument("--use_ebitda_base", action="store_true", help="Use EBITDA base for projection.")
-    parser.add_argument("--fcf_ratio", type=float, help="FCF-to-EBITDA ratio override.")
     parser.add_argument("--expected_growth", type=float, help="Expected FCF or EBITDA growth rate override.")
     parser.add_argument("--units", choices=["ones", "thousands", "millions", "billions"],
                         help="Units for output values (ones, thousands, millions, billions).")
     parser.add_argument("--converge_growth", action="store_true",
                         help="Enable converging projected growth rates toward the terminal growth rate.")
+    parser.add_argument('--risk_free_rate', type=float, default=0.045, help='Risk-free rate for CAPM')
+    parser.add_argument('--equity_premium', type=float, default=0.0547, help='Market premium for CAPM')
+    parser.add_argument('--plot_projections', action="store_true", help="Enable plotting of projections")  # <-- Add this line
+    parser.add_argument('--plot_regression_plots', action="store_true", help="Enable saving regression plots in regression_plots folder")
     return parser.parse_args()
 
 def load_config(path: str) -> dict:
@@ -111,14 +117,18 @@ def main():
     with open("dcf_config.json", "r") as f:
         config = json.load(f)
 
+    # --- Load country equity premium mapping ---
+    with open("country_eq_prem.json", "r") as f:
+        country_eq_prem = json.load(f)
+
     cli_units = args.units
     config_units = config.get("units", None)
     units = cli_units if cli_units is not None else (config_units if config_units is not None else "ones")
 
     final_params = config.copy()
     for field in [
-        "ticker", "wacc", "terminal_growth", "projection_years",
-        "use_ebitda_base", "fcf_ratio", "expected_growth"
+        "ticker", "wacc", "terminal_growth",
+        "expected_growth"
     ]:
         val = getattr(args, field)
         if val is not None:
@@ -129,21 +139,34 @@ def main():
         print("ERROR: 'ticker' must be specified either in the config or via --ticker", file=sys.stderr)
         sys.exit(1)
 
-    # Fetch company name via yfinance
+    # Fetch company name and country via yfinance
     try:
         ticker_obj = yf.Ticker(ticker)
         company_name = ticker_obj.info.get('longName') or ticker_obj.info.get('shortName') or ticker
+        country = ticker_obj.info.get('country', None)
         print(f"Analyzing {company_name} ({ticker})...")
     except Exception as e:
         company_name = ticker
-        print(f"Warning: Could not fetch company name for {ticker}: {e}")
+        country = None
+        print(f"Warning: Could not fetch company name or country for {ticker}: {e}")
+
+    # --- Set equity premium from country_eq_prem.json if possible ---
+    equity_premium = None
+    if country and country in country_eq_prem:
+        equity_premium = country_eq_prem[country]
+        print(f"Using equity premium for {country}: {equity_premium:.4f}")
+    else:
+        # fallback to config or CLI/default
+        equity_premium = final_params.get("equity_premium", args.equity_premium)
+        if country:
+            print(f"Warning: No equity premium found for country '{country}', using config/CLI/default: {equity_premium:.4f}")
+        else:
+            print(f"Warning: Country not found for ticker '{ticker}', using config/CLI/default equity premium: {equity_premium:.4f}")
 
     wacc_config = final_params["wacc_min"]
     terminal_growth = final_params["terminal_growth"]
-    projection_years = final_params["projection_years"]
     plot_projections = final_params.get("plot_projections", None)
-    cost_of_debt = final_params.get("cost_of_debt", 0.0253)
-    cost_of_equity = final_params.get("cost_of_equity", 0.12)
+
 
     output_folder = f"dcf_results"
     os.makedirs(output_folder, exist_ok=True)
@@ -151,38 +174,53 @@ def main():
     output_folder = os.path.join(output_folder, f"{ticker}_results")
     os.makedirs(output_folder, exist_ok=True)
 
-    # Estimate WACC once before running DCF
+    df_hist, val_info = get_historical_data(ticker)
+    df_hist = df_hist[df_hist['Revenue'].notna()]
+    
+    cost_of_debt_plot_path = os.path.join(output_folder, "cost_of_debt.png")
+    cost_of_debt = estimate_cost_of_debt(df_hist, min_pre_tax=0.04, plot=True, plot_filename=cost_of_debt_plot_path)
+    print(f"Estimated cost of debt (after-tax): {cost_of_debt:.4f}")
+    # Estimate WACC once before running DCF, using df_hist
+    beta_plot_path = os.path.join(output_folder, f"{ticker}_beta_regression.png")
     wacc_estimate_results = estimate_wacc(
-        ticker,
+        df_hist,
         cost_of_debt=cost_of_debt,
-        cost_of_equity=cost_of_equity
+        ticker=ticker,
+        risk_free_rate=args.risk_free_rate,
+        equity_premium=equity_premium,
+        beta_plot_path=beta_plot_path
     )
     # Use the higher of user/config WACC and estimated WACC for ALL DCFs
     wacc_used = max(wacc_config, wacc_estimate_results["WACC"])
     print(f"Using WACC={wacc_used:.4f} (max of input={wacc_config:.4f} and estimated={wacc_estimate_results['WACC']:.4f})")
     save_wacc_estimate(wacc_estimate_results, output_folder)
 
-    df_hist, val_info = get_historical_data(ticker)
-    df_hist = df_hist[df_hist['Revenue'].notna()]
-
     # Save historical
     df_hist.to_csv(os.path.join(output_folder, "historical_data.csv"), index=True)
 
+    regression_plots_dir = os.path.join(output_folder, "regression_plots")
     # Run projections
+    horizons = [5, 10]
     df_proj = project_all(
         df_hist,
-        projection_years,
+        max(horizons),
         terminal_growth=terminal_growth,
         converge_growth=False,
-        man_inp_growth=config.get("man_inp_growth", None)
+        man_inp_growth=config.get("man_inp_growth", None),
+        plot_projections=plot_projections,
+        regression_plots_dir=regression_plots_dir,
+        plot_regression_plots=args.plot_regression_plots or final_params.get("plot_regression_plots", True)
     )
 
     df_proj_converge = project_all(
         df_hist,
-        projection_years,
+        max(horizons),
         terminal_growth=terminal_growth,
         converge_growth=True,
-        man_inp_growth=config.get("man_inp_growth", None)
+        man_inp_growth=config.get("man_inp_growth", None),
+        plot_projections=plot_projections,
+        regression_plots_dir=regression_plots_dir,
+        plot_regression_plots=args.plot_regression_plots or final_params.get("plot_regression_plots", True)
     )
 
     if plot_projections:
@@ -197,7 +235,6 @@ def main():
     round_numeric_cols(df_proj_out).to_csv(proj_csv_path, index=False)
 
     # === Run DCF for multiple forecast horizons ===
-    horizons = [5, 10]
     dcf_estimates_list = []
     unit_cols = ["Revenue", "EBITDA", "FCF", "PV(FCF+TV)"]
     number_shares = val_info.get("number_shares")
@@ -208,8 +245,6 @@ def main():
         ("converged", df_proj_converge, "_converge"),
     ]
 
-    fcf_cols = ["FCFF"]
-
     projection_methods = [
         ("cagr", "_cagr", "historical_cagr"),
         ("slope", "_slope", "regression_slope"),
@@ -218,46 +253,44 @@ def main():
 
     for horizon in horizons:
         for proj_name, proj_df, proj_suffix in proj_sets:
-            for fcf_col in fcf_cols:
-                for p_method, method_suffix, method_name in projection_methods:
-                    suffix = f"{method_suffix}_{fcf_col}{proj_suffix}_h{horizon}"
-                    label = method_name.replace("_", " ").title()
-                 
-                    dcf_df, dcf_info = run_dcf(
-                        df_hist,
-                        proj_df,
-                        terminal_growth,
-                        wacc_used,
-                        forecast_horizon=horizon,
-                        FCF_col=fcf_col,
-                        p_method=p_method,
-                        number_shares=number_shares,
-                        share_price=share_price
-                    )
+            for p_method, method_suffix, method_name in projection_methods:
+                suffix = f"{method_suffix}_{proj_suffix}_h{horizon}"
+                label = method_name.replace("_", " ").title()
+                
+                dcf_df, dcf_info = run_dcf(
+                    df_hist,
+                    proj_df,
+                    terminal_growth,
+                    wacc_used,
+                    forecast_horizon=horizon,
+                    p_method=p_method,
+                    number_shares=number_shares,
+                    share_price=share_price
+                )
 
-                    dcf_out = change_units(dcf_df, [c for c in unit_cols if c in dcf_df.columns], to=units)
-                    save_dcf_results(dcf_out, dcf_info, output_folder, suffix=suffix)
-            
-                    # Insert current share price after per_share_value
-                    dcf_row = {
-                        "ticker": ticker,
-                        "name": company_name,
-                        "horizon": horizon,
-                        "proj_type": proj_name,
-                        "fcf_source": fcf_col,
-                        "p_method": p_method,
-                        "method_label": label,
-                        "used_wacc": wacc_used,
-                    }
-                    # dcf_info contains: enterprise_value, terminal_value, npv, per_share_value, upside, average_growth_rate
-                    # We want: ... per_share_value, current_share_price, upside ...
-                    for k in ["enterprise_value", "terminal_value", "npv"]:
-                        dcf_row[k] = dcf_info[k]
-                    dcf_row["per_share_value"] = dcf_info["per_share_value"]
-                    dcf_row["current_share_price"] = share_price
-                    dcf_row["upside"] = dcf_info["upside"]
-                    dcf_row["average_growth_rate"] = dcf_info["average_growth_rate"]
-                    dcf_estimates_list.append(dcf_row)
+                dcf_out = change_units(dcf_df, [c for c in unit_cols if c in dcf_df.columns], to=units)
+                save_dcf_results(dcf_out, dcf_info, output_folder, suffix=suffix)
+        
+                # Insert current share price after per_share_value
+                dcf_row = {
+                    "ticker": ticker,
+                    "name": company_name,
+                    "horizon": horizon,
+                    "proj_type": proj_name,
+                    "fcf_source": "FCFF",
+                    "p_method": p_method,
+                    "method_label": label,
+                    "used_wacc": wacc_used,
+                }
+                # dcf_info contains: enterprise_value, terminal_value, npv, per_share_value, upside, average_growth_rate
+                # We want: ... per_share_value, current_share_price, upside ...
+                for k in ["enterprise_value", "terminal_value", "npv"]:
+                    dcf_row[k] = dcf_info[k]
+                dcf_row["per_share_value"] = dcf_info["per_share_value"]
+                dcf_row["current_share_price"] = share_price
+                dcf_row["upside"] = dcf_info["upside"]
+                dcf_row["average_growth_rate"] = dcf_info["average_growth_rate"]
+                dcf_estimates_list.append(dcf_row)
 
     dcf_estimates = pd.DataFrame(dcf_estimates_list)
     to_conv = [c for c in ["enterprise_value", "terminal_value", "npv"] if c in dcf_estimates]
@@ -266,11 +299,50 @@ def main():
     dcf_estimates = round_numeric_cols(dcf_estimates)
     # Ensure column order: ... per_share_value, current_share_price, upside ...
     col_order = [
-        "ticker", "name", "horizon", "proj_type", "fcf_source", "p_method", "method_label", "used_wacc",
-        "enterprise_value", "terminal_value", "npv", "per_share_value", "current_share_price", "upside", "average_growth_rate"
+        "ticker", "name", "upside", "horizon", "proj_type", "fcf_source", "p_method", "method_label", "used_wacc",
+        "enterprise_value", "terminal_value", "npv", "per_share_value", "current_share_price", "average_growth_rate"
     ]
     dcf_estimates = dcf_estimates[[c for c in col_order if c in dcf_estimates.columns]]
     dcf_estimates.to_csv(os.path.join(output_folder, "dcf_estimates.csv"), index=False)
+
+    # --- Plotting Upside by Method, Horizon, and Projection Type ---
+    try:
+        import seaborn as sns
+        # Only plot if there is enough data
+        if not dcf_estimates.empty and 'upside' in dcf_estimates.columns:
+            df_upside = dcf_estimates.copy()
+            horizons = sorted(df_upside['horizon'].unique())
+            proj_types = sorted(df_upside['proj_type'].unique())
+            fig, axes = plt.subplots(2, 2, figsize=(14, 10), sharey=True)
+            for i, horizon in enumerate(horizons):
+                for j, proj_type in enumerate(proj_types):
+                    if i < axes.shape[0] and j < axes.shape[1]:
+                        ax = axes[i, j]
+                        subset = df_upside[(df_upside['horizon'] == horizon) & (df_upside['proj_type'] == proj_type)]
+                        if not subset.empty:
+                            sns.barplot(
+                                data=subset,
+                                x='method_label',
+                                y='upside',
+                                hue='method_label',
+                                ax=ax,
+                                palette='viridis',
+                                legend=False
+                            )
+                        ax.set_title(f'Horizon: {horizon} yrs | Proj: {proj_type}')
+                        ax.set_xlabel('Method')
+                        ax.set_ylabel('Upside (%)' if j == 0 else '')
+                        ax.set_ylim(0, 100)  
+                        ax.tick_params(axis='x', rotation=20)
+            plt.tight_layout()
+            plot_path = os.path.join(output_folder, "dcf_upside_methods.png")
+            plt.savefig(plot_path)
+            # Optionally show plot interactively if running in a notebook or interactive session
+            # plt.show()
+    except Exception as e:
+        print(f"Warning: Could not generate upside plot: {e}")
+
+    plot_fcff_components(df_hist, output_folder)
 
 if __name__ == "__main__":
     main()

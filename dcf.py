@@ -4,6 +4,8 @@ from typing import Tuple, List, Dict
 import yfinance as yf
 import matplotlib.pyplot as plt
 import debugpy
+from datetime import datetime, timedelta
+import os  
 
 """
 import debugpy
@@ -11,6 +13,99 @@ debugpy.listen(("localhost", 5682))  # You can use any open port, e.g., 5678
 print("Waiting for debugger attach...")
 debugpy.wait_for_client()  # This will pause execution until you attach the debugger
 """
+
+
+# --- New functions for beta estimation ---
+def get_country_index(ticker):
+    """
+    Returns a recommended major index ticker for beta calculation based on the company's country.
+    Uses yfinance to fetch the country from ticker.info.
+    """
+    country_index_map = {
+        "United States": "^GSPC",      # S&P 500
+        "Denmark": "^OMXC25",          # OMX Copenhagen 25
+        "Sweden": "^OMXS30",           # OMX Stockholm 30
+        "Norway": "^OBX",              # Oslo OBX
+        "Finland": "^OMXH25",          # OMX Helsinki 25
+        "Germany": "^GDAXI",           # DAX
+        "France": "^FCHI",             # CAC 40
+        "United Kingdom": "^FTSE",     # FTSE 100
+        "Netherlands": "^AEX",         # AEX
+        "Switzerland": "^SSMI",        # SMI
+        "Italy": "FTSEMIB.MI",         # FTSE MIB
+        "Spain": "^IBEX",              # IBEX 35
+        "Japan": "^N225",              # Nikkei 225
+        "China": "000001.SS",          # SSE Composite
+        "Hong Kong": "^HSI",           # Hang Seng
+        "Canada": "^GSPTSE",           # S&P/TSX
+        "Australia": "^AXJO",          # ASX 200
+        # Add more as needed
+    }
+    try:
+        info = yf.Ticker(ticker).info
+        country = info.get("country", None)
+        if country is None:
+            print(f"Could not determine country for {ticker}.")
+            return None
+        index = country_index_map.get(country, None)
+        if index is None:
+            print(f"No index mapping found for country: {country}")
+        return index
+    except Exception as e:
+        print(f"Error fetching info for {ticker}: {e}")
+        return None
+
+def estimate_beta_against_index(ticker, period_years=5, plot=False, plot_path=None):
+    """
+    Estimate beta for a stock against its local major index.
+    """
+    index_ticker = get_country_index(ticker)
+    if index_ticker is None:
+        raise ValueError(f"Could not determine index for ticker {ticker}.")
+    end_date = datetime.today()
+    start_date = end_date - timedelta(days=period_years * 365)
+    
+    # Download adjusted close prices
+    data = yf.download([ticker, index_ticker], start=start_date, end=end_date, auto_adjust=True, progress=False)
+    if 'Close' not in data.columns:
+        raise ValueError("'Close' not found in downloaded data. Data may be empty or ticker symbols may be incorrect.")
+    close = data['Close'].dropna()
+    if ticker not in close.columns or index_ticker not in close.columns:
+        raise ValueError(f"One or both tickers not found in 'Close': {ticker}, {index_ticker}")
+    
+    # Calculate daily returns
+    returns = close.pct_change().dropna()
+    stock_returns = returns[ticker]
+    index_returns = returns[index_ticker]
+    
+    # Calculate covariance and variance
+    cov = stock_returns.cov(index_returns)
+    var = index_returns.var()
+    
+    # Beta calculation
+    beta_est = cov / var
+
+    # Plot if requested
+    if plot or plot_path:
+        plt.figure(figsize=(8, 5))
+        plt.scatter(index_returns, stock_returns, alpha=0.5, label='Daily returns')
+        # Regression line
+        m, b = np.polyfit(index_returns, stock_returns, 1)
+        plt.plot(index_returns, m * index_returns + b, color='red', label=f'Fit: y={m:.2f}x+{b:.2e}')
+        plt.title(f"Beta estimation for {ticker} vs {index_ticker}\nBeta ≈ {beta_est:.3f}")
+        plt.xlabel(f"{index_ticker} daily returns")
+        plt.ylabel(f"{ticker} daily returns")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        if plot_path:
+            plt.savefig(plot_path)
+        if plot:
+            plt.show()
+        plt.close()
+    
+    return beta_est
+
 
 def compute_terminal_value(last_fcf: float, g: float, r: float) -> float:
     if r <= g:
@@ -23,44 +118,147 @@ def discount_cash_flows(cash_flows: List[float], discount_rate: float) -> List[f
         discounted.append(cf / ((1 + discount_rate) ** t))
     return discounted
 
-def estimate_wacc(ticker_symbol,
-                  cost_of_debt = 0.0253,   # e.g. 0.045 for 4.5%
-                  cost_of_equity = 0.12  # e.g. 0.09 for 9.0%
-                 ):
+def get_cost_of_equity(
+    ticker: str,
+    risk_free_rate: float = 0.045,
+    equity_premium: float = 0.0547
+) -> float:
+    """
+    Calculate cost of equity using CAPM and estimated beta.
+    Args:
+        ticker: Stock ticker symbol (str)
+        risk_free_rate: Risk-free rate (decimal)
+        equity_premium: Expected market premium (decimal)
+    Returns:
+        Cost of equity (decimal)
+    """
+    # Use custom beta estimation instead of yfinance beta
+    beta = estimate_beta_against_index(ticker, period_years=5, plot=False)
+    if beta is None:
+        raise ValueError(f"Beta not available for ticker {ticker}")
+    return risk_free_rate + beta * equity_premium
+
+
+def estimate_cost_of_debt(df_hist: pd.DataFrame, min_pre_tax: float = 0.04, plot: bool = True, plot_filename: str = "cost_of_debt.png") -> float:
+    """
+    Estimate cost of debt from historical data and optionally plot it.
+
+    Args:
+        df (pd.DataFrame): Must include 'Interest Expense', 'Total Debt', and 'effective_tax_rate'.
+        min_pre_tax (float): Minimum pre-tax cost of debt.
+        plot (bool): If True, save a dual-axis plot of cost of debt and total debt to output folder.
+        plot_filename (str): Name of the plot file to save.
+
+    Returns:
+        float: Final conservative estimate of after-tax cost of debt.
+    """
+    df = df_hist.copy()
+
+    # Calculate cost of debt
+    df["Cost of Debt (pre-tax)"] = (
+        df["Interest Expense"] / df["Total Debt"]
+    )
+
+    df["Cost of Debt (after-tax)"] = (
+        df["Cost of Debt (pre-tax)"] * (1 - df["effective_tax_rate"])
+    )
+
+    # Drop NaNs
+    df.dropna(subset=["Cost of Debt (after-tax)", "Total Debt"], inplace=True)
+
+    if df.empty:
+        raise ValueError("No valid rows to compute cost of debt.")
+
+    # Compute average and current after-tax cost of debt
+    avg_cod = df["Cost of Debt (after-tax)"].mean()
+    current_cod = df.iloc[0]["Cost of Debt (after-tax)"]
+
+    # Plot if requested
+    if plot:
+        output_dir = os.path.dirname(plot_filename)
+        os.makedirs(output_dir, exist_ok=True)
+        plot_path = plot_filename
+
+        fig, ax1 = plt.subplots(figsize=(8, 5))
+
+        x = df.index  # Use index for x-axis
+
+        ax2 = ax1.twinx()
+        ax1.plot(x, df["Cost of Debt (after-tax)"], label="After-tax Cost of Debt", linestyle=":", color="green")
+        ax1.plot(x, df["Cost of Debt (pre-tax)"], label="Pre-tax Cost of Debt", linestyle="--", color="orange")
+        ax2.plot(x, df["Total Debt"], label="Total Debt", color="blue")
+
+        ax1.set_xlabel("Period")
+        ax1.set_ylabel("Cost of Debt")
+        ax2.set_ylabel("Total Debt")
+        ax2.set_ylim(0, df["Total Debt"].max() * 1.1)  # Set y-limits for total debt
+        ax1.set_title("Estimated Cost of Debt and Total Debt Over Time")
+        ax1.legend(loc="upper left")
+        ax2.legend(loc="upper right")
+
+        plt.tight_layout()
+        plt.savefig(plot_path)
+        plt.close()
+
+    return round(max(avg_cod, current_cod, min_pre_tax*(1-df.iloc[0]["effective_tax_rate"])), 4)
+
+def estimate_wacc(
+    df_hist,
+    cost_of_debt=0.0253,
+    cost_of_equity=0.12,
+    ticker: str = None,
+    risk_free_rate: float = 0.045,
+    equity_premium: float = 0.0547,
+    beta_plot_path: str = None
+):
     """
     Estimate WACC by:
-      1. Pulling average Debt & Equity from the last 2 years' balance sheet
-      2. Taking cost_of_debt and cost_of_equity as given
+      1. Using the last observation in df_hist for Total Debt and Equity
+      2. Taking cost_of_debt and cost_of_equity as given, or fetching cost_of_equity using CAPM if ticker is provided
       3. Computing weights and WACC, plus a breakdown chart
+    Args:
+        df_hist: DataFrame with at least 'Total Debt' and 'Equity' columns (last row used)
+        cost_of_debt: Cost of debt (as decimal)
+        cost_of_equity: Cost of equity (as decimal)
+        ticker: Stock ticker symbol (optional, if provided fetches cost_of_equity using CAPM)
+        risk_free_rate: Risk-free rate (decimal)
+        equity_premium: Expected market premium (decimal)
+    Returns:
+        dict with WACC breakdown
     """
-    # 1) Fetch and prepare balance-sheet data
-    tk = yf.Ticker(ticker_symbol)
-    bs = tk.balance_sheet.transpose().iloc[:2]
-    bs['Total_Debt'] = bs.get('Short Long Term Debt', 0) + bs.get('Long Term Debt', 0)
-    bs['Equity']     = bs['Total Assets'] - bs['Total_Debt'] - bs.get('Minority Interest', 0)
+    beta = None
+    if ticker is not None:
+        beta = estimate_beta_against_index(ticker, period_years=5, plot=False, plot_path=beta_plot_path)
+        cost_of_equity = risk_free_rate + beta * equity_premium
+    print(f"Using cost of equity: {cost_of_equity:.4f} (beta={beta:.4f})")
+    # Get last observation for Total Debt and Equity
+    total_debt = df_hist['Total Debt'].dropna().iloc[-1]
+    equity = df_hist['Total Assets'].dropna().iloc[-1] - total_debt
 
-    D_avg = bs['Total_Debt'].mean()
-    E_avg = bs['Equity'].mean()
-    V     = D_avg + E_avg
-    w_d   = D_avg / V
-    w_e   = E_avg / V
+    D = total_debt
+    E = equity
+    V = D + E
+    w_d = D / V if V != 0 else 0
+    w_e = E / V if V != 0 else 0
 
-    # 2) Calculate WACC
+    # Calculate WACC
     debt_contrib   = w_d * cost_of_debt
     equity_contrib = w_e * cost_of_equity
     wacc = debt_contrib + equity_contrib
 
-    # 4) Return summary
     return {
-        'Debt (avg)':       D_avg,
-        'Equity (avg)':     E_avg,
+        'Debt (last)':       D,
+        'Equity (last)':     E,
         'w_d':              w_d,
         'w_e':              w_e,
         'r_d (input)':      cost_of_debt,
         'r_e (input)':      cost_of_equity,
         'Debt contrib':     debt_contrib,
         'Equity contrib':   equity_contrib,
-        'WACC':             wacc
+        'WACC':             wacc,
+        'beta':             beta,
+        'risk_free_rate':   risk_free_rate,
+        'equity_premium':   equity_premium
     }
 
 def run_dcf(
@@ -69,7 +267,6 @@ def run_dcf(
     terminal_growth: float,
     wacc: float,
     forecast_horizon: int = None,
-    FCF_col: str = "FCF",
     p_method: str = "cagr",
     number_shares: int = 1,
     share_price: float = 1.0
@@ -84,7 +281,6 @@ def run_dcf(
         terminal_growth: Terminal growth rate (as a decimal, e.g., 0.025 for 2.5%)
         wacc: Weighted Average Cost of Capital (as a decimal, e.g., 0.08 for 8%)
         forecast_horizon: Number of projected years to include in DCF (first x years). If None, uses all available projections.
-        FCF_col: Name of Free Cash Flow column in df.
         p_method: Projection method to filter on (e.g., "cagr").
         number_shares: Number of shares outstanding.
         share_price: Current share price for upside calculation.
@@ -95,15 +291,15 @@ def run_dcf(
     """
  
     # Filter projections by method and variable
-    proj_mask = (df_proj["method"] == p_method) & (df_proj["variable"] == FCF_col)
+    proj_mask = (df_proj["method"] == p_method) & (df_proj["variable"] == "FCFF")
     df_proj_fcf = df_proj.loc[proj_mask, ["Year", 'value', "growth_rate"]].copy()
-    df_proj_fcf.rename(columns={'value': FCF_col}, inplace=True)
+    df_proj_fcf.rename(columns={'value': "FCFF"}, inplace=True)
     # Limit to forecast_horizon if specified
     if forecast_horizon is not None:
         df_proj_fcf = df_proj_fcf.iloc[:forecast_horizon]
 
     # Extract cash flows series
-    cash_flows = df_proj_fcf[FCF_col].copy().reset_index(drop=True)
+    cash_flows = df_proj_fcf["FCFF"].copy().reset_index(drop=True)
 
     # Calculate growth series and last projected FCF
     growth_series = cash_flows.pct_change(fill_method=None).dropna()
@@ -133,7 +329,7 @@ def run_dcf(
     # Add terminal value as a separate row
     terminal_row = {
         "Year": None,
-        FCF_col: terminal_val,
+        "FCFF": terminal_val,
         "growth_rate": terminal_growth,
         "PV": pv_terminal,
         "Discount Factor": terminal_discount_factor,
@@ -144,9 +340,9 @@ def run_dcf(
     # Build historical DataFrame for output
     df_hist_sub = df_hist.reset_index()
     df_hist_sub = df_hist_sub.rename(columns={"index": "Year"})
-    df_hist_sub = df_hist_sub[["Year", FCF_col, "ttm"]].copy()
+    df_hist_sub = df_hist_sub[["Year", "FCFF", "ttm"]].copy()
     df_hist_sub['Year'] = pd.to_datetime(df_hist_sub['Year']).dt.year
-    df_hist_sub["growth_rate"] = df_hist_sub[FCF_col].pct_change(fill_method=None).fillna(0)
+    df_hist_sub["growth_rate"] = df_hist_sub["FCFF"].pct_change(fill_method=None).fillna(0)
     df_hist_sub["growth_rate"] = df_hist_sub["growth_rate"].infer_objects(copy=False)
     df_hist_sub["PV"] = np.nan
     df_hist_sub["Discount Factor"] = np.nan
@@ -273,3 +469,5 @@ def perform_additional_sensitivity(
 
     
     return df_heat2
+
+

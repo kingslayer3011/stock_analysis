@@ -109,10 +109,19 @@ def project_cagr(series, last_year, projection_years, terminal_growth=None, conv
         })
     return projections
 
-def project_slope(series, last_year, projection_years, terminal_growth=None, converge_growth=False, last_value=None):
+def project_slope(
+    series, last_year, projection_years, terminal_growth=None, converge_growth=False,
+    last_value=None, plot_projections=False, variable=None, regression_plots_dir=None,
+    plot_regression_plots=True,  # <-- Add this parameter
+    **kwargs
+):
     """
     Projects values using regression slope, optionally converging to a terminal growth rate.
     last_value: Optionally specify the starting value for projections (default: last non-NA in series).
+    If plot_projections is True, saves a regression plot in regression_plots/ (or regression_plots_dir if provided).
+    variable: Name of the variable (for plot filename).
+    regression_plots_dir: Optional path to save regression plots.
+    plot_regression_plots: If False, disables saving regression plots even if plot_projections is True.
     """
     clean_series = series.dropna()
     if len(clean_series) < 2:
@@ -161,6 +170,34 @@ def project_slope(series, last_year, projection_years, terminal_growth=None, con
             projections[i]['growth_rate'] = growth_rate
             last_value = projected_value
 
+    # Plot regression if requested
+    if plot_projections and plot_regression_plots:
+        import matplotlib.pyplot as plt
+        import os
+        folder = regression_plots_dir if regression_plots_dir is not None else 'regression_plots'
+        os.makedirs(folder, exist_ok=True)
+        x = np.arange(len(clean_series))
+        y = clean_series.values
+        y_pred = slope * x + intercept
+        plt.figure(figsize=(7, 4))
+        plt.plot(x, y, 'o', label='Historical')
+        plt.plot(x, y_pred, '-', label='Regression line')
+        plt.title(f"Regression Slope Projection\n{variable if variable else ''}")
+        plt.xlabel('Time Index')
+        plt.ylabel(variable if variable else 'Value')
+        plt.legend()
+        plt.grid(True)
+        plt.ylim(bottom=0)
+        # Add slope annotation box
+        slope_text = f"Slope: {slope:.4g}"
+        plt.gca().text(0.98, 0.02, slope_text, transform=plt.gca().transAxes,
+                      fontsize=10, verticalalignment='bottom', horizontalalignment='right',
+                      bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
+        fname = f"{variable if variable else 'variable'}_regression.png"
+        fname = fname.replace('/', '_').replace('\\', '_')
+        plt.tight_layout()
+        plt.savefig(os.path.join(folder, fname))
+        plt.close()
     return projections
 
 def project_man_inp_growth(series, last_year, projection_years, man_inp_growth, terminal_growth=None, converge_growth=False, last_value=None):
@@ -186,12 +223,17 @@ def project_man_inp_growth(series, last_year, projection_years, man_inp_growth, 
             'parameter_value': man_inp_growth,
             'growth_rate': growth_rate
         })
+
     return projections
 
-def project_all(df_hist, projection_years, terminal_growth=None, converge_growth=False, man_inp_growth=None):
+def project_all(
+    df_hist, projection_years, terminal_growth=None, converge_growth=False, man_inp_growth=None,
+    plot_projections=False, regression_plots_dir=None, plot_regression_plots=True
+):
     """
     Projects every column in df_hist using CAGR, regression‐slope, and manual‐input methods,
     but excludes any 'TTM' row so that only full‐year data is used.
+    plot_regression_plots: If False, disables saving regression plots even if plot_projections is True.
     """
     # 1) Filter out any non‐year index (e.g. 'TTM') – assumes full years are datetime‐like or ints
     #    We coerce to datetime, drop failures (like 'TTM'), then extract unique years.
@@ -235,7 +277,11 @@ def project_all(df_hist, projection_years, terminal_growth=None, converge_growth
             results.append({'variable': col, **p})
 
         # Regression‐slope projections
-        slope_proj = project_slope(s, last_year, projection_years, terminal_growth, converge_growth, last_value=last_value)
+        slope_proj = project_slope(
+            s, last_year, projection_years, terminal_growth, converge_growth,
+            last_value=last_value, plot_projections=plot_projections, variable=col,
+            regression_plots_dir=regression_plots_dir, plot_regression_plots=plot_regression_plots
+        )
         for p in slope_proj:
             results.append({'variable': col, **p})
 
@@ -299,7 +345,6 @@ def plot_variable_projection(ticker, variable, df_hist, df_proj, output_folder):
     filename = os.path.join(output_folder, f"{ticker}_{safe_var}_projection.png")
     plt.savefig(filename)
     plt.close()
-    print(f"Saved plot: {filename}")
 
 def plot_all_variables(ticker, df_hist, df_proj, output_folder):
     variables = [
@@ -342,6 +387,6 @@ def plot_projected_fcf_growth_rates(ticker, df_proj, output_folder, terminal_gro
     filename = os.path.join(output_folder, f"{ticker}_fcf_growth_rates.png")
     plt.savefig(filename)
     plt.close()
-    print(f"Saved plot: {filename}")
+
 
 

@@ -4,6 +4,8 @@ import numpy as np
 from typing import Tuple, Optional, List, Dict, Any
 from functools import reduce
 import logging
+import matplotlib.pyplot as plt
+import os
 
 """
 import debugpy
@@ -27,19 +29,16 @@ def calculate_fcff(
     df: pd.Series
 ) -> float:
     """
-    Calculate Free Cash Flow to the Firm (FCFF) using the standard formula:
-    FCFF = EBIT × (1 – effective tax rate) + D&A – CapEx – Change in NWC
-    Expects a row (Series) with keys: 'EBITDA', 'Depreciation And Amortization', 'CapEx', 'Delta WC', 'Tax Provision', 'Pretax Income'.
+    Calculate Free Cash Flow to the Firm (FCFF) using the formula:
+    FCFF = EBIT - Tax Provision + D&A – CapEx – Change in NWC
+    Expects a row (Series) with keys: 'EBIT', 'Depreciation And Amortization', 'CapEx', 'Delta WC', 'Tax Provision'.
     """
-    ebit = df.get("EBITDA", np.nan)
+    ebit = df.get("EBIT", np.nan)
     depreciation_amortization = df.get("Depreciation And Amortization", np.nan)
     capex = df.get("CapEx", np.nan)
     change_in_nwc = df.get("Delta WC", np.nan)
-    # Use effective_tax_rate from df if present, else fallback to 0.25
-    effective_tax_rate = df.get("effective_tax_rate", 0.25)
-    if pd.isna(effective_tax_rate) or effective_tax_rate < 0 or effective_tax_rate > 1:
-        effective_tax_rate = 0.25
-    return ebit * (1 - effective_tax_rate) + depreciation_amortization - capex - change_in_nwc
+    tax_provision = df.get("Tax Provision", np.nan)
+    return ebit - tax_provision + depreciation_amortization - capex - change_in_nwc
 
 def calculate_fcfe(
     df: pd.Series
@@ -47,7 +46,7 @@ def calculate_fcfe(
     """
     Calculate Free Cash Flow to Equity (FCFE) using the formula:
     FCFE = FCFF + Change in Debt
-    Expects a row (Series) with keys: 'EBITDA', 'Depreciation And Amortization', 'CapEx', 'Delta WC', 'Change in Debt', 'Tax Provision', 'Pretax Income'.
+    Expects a row (Series) with keys: 'EBIT', 'Depreciation And Amortization', 'CapEx', 'Delta WC', 'Tax Provision', 'Change in Debt'.
     """
     fcff = calculate_fcff(df)
     change_in_debt = df.get("Change in Debt", np.nan)
@@ -58,13 +57,13 @@ def calculate_reinvestment_rate(
     depreciation: float,
     delta_wc: float,
     ebit: float,
-    tax_rate: float,
+    tax_provision: float,
 ) -> float:
     """Calculate the reinvestment rate using the formula:
     Reinvestment Rate = (CapEx + Depreciation + ΔWC) / NOPAT
-    where NOPAT = EBIT × (1 - tax rate)
+    where NOPAT = EBIT - Tax Provision
     """
-    nopat = ebit * (1 - tax_rate)
+    nopat = ebit - tax_provision
     return safe_divide(capex + depreciation + delta_wc, nopat)
 
 
@@ -78,22 +77,31 @@ def safe_value(df, row):
 
 
 def build_ttm_row(raw_income_ttm, raw_cashflow_ttm, raw_balance_ttm, safe_value, df):
+    ebitda = safe_value(raw_income_ttm, "EBITDA")
+    ebit = safe_value(raw_income_ttm, "EBIT")
+    depreciation_amortization = safe_value(raw_cashflow_ttm, "Depreciation And Amortization")
+    if pd.isna(depreciation_amortization) and pd.notna(ebitda) and pd.notna(ebit):
+        depreciation_amortization = ebitda - ebit
+
     ttm_row = {
         "Revenue":     safe_value(raw_income_ttm, "Total Revenue"),
-        "EBITDA":      safe_value(raw_income_ttm, "EBITDA"),
+        "EBITDA":      ebitda,
+        "EBIT":        ebit,
         "Net Income":  safe_value(raw_income_ttm, "Net Income"),
         "FCF":         safe_value(raw_cashflow_ttm, "Free Cash Flow"),
-        "Depreciation And Amortization": safe_value(raw_cashflow_ttm, "Depreciation And Amortization"),
+        "Depreciation And Amortization": depreciation_amortization,
         "Total Debt":  safe_value(raw_balance_ttm, "Total Debt"),
         "Net Debt":    np.nan,  # will set below
         "Cash":        safe_value(raw_balance_ttm, "Cash And Cash Equivalents"),
-        "CapEx":       safe_value(raw_cashflow_ttm, "Capital Expenditure"),
+        "CapEx": abs(safe_value(raw_cashflow_ttm, "Capital Expenditure")) if pd.notna(safe_value(raw_cashflow_ttm, "Capital Expenditure")) else np.nan,
         "Operating Cash Flow": safe_value(raw_cashflow_ttm, "Operating Cash Flow"),
         "Current Assets": safe_value(raw_balance_ttm, "Current Assets"),
         "Current Liabilities": safe_value(raw_balance_ttm, "Current Liabilities"),
         "Delta WC":    safe_value(raw_cashflow_ttm, "Change In Working Capital"),
         "Tax Provision": safe_value(raw_income_ttm, "Tax Provision"),
-        "Pretax Income": safe_value(raw_income_ttm, "Pretax Income")
+        "Pretax Income": safe_value(raw_income_ttm, "Pretax Income"),
+        "Total Assets": safe_value(raw_balance_ttm, "Total Assets"),
+        "Interest Expense": safe_value(raw_income_ttm, "Interest Expense")  # <-- Added
     }
 
     # Set Net Debt: use value if not nan, else fallback to Total Debt - Cash
@@ -151,9 +159,9 @@ def get_historical_data(
         logger = logging.getLogger("data_fetcher")
     if fields is None:
         fields = [
-            "Revenue", "EBITDA", "Net Income", "FCF", "Depreciation And Amortization", "Total Debt", "Cash",
+            "Revenue", "EBITDA", "EBIT", "Net Income", "FCF", "Depreciation And Amortization", "Total Debt", "Cash",
             "CapEx", "Operating Cash Flow", "Net Debt", "Current Assets", "Current Liabilities", "Delta WC",
-            "Tax Provision", "Pretax Income"
+            "Tax Provision", "Pretax Income", "Total Assets", "Interest Expense"  # <-- Added here
         ]
 
     def build_row(raw_dict, index=None):
@@ -175,6 +183,7 @@ def get_historical_data(
     # Historical lines (only extract what is actually used below)
     hist_revenue    = safe_row(raw_income, "Total Revenue")
     hist_ebitda     = safe_row(raw_income, "EBITDA")
+    hist_ebit       = safe_row(raw_income, "EBIT")
     hist_income     = safe_row(raw_income, "Net Income")
     hist_fcf        = safe_row(raw_cashflow, "Free Cash Flow")
     hist_ocf        = safe_row(raw_cashflow, "Operating Cash Flow")
@@ -185,12 +194,17 @@ def get_historical_data(
     hist_depr_amort = safe_row(raw_cashflow, "Depreciation And Amortization")
     hist_debt       = safe_row(raw_balance, "Total Debt")
     hist_cash       = safe_row(raw_balance, "Cash And Cash Equivalents")
+    hist_total_assets = safe_row(raw_balance, "Total Assets")
     hist_delta_wc   = safe_row(raw_cashflow, "Change In Working Capital")
     hist_tax_provision = safe_row(raw_income, "Tax Provision")
     hist_pretax_income = safe_row(raw_income, "Pretax Income")
+    hist_interest_expense = safe_row(raw_income, "Interest Expense")  # <-- Added here
 
     # Create unified index, converting all indices to string dates (YYYY-MM-DD) if they are Timestamps
-    indices = [s.index for s in [hist_revenue, hist_ebitda, hist_income, hist_fcf, hist_ocf, hist_net_debt, hist_capex, hist_depr_amort, hist_debt, hist_cash] if s is not None]
+    indices = [s.index for s in [
+        hist_revenue, hist_ebitda, hist_ebit, hist_income, hist_fcf, hist_ocf, hist_net_debt, hist_capex,
+        hist_depr_amort, hist_debt, hist_cash, hist_total_assets, hist_interest_expense  # <-- Added here
+    ] if s is not None]
     def to_str_date(idx):
         if isinstance(idx, pd.Timestamp):
             return idx.strftime("%Y-%m-%d")
@@ -211,22 +225,31 @@ def get_historical_data(
             total_debt = hist_debt[period] if hist_debt is not None and period in hist_debt else np.nan
             cash = hist_cash[period] if hist_cash is not None and period in hist_cash else np.nan
             net_debt_val = total_debt - cash if pd.notna(total_debt) and pd.notna(cash) else np.nan
+        ebitda = hist_ebitda[period] if hist_ebitda is not None and period in hist_ebitda else np.nan
+        ebit = hist_ebit[period] if hist_ebit is not None and period in hist_ebit else np.nan
+        depreciation_amortization = hist_depr_amort[period] if hist_depr_amort is not None and period in hist_depr_amort else np.nan
+        if pd.isna(depreciation_amortization) and pd.notna(ebitda) and pd.notna(ebit):
+            depreciation_amortization = ebitda - ebit
+
         raw_dict = {
             "Revenue": hist_revenue[period] if hist_revenue is not None and period in hist_revenue else np.nan,
-            "EBITDA": hist_ebitda[period] if hist_ebitda is not None and period in hist_ebitda else np.nan,
+            "EBITDA": ebitda,
+            "EBIT": ebit,
             "Net Income": hist_income[period] if hist_income is not None and period in hist_income else np.nan,
             "FCF": hist_fcf[period] if hist_fcf is not None and period in hist_fcf else np.nan,
-            "Depreciation And Amortization": hist_depr_amort[period] if hist_depr_amort is not None and period in hist_depr_amort else np.nan,
+            "Depreciation And Amortization": depreciation_amortization,
             "Total Debt": hist_debt[period] if hist_debt is not None and period in hist_debt else np.nan,
             "Cash": hist_cash[period] if hist_cash is not None and period in hist_cash else np.nan,
-            "CapEx": hist_capex[period] if hist_capex is not None and period in hist_capex else np.nan,
+            "CapEx": abs(hist_capex[period]) if hist_capex is not None and period in hist_capex and pd.notna(hist_capex[period]) else np.nan,
             "Operating Cash Flow": hist_ocf[period] if hist_ocf is not None and period in hist_ocf else np.nan,
             "Net Debt": net_debt_val,
             "Current Assets": hist_cur_assets[period] if hist_cur_assets is not None and period in hist_cur_assets else np.nan,
             "Current Liabilities": hist_cur_liab[period] if hist_cur_liab is not None and period in hist_cur_liab else np.nan,
             "Delta WC": hist_delta_wc[period] if hist_delta_wc is not None and period in hist_delta_wc else np.nan,
             "Tax Provision": hist_tax_provision[period] if hist_tax_provision is not None and period in hist_tax_provision else np.nan,
-            "Pretax Income": hist_pretax_income[period] if hist_pretax_income is not None and period in hist_pretax_income else np.nan
+            "Pretax Income": hist_pretax_income[period] if hist_pretax_income is not None and period in hist_pretax_income else np.nan,
+            "Total Assets": hist_total_assets[period] if hist_total_assets is not None and period in hist_total_assets else np.nan,
+            "Interest Expense": hist_interest_expense[period] if hist_interest_expense is not None and period in hist_interest_expense else np.nan  # <-- Added here
         }
         df_rows.append(build_row(raw_dict, index=period))
 
@@ -310,8 +333,8 @@ def get_historical_data(
             row.get("CapEx", np.nan),
             row.get("Depreciation And Amortization", np.nan),
             row.get("Delta WC", np.nan),
-            row.get("EBITDA", np.nan),
-            row.get("effective_tax_rate", 0.25)
+            row.get("EBIT", np.nan),
+            row.get("Tax Provision", np.nan)
         ), axis=1
     )
 
@@ -321,4 +344,48 @@ def get_historical_data(
     full_df["FCFE"] = full_df.apply(lambda row: calculate_fcfe(row), axis=1)
 
     return full_df, valuation_info
+
+def plot_fcff_components(df_hist: pd.DataFrame, output_folder: str = None):
+    """
+    Plot only the indexed (first year = 100%) FCFF components.
+    Saves the figure to output_folder if provided, else to current directory.
+    """
+    components = [
+        "EBITDA",
+        "Depreciation And Amortization",
+        "CapEx",
+        "Delta WC",
+        "effective_tax_rate"
+    ]
+    # Filter only historical (not TTM) rows
+    df = df_hist[df_hist['ttm'] == 0].copy()
+    df = df.sort_index()
+    if df.empty:
+        print("No historical data to plot.")
+        return
+    years = df.index.year
+
+    fig, ax = plt.subplots(figsize=(7, 6))
+
+    # Indexed to 100% at first year
+    for comp in components:
+        if comp in df.columns:
+            base = df[comp].iloc[0]
+            if pd.notna(base) and base != 0:
+                indexed = df[comp] / base * 100
+                ax.plot(years, indexed, marker='o', label=comp)
+    ax.set_title("FCFF Components (Indexed, First Year = 100%)")
+    ax.set_xlabel("Year")
+    ax.legend()
+    ax.grid(True)
+
+    plt.tight_layout()
+    if output_folder is not None:
+        os.makedirs(output_folder, exist_ok=True)
+        plot_path = os.path.join(output_folder, "fcff_components_indexed.png")
+        plt.savefig(plot_path)
+        plt.close(fig)
+    else:
+        plt.show()
+        plt.close(fig)
 
