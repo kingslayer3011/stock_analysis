@@ -1,0 +1,17 @@
+Gordon Growth Model Value for BAKKA.OL: 592.87
+D1 (next dividend): 17.52
+Required Return: 0.0628
+Growth Rate: 0.3097
+Last Dividend: 13.37
+Method: multi-stage, Periods: 5
+Current Price: 453.00
+Potential Upside: 30.88%
+Analyst Forward Dividend: 13.37
+Your Projected D1: 17.52
+Difference: 4.15 (31.01%)
+Return on Equity (ROE): 2.12%
+Cost of Equity (Required Return): 6.28%
+Debt/Equity Ratio: 36.33
+Interest Coverage Ratio: N/A
+WARNING: ROE is less than the required return (cost of equity). Long-term growth may be questionable.
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

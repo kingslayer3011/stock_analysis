@@ -1,0 +1,836 @@
+Year,variable,method,value,parameter_value,growth_rate
+2025,FCFF,cagr,,,
+2026,FCFF,cagr,,,
+2027,FCFF,cagr,,,
+2028,FCFF,cagr,,,
+2029,FCFF,cagr,,,
+2030,FCFF,cagr,,,
+2031,FCFF,cagr,,,
+2032,FCFF,cagr,,,
+2033,FCFF,cagr,,,
+2034,FCFF,cagr,,,
+2025,FCFF,slope,1520666667.0,940000000.0,19.28
+2026,FCFF,slope,2460666667.0,940000000.0,0.62
+2027,FCFF,slope,3400666667.0,940000000.0,0.38
+2028,FCFF,slope,4340666667.0,940000000.0,0.28
+2029,FCFF,slope,5280666667.0,940000000.0,0.22
+2030,FCFF,slope,6220666667.0,940000000.0,0.18
+2031,FCFF,slope,7160666667.0,940000000.0,0.15
+2032,FCFF,slope,8100666667.0,940000000.0,0.13
+2033,FCFF,slope,9040666667.0,940000000.0,0.12
+2034,FCFF,slope,9980666667.0,940000000.0,0.1
+2025,FCFF,man_inp_growth,82500000.0,0.1,0.1
+2026,FCFF,man_inp_growth,90750000.0,0.1,0.1
+2027,FCFF,man_inp_growth,99825000.0,0.1,0.1
+2028,FCFF,man_inp_growth,109807500.0,0.1,0.1
+2029,FCFF,man_inp_growth,120788250.0,0.1,0.1
+2030,FCFF,man_inp_growth,132867075.0,0.1,0.1
+2031,FCFF,man_inp_growth,146153783.0,0.1,0.1
+2032,FCFF,man_inp_growth,160769161.0,0.1,0.1
+2033,FCFF,man_inp_growth,176846077.0,0.1,0.1
+2034,FCFF,man_inp_growth,194530685.0,0.1,0.1
+2025,FCF,cagr,2128650000.0,0.15,0.15
+2026,FCF,cagr,2447947500.0,0.15,0.15
+2027,FCF,cagr,2815139625.0,0.15,0.15
+2028,FCF,cagr,3237410569.0,0.15,0.15
+2029,FCF,cagr,3723022154.0,0.15,0.15
+2030,FCF,cagr,4281475477.0,0.15,0.15
+2031,FCF,cagr,4923696799.0,0.15,0.15
+2032,FCF,cagr,5662251319.0,0.15,0.15
+2033,FCF,cagr,6511589016.0,0.15,0.15
+2034,FCF,cagr,7488327369.0,0.15,0.15
+2025,FCF,slope,1184500000.0,432000000.0,-0.36
+2026,FCF,slope,1616500000.0,432000000.0,0.36
+2027,FCF,slope,2048500000.0,432000000.0,0.27
+2028,FCF,slope,2480500000.0,432000000.0,0.21
+2029,FCF,slope,2912500000.0,432000000.0,0.17
+2030,FCF,slope,3344500000.0,432000000.0,0.15
+2031,FCF,slope,3776500000.0,432000000.0,0.13
+2032,FCF,slope,4208500000.0,432000000.0,0.11
+2033,FCF,slope,4640500000.0,432000000.0,0.1
+2034,FCF,slope,5072500000.0,432000000.0,0.09
+2025,FCF,man_inp_growth,2036100000.0,0.1,0.1
+2026,FCF,man_inp_growth,2239710000.0,0.1,0.1
+2027,FCF,man_inp_growth,2463681000.0,0.1,0.1
+2028,FCF,man_inp_growth,2710049100.0,0.1,0.1
+2029,FCF,man_inp_growth,2981054010.0,0.1,0.1
+2030,FCF,man_inp_growth,3279159411.0,0.1,0.1
+2031,FCF,man_inp_growth,3607075352.0,0.1,0.1
+2032,FCF,man_inp_growth,3967782887.0,0.1,0.1
+2033,FCF,man_inp_growth,4364561176.0,0.1,0.1
+2034,FCF,man_inp_growth,4801017294.0,0.1,0.1
+2025,EBIT,cagr,1128150000.0,0.15,0.15
+2026,EBIT,cagr,1297372500.0,0.15,0.15
+2027,EBIT,cagr,1491978375.0,0.15,0.15
+2028,EBIT,cagr,1715775131.0,0.15,0.15
+2029,EBIT,cagr,1973141401.0,0.15,0.15
+2030,EBIT,cagr,2269112611.0,0.15,0.15
+2031,EBIT,cagr,2609479503.0,0.15,0.15
+2032,EBIT,cagr,3000901428.0,0.15,0.15
+2033,EBIT,cagr,3451036642.0,0.15,0.15
+2034,EBIT,cagr,3968692139.0,0.15,0.15
+2025,EBIT,slope,929500000.0,383900000.0,-0.05
+2026,EBIT,slope,1313400000.0,383900000.0,0.41
+2027,EBIT,slope,1697300000.0,383900000.0,0.29
+2028,EBIT,slope,2081200000.0,383900000.0,0.23
+2029,EBIT,slope,2465100000.0,383900000.0,0.18
+2030,EBIT,slope,2849000000.0,383900000.0,0.16
+2031,EBIT,slope,3232900000.0,383900000.0,0.13
+2032,EBIT,slope,3616800000.0,383900000.0,0.12
+2033,EBIT,slope,4000700000.0,383900000.0,0.11
+2034,EBIT,slope,4384600000.0,383900000.0,0.1
+2025,EBIT,man_inp_growth,1079100000.0,0.1,0.1
+2026,EBIT,man_inp_growth,1187010000.0,0.1,0.1
+2027,EBIT,man_inp_growth,1305711000.0,0.1,0.1
+2028,EBIT,man_inp_growth,1436282100.0,0.1,0.1
+2029,EBIT,man_inp_growth,1579910310.0,0.1,0.1
+2030,EBIT,man_inp_growth,1737901341.0,0.1,0.1
+2031,EBIT,man_inp_growth,1911691475.0,0.1,0.1
+2032,EBIT,man_inp_growth,2102860623.0,0.1,0.1
+2033,EBIT,man_inp_growth,2313146685.0,0.1,0.1
+2034,EBIT,man_inp_growth,2544461353.0,0.1,0.1
+2025,CapEx,cagr,1407793567.0,0.11,0.11
+2026,CapEx,cagr,1567945195.0,0.11,0.11
+2027,CapEx,cagr,1746315789.0,0.11,0.11
+2028,CapEx,cagr,1944977954.0,0.11,0.11
+2029,CapEx,cagr,2166240072.0,0.11,0.11
+2030,CapEx,cagr,2412673130.0,0.11,0.11
+2031,CapEx,cagr,2687140594.0,0.11,0.11
+2032,CapEx,cagr,2992831678.0,0.11,0.11
+2033,CapEx,cagr,3333298404.0,0.11,0.11
+2034,CapEx,cagr,3712496873.0,0.11,0.11
+2025,CapEx,slope,1183000000.0,103000000.0,-0.06
+2026,CapEx,slope,1286000000.0,103000000.0,0.09
+2027,CapEx,slope,1389000000.0,103000000.0,0.08
+2028,CapEx,slope,1492000000.0,103000000.0,0.07
+2029,CapEx,slope,1595000000.0,103000000.0,0.07
+2030,CapEx,slope,1698000000.0,103000000.0,0.06
+2031,CapEx,slope,1801000000.0,103000000.0,0.06
+2032,CapEx,slope,1904000000.0,103000000.0,0.06
+2033,CapEx,slope,2007000000.0,103000000.0,0.05
+2034,CapEx,slope,2110000000.0,103000000.0,0.05
+2025,CapEx,man_inp_growth,1390400000.0,0.1,0.1
+2026,CapEx,man_inp_growth,1529440000.0,0.1,0.1
+2027,CapEx,man_inp_growth,1682384000.0,0.1,0.1
+2028,CapEx,man_inp_growth,1850622400.0,0.1,0.1
+2029,CapEx,man_inp_growth,2035684640.0,0.1,0.1
+2030,CapEx,man_inp_growth,2239253104.0,0.1,0.1
+2031,CapEx,man_inp_growth,2463178414.0,0.1,0.1
+2032,CapEx,man_inp_growth,2709496256.0,0.1,0.1
+2033,CapEx,man_inp_growth,2980445881.0,0.1,0.1
+2034,CapEx,man_inp_growth,3278490470.0,0.1,0.1
+2025,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2026,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2027,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2028,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2029,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2030,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2031,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2032,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2033,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2034,Depreciation And Amortization,cagr,0.0,-0.04,-0.04
+2025,Depreciation And Amortization,slope,767500000.0,-65300000.0,
+2026,Depreciation And Amortization,slope,702200000.0,-65300000.0,-0.09
+2027,Depreciation And Amortization,slope,636900000.0,-65300000.0,-0.09
+2028,Depreciation And Amortization,slope,571600000.0,-65300000.0,-0.1
+2029,Depreciation And Amortization,slope,506300000.0,-65300000.0,-0.11
+2030,Depreciation And Amortization,slope,441000000.0,-65300000.0,-0.13
+2031,Depreciation And Amortization,slope,375700000.0,-65300000.0,-0.15
+2032,Depreciation And Amortization,slope,310400000.0,-65300000.0,-0.17
+2033,Depreciation And Amortization,slope,245100000.0,-65300000.0,-0.21
+2034,Depreciation And Amortization,slope,179800000.0,-65300000.0,-0.27
+2025,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2026,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2027,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2028,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2029,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2030,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2031,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2032,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2033,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2034,Depreciation And Amortization,man_inp_growth,0.0,0.1,0.1
+2025,Delta WC,cagr,,,
+2026,Delta WC,cagr,,,
+2027,Delta WC,cagr,,,
+2028,Delta WC,cagr,,,
+2029,Delta WC,cagr,,,
+2030,Delta WC,cagr,,,
+2031,Delta WC,cagr,,,
+2032,Delta WC,cagr,,,
+2033,Delta WC,cagr,,,
+2034,Delta WC,cagr,,,
+2025,Delta WC,slope,-94666667.0,-121500000.0,-0.84
+2026,Delta WC,slope,-216166667.0,-121500000.0,1.28
+2027,Delta WC,slope,-337666667.0,-121500000.0,0.56
+2028,Delta WC,slope,-459166667.0,-121500000.0,0.36
+2029,Delta WC,slope,-580666667.0,-121500000.0,0.26
+2030,Delta WC,slope,-702166667.0,-121500000.0,0.21
+2031,Delta WC,slope,-823666667.0,-121500000.0,0.17
+2032,Delta WC,slope,-945166667.0,-121500000.0,0.15
+2033,Delta WC,slope,-1066666667.0,-121500000.0,0.13
+2034,Delta WC,slope,-1188166667.0,-121500000.0,0.11
+2025,Delta WC,man_inp_growth,-661100000.0,0.1,0.1
+2026,Delta WC,man_inp_growth,-727210000.0,0.1,0.1
+2027,Delta WC,man_inp_growth,-799931000.0,0.1,0.1
+2028,Delta WC,man_inp_growth,-879924100.0,0.1,0.1
+2029,Delta WC,man_inp_growth,-967916510.0,0.1,0.1
+2030,Delta WC,man_inp_growth,-1064708161.0,0.1,0.1
+2031,Delta WC,man_inp_growth,-1171178977.0,0.1,0.1
+2032,Delta WC,man_inp_growth,-1288296875.0,0.1,0.1
+2033,Delta WC,man_inp_growth,-1417126562.0,0.1,0.1
+2034,Delta WC,man_inp_growth,-1558839219.0,0.1,0.1
+2025,Tax Provision,cagr,279450000.0,0.15,0.15
+2026,Tax Provision,cagr,321367500.0,0.15,0.15
+2027,Tax Provision,cagr,369572625.0,0.15,0.15
+2028,Tax Provision,cagr,425008519.0,0.15,0.15
+2029,Tax Provision,cagr,488759797.0,0.15,0.15
+2030,Tax Provision,cagr,562073766.0,0.15,0.15
+2031,Tax Provision,cagr,646384831.0,0.15,0.15
+2032,Tax Provision,cagr,743342556.0,0.15,0.15
+2033,Tax Provision,cagr,854843939.0,0.15,0.15
+2034,Tax Provision,cagr,983070530.0,0.15,0.15
+2025,Tax Provision,slope,182500000.0,53800000.0,-0.25
+2026,Tax Provision,slope,236300000.0,53800000.0,0.29
+2027,Tax Provision,slope,290100000.0,53800000.0,0.23
+2028,Tax Provision,slope,343900000.0,53800000.0,0.19
+2029,Tax Provision,slope,397700000.0,53800000.0,0.16
+2030,Tax Provision,slope,451500000.0,53800000.0,0.14
+2031,Tax Provision,slope,505300000.0,53800000.0,0.12
+2032,Tax Provision,slope,559100000.0,53800000.0,0.11
+2033,Tax Provision,slope,612900000.0,53800000.0,0.1
+2034,Tax Provision,slope,666700000.0,53800000.0,0.09
+2025,Tax Provision,man_inp_growth,267300000.0,0.1,0.1
+2026,Tax Provision,man_inp_growth,294030000.0,0.1,0.1
+2027,Tax Provision,man_inp_growth,323433000.0,0.1,0.1
+2028,Tax Provision,man_inp_growth,355776300.0,0.1,0.1
+2029,Tax Provision,man_inp_growth,391353930.0,0.1,0.1
+2030,Tax Provision,man_inp_growth,430489323.0,0.1,0.1
+2031,Tax Provision,man_inp_growth,473538255.0,0.1,0.1
+2032,Tax Provision,man_inp_growth,520892081.0,0.1,0.1
+2033,Tax Provision,man_inp_growth,572981289.0,0.1,0.1
+2034,Tax Provision,man_inp_growth,630279418.0,0.1,0.1
+2025,Revenue,cagr,18719711094.0,0.04,0.04
+2026,Revenue,cagr,19379912812.0,0.04,0.04
+2027,Revenue,cagr,20063398345.0,0.04,0.04
+2028,Revenue,cagr,20770988861.0,0.04,0.04
+2029,Revenue,cagr,21503534489.0,0.04,0.04
+2030,Revenue,cagr,22261915338.0,0.04,0.04
+2031,Revenue,cagr,23047042558.0,0.04,0.04
+2032,Revenue,cagr,23859859433.0,0.04,0.04
+2033,Revenue,cagr,24701342514.0,0.04,0.04
+2034,Revenue,cagr,25572502794.0,0.04,0.04
+2025,Revenue,slope,17192500000.0,602000000.0,-0.05
+2026,Revenue,slope,17794500000.0,602000000.0,0.04
+2027,Revenue,slope,18396500000.0,602000000.0,0.03
+2028,Revenue,slope,18998500000.0,602000000.0,0.03
+2029,Revenue,slope,19600500000.0,602000000.0,0.03
+2030,Revenue,slope,20202500000.0,602000000.0,0.03
+2031,Revenue,slope,20804500000.0,602000000.0,0.03
+2032,Revenue,slope,21406500000.0,602000000.0,0.03
+2033,Revenue,slope,22008500000.0,602000000.0,0.03
+2034,Revenue,slope,22610500000.0,602000000.0,0.03
+2025,Revenue,man_inp_growth,19890200000.0,0.1,0.1
+2026,Revenue,man_inp_growth,21879220000.0,0.1,0.1
+2027,Revenue,man_inp_growth,24067142000.0,0.1,0.1
+2028,Revenue,man_inp_growth,26473856200.0,0.1,0.1
+2029,Revenue,man_inp_growth,29121241820.0,0.1,0.1
+2030,Revenue,man_inp_growth,32033366002.0,0.1,0.1
+2031,Revenue,man_inp_growth,35236702602.0,0.1,0.1
+2032,Revenue,man_inp_growth,38760372862.0,0.1,0.1
+2033,Revenue,man_inp_growth,42636410149.0,0.1,0.1
+2034,Revenue,man_inp_growth,46900051164.0,0.1,0.1
+2025,EBITDA,cagr,1097807595.0,0.12,0.12
+2026,EBITDA,cagr,1228523462.0,0.12,0.12
+2027,EBITDA,cagr,1374803657.0,0.12,0.12
+2028,EBITDA,cagr,1538501423.0,0.12,0.12
+2029,EBITDA,cagr,1721690670.0,0.12,0.12
+2030,EBITDA,cagr,1926692247.0,0.12,0.12
+2031,EBITDA,cagr,2156103346.0,0.12,0.12
+2032,EBITDA,cagr,2412830407.0,0.12,0.12
+2033,EBITDA,cagr,2700125939.0,0.12,0.12
+2034,EBITDA,cagr,3021629729.0,0.12,0.12
+2025,EBITDA,slope,1697000000.0,318600000.0,0.73
+2026,EBITDA,slope,2015600000.0,318600000.0,0.19
+2027,EBITDA,slope,2334200000.0,318600000.0,0.16
+2028,EBITDA,slope,2652800000.0,318600000.0,0.14
+2029,EBITDA,slope,2971400000.0,318600000.0,0.12
+2030,EBITDA,slope,3290000000.0,318600000.0,0.11
+2031,EBITDA,slope,3608600000.0,318600000.0,0.1
+2032,EBITDA,slope,3927200000.0,318600000.0,0.09
+2033,EBITDA,slope,4245800000.0,318600000.0,0.08
+2034,EBITDA,slope,4564400000.0,318600000.0,0.08
+2025,EBITDA,man_inp_growth,1079100000.0,0.1,0.1
+2026,EBITDA,man_inp_growth,1187010000.0,0.1,0.1
+2027,EBITDA,man_inp_growth,1305711000.0,0.1,0.1
+2028,EBITDA,man_inp_growth,1436282100.0,0.1,0.1
+2029,EBITDA,man_inp_growth,1579910310.0,0.1,0.1
+2030,EBITDA,man_inp_growth,1737901341.0,0.1,0.1
+2031,EBITDA,man_inp_growth,1911691475.0,0.1,0.1
+2032,EBITDA,man_inp_growth,2102860623.0,0.1,0.1
+2033,EBITDA,man_inp_growth,2313146685.0,0.1,0.1
+2034,EBITDA,man_inp_growth,2544461353.0,0.1,0.1
+2025,Net Income,cagr,657800000.0,0.15,0.15
+2026,Net Income,cagr,756470000.0,0.15,0.15
+2027,Net Income,cagr,869940500.0,0.15,0.15
+2028,Net Income,cagr,1000431575.0,0.15,0.15
+2029,Net Income,cagr,1150496311.0,0.15,0.15
+2030,Net Income,cagr,1323070758.0,0.15,0.15
+2031,Net Income,cagr,1521531372.0,0.15,0.15
+2032,Net Income,cagr,1749761077.0,0.15,0.15
+2033,Net Income,cagr,2012225239.0,0.15,0.15
+2034,Net Income,cagr,2314059025.0,0.15,0.15
+2025,Net Income,slope,470500000.0,274400000.0,-0.18
+2026,Net Income,slope,744900000.0,274400000.0,0.58
+2027,Net Income,slope,1019300000.0,274400000.0,0.37
+2028,Net Income,slope,1293700000.0,274400000.0,0.27
+2029,Net Income,slope,1568100000.0,274400000.0,0.21
+2030,Net Income,slope,1842500000.0,274400000.0,0.17
+2031,Net Income,slope,2116900000.0,274400000.0,0.15
+2032,Net Income,slope,2391300000.0,274400000.0,0.13
+2033,Net Income,slope,2665700000.0,274400000.0,0.11
+2034,Net Income,slope,2940100000.0,274400000.0,0.1
+2025,Net Income,man_inp_growth,629200000.0,0.1,0.1
+2026,Net Income,man_inp_growth,692120000.0,0.1,0.1
+2027,Net Income,man_inp_growth,761332000.0,0.1,0.1
+2028,Net Income,man_inp_growth,837465200.0,0.1,0.1
+2029,Net Income,man_inp_growth,921211720.0,0.1,0.1
+2030,Net Income,man_inp_growth,1013332892.0,0.1,0.1
+2031,Net Income,man_inp_growth,1114666181.0,0.1,0.1
+2032,Net Income,man_inp_growth,1226132799.0,0.1,0.1
+2033,Net Income,man_inp_growth,1348746079.0,0.1,0.1
+2034,Net Income,man_inp_growth,1483620687.0,0.1,0.1
+2025,Total Debt,cagr,3831800000.0,0.15,0.15
+2026,Total Debt,cagr,4406570000.0,0.15,0.15
+2027,Total Debt,cagr,5067555500.0,0.15,0.15
+2028,Total Debt,cagr,5827688825.0,0.15,0.15
+2029,Total Debt,cagr,6701842149.0,0.15,0.15
+2030,Total Debt,cagr,7707118471.0,0.15,0.15
+2031,Total Debt,cagr,8863186242.0,0.15,0.15
+2032,Total Debt,cagr,10192664178.0,0.15,0.15
+2033,Total Debt,cagr,11721563805.0,0.15,0.15
+2034,Total Debt,cagr,13479798375.0,0.15,0.15
+2025,Total Debt,slope,4246500000.0,646500000.0,0.27
+2026,Total Debt,slope,4893000000.0,646500000.0,0.15
+2027,Total Debt,slope,5539500000.0,646500000.0,0.13
+2028,Total Debt,slope,6186000000.0,646500000.0,0.12
+2029,Total Debt,slope,6832500000.0,646500000.0,0.1
+2030,Total Debt,slope,7479000000.0,646500000.0,0.09
+2031,Total Debt,slope,8125500000.0,646500000.0,0.09
+2032,Total Debt,slope,8772000000.0,646500000.0,0.08
+2033,Total Debt,slope,9418500000.0,646500000.0,0.07
+2034,Total Debt,slope,10065000000.0,646500000.0,0.07
+2025,Total Debt,man_inp_growth,3665200000.0,0.1,0.1
+2026,Total Debt,man_inp_growth,4031720000.0,0.1,0.1
+2027,Total Debt,man_inp_growth,4434892000.0,0.1,0.1
+2028,Total Debt,man_inp_growth,4878381200.0,0.1,0.1
+2029,Total Debt,man_inp_growth,5366219320.0,0.1,0.1
+2030,Total Debt,man_inp_growth,5902841252.0,0.1,0.1
+2031,Total Debt,man_inp_growth,6493125377.0,0.1,0.1
+2032,Total Debt,man_inp_growth,7142437915.0,0.1,0.1
+2033,Total Debt,man_inp_growth,7856681706.0,0.1,0.1
+2034,Total Debt,man_inp_growth,8642349877.0,0.1,0.1
+2025,Cash,cagr,3881250000.0,0.15,0.15
+2026,Cash,cagr,4463437500.0,0.15,0.15
+2027,Cash,cagr,5132953125.0,0.15,0.15
+2028,Cash,cagr,5902896094.0,0.15,0.15
+2029,Cash,cagr,6788330508.0,0.15,0.15
+2030,Cash,cagr,7806580084.0,0.15,0.15
+2031,Cash,cagr,8977567097.0,0.15,0.15
+2032,Cash,cagr,10324202161.0,0.15,0.15
+2033,Cash,cagr,11872832485.0,0.15,0.15
+2034,Cash,cagr,13653757358.0,0.15,0.15
+2025,Cash,slope,4232000000.0,510900000.0,0.25
+2026,Cash,slope,4742900000.0,510900000.0,0.12
+2027,Cash,slope,5253800000.0,510900000.0,0.11
+2028,Cash,slope,5764700000.0,510900000.0,0.1
+2029,Cash,slope,6275600000.0,510900000.0,0.09
+2030,Cash,slope,6786500000.0,510900000.0,0.08
+2031,Cash,slope,7297400000.0,510900000.0,0.08
+2032,Cash,slope,7808300000.0,510900000.0,0.07
+2033,Cash,slope,8319200000.0,510900000.0,0.07
+2034,Cash,slope,8830100000.0,510900000.0,0.06
+2025,Cash,man_inp_growth,3712500000.0,0.1,0.1
+2026,Cash,man_inp_growth,4083750000.0,0.1,0.1
+2027,Cash,man_inp_growth,4492125000.0,0.1,0.1
+2028,Cash,man_inp_growth,4941337500.0,0.1,0.1
+2029,Cash,man_inp_growth,5435471250.0,0.1,0.1
+2030,Cash,man_inp_growth,5979018375.0,0.1,0.1
+2031,Cash,man_inp_growth,6576920213.0,0.1,0.1
+2032,Cash,man_inp_growth,7234612234.0,0.1,0.1
+2033,Cash,man_inp_growth,7958073457.0,0.1,0.1
+2034,Cash,man_inp_growth,8753880803.0,0.1,0.1
+2025,Operating Cash Flow,cagr,3582250000.0,0.15,0.15
+2026,Operating Cash Flow,cagr,4119587500.0,0.15,0.15
+2027,Operating Cash Flow,cagr,4737525625.0,0.15,0.15
+2028,Operating Cash Flow,cagr,5448154469.0,0.15,0.15
+2029,Operating Cash Flow,cagr,6265377639.0,0.15,0.15
+2030,Operating Cash Flow,cagr,7205184285.0,0.15,0.15
+2031,Operating Cash Flow,cagr,8285961928.0,0.15,0.15
+2032,Operating Cash Flow,cagr,9528856217.0,0.15,0.15
+2033,Operating Cash Flow,cagr,10958184649.0,0.15,0.15
+2034,Operating Cash Flow,cagr,12601912347.0,0.15,0.15
+2025,Operating Cash Flow,slope,2367500000.0,535000000.0,-0.24
+2026,Operating Cash Flow,slope,2902500000.0,535000000.0,0.23
+2027,Operating Cash Flow,slope,3437500000.0,535000000.0,0.18
+2028,Operating Cash Flow,slope,3972500000.0,535000000.0,0.16
+2029,Operating Cash Flow,slope,4507500000.0,535000000.0,0.13
+2030,Operating Cash Flow,slope,5042500000.0,535000000.0,0.12
+2031,Operating Cash Flow,slope,5577500000.0,535000000.0,0.11
+2032,Operating Cash Flow,slope,6112500000.0,535000000.0,0.1
+2033,Operating Cash Flow,slope,6647500000.0,535000000.0,0.09
+2034,Operating Cash Flow,slope,7182500000.0,535000000.0,0.08
+2025,Operating Cash Flow,man_inp_growth,3426500000.0,0.1,0.1
+2026,Operating Cash Flow,man_inp_growth,3769150000.0,0.1,0.1
+2027,Operating Cash Flow,man_inp_growth,4146065000.0,0.1,0.1
+2028,Operating Cash Flow,man_inp_growth,4560671500.0,0.1,0.1
+2029,Operating Cash Flow,man_inp_growth,5016738650.0,0.1,0.1
+2030,Operating Cash Flow,man_inp_growth,5518412515.0,0.1,0.1
+2031,Operating Cash Flow,man_inp_growth,6070253767.0,0.1,0.1
+2032,Operating Cash Flow,man_inp_growth,6677279143.0,0.1,0.1
+2033,Operating Cash Flow,man_inp_growth,7345007057.0,0.1,0.1
+2034,Operating Cash Flow,man_inp_growth,8079507763.0,0.1,0.1
+2025,Net Debt,cagr,,,
+2026,Net Debt,cagr,,,
+2027,Net Debt,cagr,,,
+2028,Net Debt,cagr,,,
+2029,Net Debt,cagr,,,
+2030,Net Debt,cagr,,,
+2031,Net Debt,cagr,,,
+2032,Net Debt,cagr,,,
+2033,Net Debt,cagr,,,
+2034,Net Debt,cagr,,,
+2025,Net Debt,slope,14500000.0,135600000.0,-1.34
+2026,Net Debt,slope,150100000.0,135600000.0,9.35
+2027,Net Debt,slope,285700000.0,135600000.0,0.9
+2028,Net Debt,slope,421300000.0,135600000.0,0.47
+2029,Net Debt,slope,556900000.0,135600000.0,0.32
+2030,Net Debt,slope,692500000.0,135600000.0,0.24
+2031,Net Debt,slope,828100000.0,135600000.0,0.2
+2032,Net Debt,slope,963700000.0,135600000.0,0.16
+2033,Net Debt,slope,1099300000.0,135600000.0,0.14
+2034,Net Debt,slope,1234900000.0,135600000.0,0.12
+2025,Net Debt,man_inp_growth,-47300000.0,0.1,0.1
+2026,Net Debt,man_inp_growth,-52030000.0,0.1,0.1
+2027,Net Debt,man_inp_growth,-57233000.0,0.1,0.1
+2028,Net Debt,man_inp_growth,-62956300.0,0.1,0.1
+2029,Net Debt,man_inp_growth,-69251930.0,0.1,0.1
+2030,Net Debt,man_inp_growth,-76177123.0,0.1,0.1
+2031,Net Debt,man_inp_growth,-83794835.0,0.1,0.1
+2032,Net Debt,man_inp_growth,-92174319.0,0.1,0.1
+2033,Net Debt,man_inp_growth,-101391751.0,0.1,0.1
+2034,Net Debt,man_inp_growth,-111530926.0,0.1,0.1
+2025,Current Assets,cagr,17715988793.0,0.08,0.08
+2026,Current Assets,cagr,19087530190.0,0.08,0.08
+2027,Current Assets,cagr,20565253965.0,0.08,0.08
+2028,Current Assets,cagr,22157380573.0,0.08,0.08
+2029,Current Assets,cagr,23872766887.0,0.08,0.08
+2030,Current Assets,cagr,25720955460.0,0.08,0.08
+2031,Current Assets,cagr,27712227615.0,0.08,0.08
+2032,Current Assets,cagr,29857660637.0,0.08,0.08
+2033,Current Assets,cagr,32169189396.0,0.08,0.08
+2034,Current Assets,cagr,34659672738.0,0.08,0.08
+2025,Current Assets,slope,17117500000.0,1096800000.0,0.04
+2026,Current Assets,slope,18214300000.0,1096800000.0,0.06
+2027,Current Assets,slope,19311100000.0,1096800000.0,0.06
+2028,Current Assets,slope,20407900000.0,1096800000.0,0.06
+2029,Current Assets,slope,21504700000.0,1096800000.0,0.05
+2030,Current Assets,slope,22601500000.0,1096800000.0,0.05
+2031,Current Assets,slope,23698300000.0,1096800000.0,0.05
+2032,Current Assets,slope,24795100000.0,1096800000.0,0.05
+2033,Current Assets,slope,25891900000.0,1096800000.0,0.04
+2034,Current Assets,slope,26988700000.0,1096800000.0,0.04
+2025,Current Assets,man_inp_growth,18087300000.0,0.1,0.1
+2026,Current Assets,man_inp_growth,19896030000.0,0.1,0.1
+2027,Current Assets,man_inp_growth,21885633000.0,0.1,0.1
+2028,Current Assets,man_inp_growth,24074196300.0,0.1,0.1
+2029,Current Assets,man_inp_growth,26481615930.0,0.1,0.1
+2030,Current Assets,man_inp_growth,29129777523.0,0.1,0.1
+2031,Current Assets,man_inp_growth,32042755275.0,0.1,0.1
+2032,Current Assets,man_inp_growth,35247030803.0,0.1,0.1
+2033,Current Assets,man_inp_growth,38771733883.0,0.1,0.1
+2034,Current Assets,man_inp_growth,42648907271.0,0.1,0.1
+2025,Current Liabilities,cagr,17302829956.0,0.07,0.07
+2026,Current Liabilities,cagr,18483017933.0,0.07,0.07
+2027,Current Liabilities,cagr,19743703937.0,0.07,0.07
+2028,Current Liabilities,cagr,21090378560.0,0.07,0.07
+2029,Current Liabilities,cagr,22528906898.0,0.07,0.07
+2030,Current Liabilities,cagr,24065554090.0,0.07,0.07
+2031,Current Liabilities,cagr,25707012608.0,0.07,0.07
+2032,Current Liabilities,cagr,27460431400.0,0.07,0.07
+2033,Current Liabilities,cagr,29333447033.0,0.07,0.07
+2034,Current Liabilities,cagr,31334216942.0,0.07,0.07
+2025,Current Liabilities,slope,16140000000.0,884700000.0,-0.0
+2026,Current Liabilities,slope,17024700000.0,884700000.0,0.05
+2027,Current Liabilities,slope,17909400000.0,884700000.0,0.05
+2028,Current Liabilities,slope,18794100000.0,884700000.0,0.05
+2029,Current Liabilities,slope,19678800000.0,884700000.0,0.05
+2030,Current Liabilities,slope,20563500000.0,884700000.0,0.04
+2031,Current Liabilities,slope,21448200000.0,884700000.0,0.04
+2032,Current Liabilities,slope,22332900000.0,884700000.0,0.04
+2033,Current Liabilities,slope,23217600000.0,884700000.0,0.04
+2034,Current Liabilities,slope,24102300000.0,884700000.0,0.04
+2025,Current Liabilities,man_inp_growth,17817800000.0,0.1,0.1
+2026,Current Liabilities,man_inp_growth,19599580000.0,0.1,0.1
+2027,Current Liabilities,man_inp_growth,21559538000.0,0.1,0.1
+2028,Current Liabilities,man_inp_growth,23715491800.0,0.1,0.1
+2029,Current Liabilities,man_inp_growth,26087040980.0,0.1,0.1
+2030,Current Liabilities,man_inp_growth,28695745078.0,0.1,0.1
+2031,Current Liabilities,man_inp_growth,31565319586.0,0.1,0.1
+2032,Current Liabilities,man_inp_growth,34721851544.0,0.1,0.1
+2033,Current Liabilities,man_inp_growth,38194036699.0,0.1,0.1
+2034,Current Liabilities,man_inp_growth,42013440369.0,0.1,0.1
+2025,Pretax Income,cagr,939550000.0,0.15,0.15
+2026,Pretax Income,cagr,1080482500.0,0.15,0.15
+2027,Pretax Income,cagr,1242554875.0,0.15,0.15
+2028,Pretax Income,cagr,1428938106.0,0.15,0.15
+2029,Pretax Income,cagr,1643278822.0,0.15,0.15
+2030,Pretax Income,cagr,1889770646.0,0.15,0.15
+2031,Pretax Income,cagr,2173236242.0,0.15,0.15
+2032,Pretax Income,cagr,2499221679.0,0.15,0.15
+2033,Pretax Income,cagr,2874104930.0,0.15,0.15
+2034,Pretax Income,cagr,3305220670.0,0.15,0.15
+2025,Pretax Income,slope,644000000.0,324100000.0,-0.21
+2026,Pretax Income,slope,968100000.0,324100000.0,0.5
+2027,Pretax Income,slope,1292200000.0,324100000.0,0.33
+2028,Pretax Income,slope,1616300000.0,324100000.0,0.25
+2029,Pretax Income,slope,1940400000.0,324100000.0,0.2
+2030,Pretax Income,slope,2264500000.0,324100000.0,0.17
+2031,Pretax Income,slope,2588600000.0,324100000.0,0.14
+2032,Pretax Income,slope,2912700000.0,324100000.0,0.13
+2033,Pretax Income,slope,3236800000.0,324100000.0,0.11
+2034,Pretax Income,slope,3560900000.0,324100000.0,0.1
+2025,Pretax Income,man_inp_growth,898700000.0,0.1,0.1
+2026,Pretax Income,man_inp_growth,988570000.0,0.1,0.1
+2027,Pretax Income,man_inp_growth,1087427000.0,0.1,0.1
+2028,Pretax Income,man_inp_growth,1196169700.0,0.1,0.1
+2029,Pretax Income,man_inp_growth,1315786670.0,0.1,0.1
+2030,Pretax Income,man_inp_growth,1447365337.0,0.1,0.1
+2031,Pretax Income,man_inp_growth,1592101871.0,0.1,0.1
+2032,Pretax Income,man_inp_growth,1751312058.0,0.1,0.1
+2033,Pretax Income,man_inp_growth,1926443264.0,0.1,0.1
+2034,Pretax Income,man_inp_growth,2119087590.0,0.1,0.1
+2025,Total Assets,cagr,27259830138.0,0.08,0.08
+2026,Total Assets,cagr,29398201494.0,0.08,0.08
+2027,Total Assets,cagr,31704315350.0,0.08,0.08
+2028,Total Assets,cagr,34191330106.0,0.08,0.08
+2029,Total Assets,cagr,36873436361.0,0.08,0.08
+2030,Total Assets,cagr,39765937881.0,0.08,0.08
+2031,Total Assets,cagr,42885338922.0,0.08,0.08
+2032,Total Assets,cagr,46249438400.0,0.08,0.08
+2033,Total Assets,cagr,49877431451.0,0.08,0.08
+2034,Total Assets,cagr,53790018953.0,0.08,0.08
+2025,Total Assets,slope,26077000000.0,1741200000.0,0.03
+2026,Total Assets,slope,27818200000.0,1741200000.0,0.07
+2027,Total Assets,slope,29559400000.0,1741200000.0,0.06
+2028,Total Assets,slope,31300600000.0,1741200000.0,0.06
+2029,Total Assets,slope,33041800000.0,1741200000.0,0.06
+2030,Total Assets,slope,34783000000.0,1741200000.0,0.05
+2031,Total Assets,slope,36524200000.0,1741200000.0,0.05
+2032,Total Assets,slope,38265400000.0,1741200000.0,0.05
+2033,Total Assets,slope,40006600000.0,1741200000.0,0.05
+2034,Total Assets,slope,41747800000.0,1741200000.0,0.04
+2025,Total Assets,man_inp_growth,27804700000.0,0.1,0.1
+2026,Total Assets,man_inp_growth,30585170000.0,0.1,0.1
+2027,Total Assets,man_inp_growth,33643687000.0,0.1,0.1
+2028,Total Assets,man_inp_growth,37008055700.0,0.1,0.1
+2029,Total Assets,man_inp_growth,40708861270.0,0.1,0.1
+2030,Total Assets,man_inp_growth,44779747397.0,0.1,0.1
+2031,Total Assets,man_inp_growth,49257722137.0,0.1,0.1
+2032,Total Assets,man_inp_growth,54183494350.0,0.1,0.1
+2033,Total Assets,man_inp_growth,59601843785.0,0.1,0.1
+2034,Total Assets,man_inp_growth,65562028164.0,0.1,0.1
+2025,Interest Expense,cagr,223100000.0,0.15,0.15
+2026,Interest Expense,cagr,256565000.0,0.15,0.15
+2027,Interest Expense,cagr,295049750.0,0.15,0.15
+2028,Interest Expense,cagr,339307212.0,0.15,0.15
+2029,Interest Expense,cagr,390203294.0,0.15,0.15
+2030,Interest Expense,cagr,448733789.0,0.15,0.15
+2031,Interest Expense,cagr,516043857.0,0.15,0.15
+2032,Interest Expense,cagr,593450435.0,0.15,0.15
+2033,Interest Expense,cagr,682468001.0,0.15,0.15
+2034,Interest Expense,cagr,784838201.0,0.15,0.15
+2025,Interest Expense,slope,285500000.0,59800000.0,0.47
+2026,Interest Expense,slope,345300000.0,59800000.0,0.21
+2027,Interest Expense,slope,405100000.0,59800000.0,0.17
+2028,Interest Expense,slope,464900000.0,59800000.0,0.15
+2029,Interest Expense,slope,524700000.0,59800000.0,0.13
+2030,Interest Expense,slope,584500000.0,59800000.0,0.11
+2031,Interest Expense,slope,644300000.0,59800000.0,0.1
+2032,Interest Expense,slope,704100000.0,59800000.0,0.09
+2033,Interest Expense,slope,763900000.0,59800000.0,0.08
+2034,Interest Expense,slope,823700000.0,59800000.0,0.08
+2025,Interest Expense,man_inp_growth,213400000.0,0.1,0.1
+2026,Interest Expense,man_inp_growth,234740000.0,0.1,0.1
+2027,Interest Expense,man_inp_growth,258214000.0,0.1,0.1
+2028,Interest Expense,man_inp_growth,284035400.0,0.1,0.1
+2029,Interest Expense,man_inp_growth,312438940.0,0.1,0.1
+2030,Interest Expense,man_inp_growth,343682834.0,0.1,0.1
+2031,Interest Expense,man_inp_growth,378051117.0,0.1,0.1
+2032,Interest Expense,man_inp_growth,415856229.0,0.1,0.1
+2033,Interest Expense,man_inp_growth,457441852.0,0.1,0.1
+2034,Interest Expense,man_inp_growth,503186037.0,0.1,0.1
+2025,WorkingCapital,cagr,700350000.0,0.15,0.15
+2026,WorkingCapital,cagr,805402500.0,0.15,0.15
+2027,WorkingCapital,cagr,926212875.0,0.15,0.15
+2028,WorkingCapital,cagr,1065144806.0,0.15,0.15
+2029,WorkingCapital,cagr,1224916527.0,0.15,0.15
+2030,WorkingCapital,cagr,1408654006.0,0.15,0.15
+2031,WorkingCapital,cagr,1619952107.0,0.15,0.15
+2032,WorkingCapital,cagr,1862944923.0,0.15,0.15
+2033,WorkingCapital,cagr,2142386662.0,0.15,0.15
+2034,WorkingCapital,cagr,2463744661.0,0.15,0.15
+2025,WorkingCapital,slope,977500000.0,212100000.0,0.61
+2026,WorkingCapital,slope,1189600000.0,212100000.0,0.22
+2027,WorkingCapital,slope,1401700000.0,212100000.0,0.18
+2028,WorkingCapital,slope,1613800000.0,212100000.0,0.15
+2029,WorkingCapital,slope,1825900000.0,212100000.0,0.13
+2030,WorkingCapital,slope,2038000000.0,212100000.0,0.12
+2031,WorkingCapital,slope,2250100000.0,212100000.0,0.1
+2032,WorkingCapital,slope,2462200000.0,212100000.0,0.09
+2033,WorkingCapital,slope,2674300000.0,212100000.0,0.09
+2034,WorkingCapital,slope,2886400000.0,212100000.0,0.08
+2025,WorkingCapital,man_inp_growth,669900000.0,0.1,0.1
+2026,WorkingCapital,man_inp_growth,736890000.0,0.1,0.1
+2027,WorkingCapital,man_inp_growth,810579000.0,0.1,0.1
+2028,WorkingCapital,man_inp_growth,891636900.0,0.1,0.1
+2029,WorkingCapital,man_inp_growth,980800590.0,0.1,0.1
+2030,WorkingCapital,man_inp_growth,1078880649.0,0.1,0.1
+2031,WorkingCapital,man_inp_growth,1186768714.0,0.1,0.1
+2032,WorkingCapital,man_inp_growth,1305445585.0,0.1,0.1
+2033,WorkingCapital,man_inp_growth,1435990144.0,0.1,0.1
+2034,WorkingCapital,man_inp_growth,1579589158.0,0.1,0.1
+2025,effective_tax_rate,cagr,0.28,-0.06,-0.06
+2026,effective_tax_rate,cagr,0.26,-0.06,-0.06
+2027,effective_tax_rate,cagr,0.25,-0.06,-0.06
+2028,effective_tax_rate,cagr,0.23,-0.06,-0.06
+2029,effective_tax_rate,cagr,0.22,-0.06,-0.06
+2030,effective_tax_rate,cagr,0.2,-0.06,-0.06
+2031,effective_tax_rate,cagr,0.19,-0.06,-0.06
+2032,effective_tax_rate,cagr,0.18,-0.06,-0.06
+2033,effective_tax_rate,cagr,0.17,-0.06,-0.06
+2034,effective_tax_rate,cagr,0.16,-0.06,-0.06
+2025,effective_tax_rate,slope,0.24,-0.0,-0.21
+2026,effective_tax_rate,slope,0.23,-0.0,-0.01
+2027,effective_tax_rate,slope,0.23,-0.0,-0.01
+2028,effective_tax_rate,slope,0.23,-0.0,-0.01
+2029,effective_tax_rate,slope,0.23,-0.0,-0.01
+2030,effective_tax_rate,slope,0.22,-0.0,-0.01
+2031,effective_tax_rate,slope,0.22,-0.0,-0.01
+2032,effective_tax_rate,slope,0.22,-0.0,-0.01
+2033,effective_tax_rate,slope,0.22,-0.0,-0.01
+2034,effective_tax_rate,slope,0.21,-0.0,-0.01
+2025,effective_tax_rate,man_inp_growth,0.33,0.1,0.1
+2026,effective_tax_rate,man_inp_growth,0.36,0.1,0.1
+2027,effective_tax_rate,man_inp_growth,0.4,0.1,0.1
+2028,effective_tax_rate,man_inp_growth,0.44,0.1,0.1
+2029,effective_tax_rate,man_inp_growth,0.48,0.1,0.1
+2030,effective_tax_rate,man_inp_growth,0.53,0.1,0.1
+2031,effective_tax_rate,man_inp_growth,0.58,0.1,0.1
+2032,effective_tax_rate,man_inp_growth,0.64,0.1,0.1
+2033,effective_tax_rate,man_inp_growth,0.7,0.1,0.1
+2034,effective_tax_rate,man_inp_growth,0.77,0.1,0.1
+2025,ReinvestmentRate,cagr,,,
+2026,ReinvestmentRate,cagr,,,
+2027,ReinvestmentRate,cagr,,,
+2028,ReinvestmentRate,cagr,,,
+2029,ReinvestmentRate,cagr,,,
+2030,ReinvestmentRate,cagr,,,
+2031,ReinvestmentRate,cagr,,,
+2032,ReinvestmentRate,cagr,,,
+2033,ReinvestmentRate,cagr,,,
+2034,ReinvestmentRate,cagr,,,
+2025,ReinvestmentRate,slope,6.8,1.87,6.56
+2026,ReinvestmentRate,slope,8.67,1.87,0.28
+2027,ReinvestmentRate,slope,10.54,1.87,0.22
+2028,ReinvestmentRate,slope,12.41,1.87,0.18
+2029,ReinvestmentRate,slope,14.28,1.87,0.15
+2030,ReinvestmentRate,slope,16.15,1.87,0.13
+2031,ReinvestmentRate,slope,18.02,1.87,0.12
+2032,ReinvestmentRate,slope,19.89,1.87,0.1
+2033,ReinvestmentRate,slope,21.76,1.87,0.09
+2034,ReinvestmentRate,slope,23.63,1.87,0.09
+2025,ReinvestmentRate,man_inp_growth,0.99,0.1,0.1
+2026,ReinvestmentRate,man_inp_growth,1.09,0.1,0.1
+2027,ReinvestmentRate,man_inp_growth,1.2,0.1,0.1
+2028,ReinvestmentRate,man_inp_growth,1.32,0.1,0.1
+2029,ReinvestmentRate,man_inp_growth,1.45,0.1,0.1
+2030,ReinvestmentRate,man_inp_growth,1.59,0.1,0.1
+2031,ReinvestmentRate,man_inp_growth,1.75,0.1,0.1
+2032,ReinvestmentRate,man_inp_growth,1.93,0.1,0.1
+2033,ReinvestmentRate,man_inp_growth,2.12,0.1,0.1
+2034,ReinvestmentRate,man_inp_growth,2.33,0.1,0.1
+2025,FCFE,cagr,,,
+2026,FCFE,cagr,,,
+2027,FCFE,cagr,,,
+2028,FCFE,cagr,,,
+2029,FCFE,cagr,,,
+2030,FCFE,cagr,,,
+2031,FCFE,cagr,,,
+2032,FCFE,cagr,,,
+2033,FCFE,cagr,,,
+2034,FCFE,cagr,,,
+2025,FCFE,slope,1520666667.0,940000000.0,19.28
+2026,FCFE,slope,2460666667.0,940000000.0,0.62
+2027,FCFE,slope,3400666667.0,940000000.0,0.38
+2028,FCFE,slope,4340666667.0,940000000.0,0.28
+2029,FCFE,slope,5280666667.0,940000000.0,0.22
+2030,FCFE,slope,6220666667.0,940000000.0,0.18
+2031,FCFE,slope,7160666667.0,940000000.0,0.15
+2032,FCFE,slope,8100666667.0,940000000.0,0.13
+2033,FCFE,slope,9040666667.0,940000000.0,0.12
+2034,FCFE,slope,9980666667.0,940000000.0,0.1
+2025,FCFE,man_inp_growth,82500000.0,0.1,0.1
+2026,FCFE,man_inp_growth,90750000.0,0.1,0.1
+2027,FCFE,man_inp_growth,99825000.0,0.1,0.1
+2028,FCFE,man_inp_growth,109807500.0,0.1,0.1
+2029,FCFE,man_inp_growth,120788250.0,0.1,0.1
+2030,FCFE,man_inp_growth,132867075.0,0.1,0.1
+2031,FCFE,man_inp_growth,146153783.0,0.1,0.1
+2032,FCFE,man_inp_growth,160769161.0,0.1,0.1
+2033,FCFE,man_inp_growth,176846077.0,0.1,0.1
+2034,FCFE,man_inp_growth,194530685.0,0.1,0.1
+2025,capital_invested,cagr,9956646915.0,0.1,0.1
+2026,capital_invested,cagr,10919134022.0,0.1,0.1
+2027,capital_invested,cagr,11974662637.0,0.1,0.1
+2028,capital_invested,cagr,13132226875.0,0.1,0.1
+2029,capital_invested,cagr,14401690297.0,0.1,0.1
+2030,capital_invested,cagr,15793869949.0,0.1,0.1
+2031,capital_invested,cagr,17320628538.0,0.1,0.1
+2032,capital_invested,cagr,18994975515.0,0.1,0.1
+2033,capital_invested,cagr,20831177923.0,0.1,0.1
+2034,capital_invested,cagr,22844881970.0,0.1,0.1
+2025,capital_invested,slope,9937000000.0,856500000.0,0.09
+2026,capital_invested,slope,10793500000.0,856500000.0,0.09
+2027,capital_invested,slope,11650000000.0,856500000.0,0.08
+2028,capital_invested,slope,12506500000.0,856500000.0,0.07
+2029,capital_invested,slope,13363000000.0,856500000.0,0.07
+2030,capital_invested,slope,14219500000.0,856500000.0,0.06
+2031,capital_invested,slope,15076000000.0,856500000.0,0.06
+2032,capital_invested,slope,15932500000.0,856500000.0,0.06
+2033,capital_invested,slope,16789000000.0,856500000.0,0.05
+2034,capital_invested,slope,17645500000.0,856500000.0,0.05
+2025,capital_invested,man_inp_growth,9986900000.0,0.1,0.1
+2026,capital_invested,man_inp_growth,10985590000.0,0.1,0.1
+2027,capital_invested,man_inp_growth,12084149000.0,0.1,0.1
+2028,capital_invested,man_inp_growth,13292563900.0,0.1,0.1
+2029,capital_invested,man_inp_growth,14621820290.0,0.1,0.1
+2030,capital_invested,man_inp_growth,16084002319.0,0.1,0.1
+2031,capital_invested,man_inp_growth,17692402551.0,0.1,0.1
+2032,capital_invested,man_inp_growth,19461642806.0,0.1,0.1
+2033,capital_invested,man_inp_growth,21407807087.0,0.1,0.1
+2034,capital_invested,man_inp_growth,23548587795.0,0.1,0.1
+2025,ROCE,cagr,0.12,0.15,0.15
+2026,ROCE,cagr,0.14,0.15,0.15
+2027,ROCE,cagr,0.16,0.15,0.15
+2028,ROCE,cagr,0.19,0.15,0.15
+2029,ROCE,cagr,0.22,0.15,0.15
+2030,ROCE,cagr,0.25,0.15,0.15
+2031,ROCE,cagr,0.29,0.15,0.15
+2032,ROCE,cagr,0.33,0.15,0.15
+2033,ROCE,cagr,0.38,0.15,0.15
+2034,ROCE,cagr,0.44,0.15,0.15
+2025,ROCE,slope,0.1,0.05,-0.09
+2026,ROCE,slope,0.14,0.05,0.47
+2027,ROCE,slope,0.19,0.05,0.32
+2028,ROCE,slope,0.24,0.05,0.24
+2029,ROCE,slope,0.28,0.05,0.2
+2030,ROCE,slope,0.33,0.05,0.16
+2031,ROCE,slope,0.38,0.05,0.14
+2032,ROCE,slope,0.42,0.05,0.12
+2033,ROCE,slope,0.47,0.05,0.11
+2034,ROCE,slope,0.51,0.05,0.1
+2025,ROCE,man_inp_growth,0.12,0.1,0.1
+2026,ROCE,man_inp_growth,0.13,0.1,0.1
+2027,ROCE,man_inp_growth,0.14,0.1,0.1
+2028,ROCE,man_inp_growth,0.16,0.1,0.1
+2029,ROCE,man_inp_growth,0.17,0.1,0.1
+2030,ROCE,man_inp_growth,0.19,0.1,0.1
+2031,ROCE,man_inp_growth,0.21,0.1,0.1
+2032,ROCE,man_inp_growth,0.23,0.1,0.1
+2033,ROCE,man_inp_growth,0.25,0.1,0.1
+2034,ROCE,man_inp_growth,0.28,0.1,0.1
+2025,operating_margin,cagr,0.06,0.15,0.15
+2026,operating_margin,cagr,0.07,0.15,0.15
+2027,operating_margin,cagr,0.08,0.15,0.15
+2028,operating_margin,cagr,0.09,0.15,0.15
+2029,operating_margin,cagr,0.11,0.15,0.15
+2030,operating_margin,cagr,0.13,0.15,0.15
+2031,operating_margin,cagr,0.14,0.15,0.15
+2032,operating_margin,cagr,0.17,0.15,0.15
+2033,operating_margin,cagr,0.19,0.15,0.15
+2034,operating_margin,cagr,0.22,0.15,0.15
+2025,operating_margin,slope,0.05,0.02,-0.0
+2026,operating_margin,slope,0.08,0.02,0.44
+2027,operating_margin,slope,0.1,0.02,0.31
+2028,operating_margin,slope,0.13,0.02,0.23
+2029,operating_margin,slope,0.15,0.02,0.19
+2030,operating_margin,slope,0.17,0.02,0.16
+2031,operating_margin,slope,0.2,0.02,0.14
+2032,operating_margin,slope,0.22,0.02,0.12
+2033,operating_margin,slope,0.24,0.02,0.11
+2034,operating_margin,slope,0.27,0.02,0.1
+2025,operating_margin,man_inp_growth,0.06,0.1,0.1
+2026,operating_margin,man_inp_growth,0.07,0.1,0.1
+2027,operating_margin,man_inp_growth,0.07,0.1,0.1
+2028,operating_margin,man_inp_growth,0.08,0.1,0.1
+2029,operating_margin,man_inp_growth,0.09,0.1,0.1
+2030,operating_margin,man_inp_growth,0.1,0.1,0.1
+2031,operating_margin,man_inp_growth,0.11,0.1,0.1
+2032,operating_margin,man_inp_growth,0.12,0.1,0.1
+2033,operating_margin,man_inp_growth,0.13,0.1,0.1
+2034,operating_margin,man_inp_growth,0.14,0.1,0.1
+2025,sales_to_capital,cagr,1.88,-0.06,-0.06
+2026,sales_to_capital,cagr,1.77,-0.06,-0.06
+2027,sales_to_capital,cagr,1.68,-0.06,-0.06
+2028,sales_to_capital,cagr,1.58,-0.06,-0.06
+2029,sales_to_capital,cagr,1.49,-0.06,-0.06
+2030,sales_to_capital,cagr,1.41,-0.06,-0.06
+2031,sales_to_capital,cagr,1.33,-0.06,-0.06
+2032,sales_to_capital,cagr,1.26,-0.06,-0.06
+2033,sales_to_capital,cagr,1.19,-0.06,-0.06
+2034,sales_to_capital,cagr,1.12,-0.06,-0.06
+2025,sales_to_capital,slope,1.67,-0.15,-0.16
+2026,sales_to_capital,slope,1.53,-0.15,-0.09
+2027,sales_to_capital,slope,1.38,-0.15,-0.1
+2028,sales_to_capital,slope,1.23,-0.15,-0.11
+2029,sales_to_capital,slope,1.09,-0.15,-0.12
+2030,sales_to_capital,slope,0.94,-0.15,-0.13
+2031,sales_to_capital,slope,0.8,-0.15,-0.16
+2032,sales_to_capital,slope,0.65,-0.15,-0.18
+2033,sales_to_capital,slope,0.5,-0.15,-0.22
+2034,sales_to_capital,slope,0.36,-0.15,-0.29
+2025,sales_to_capital,man_inp_growth,2.19,0.1,0.1
+2026,sales_to_capital,man_inp_growth,2.41,0.1,0.1
+2027,sales_to_capital,man_inp_growth,2.65,0.1,0.1
+2028,sales_to_capital,man_inp_growth,2.92,0.1,0.1
+2029,sales_to_capital,man_inp_growth,3.21,0.1,0.1
+2030,sales_to_capital,man_inp_growth,3.53,0.1,0.1
+2031,sales_to_capital,man_inp_growth,3.88,0.1,0.1
+2032,sales_to_capital,man_inp_growth,4.27,0.1,0.1
+2033,sales_to_capital,man_inp_growth,4.7,0.1,0.1
+2034,sales_to_capital,man_inp_growth,5.17,0.1,0.1
+2024,FCFF,ttm,75000000.0,,
+2024,FCF,ttm,1851000000.0,,
+2024,EBIT,ttm,981000000.0,,
+2024,CapEx,ttm,1264000000.0,,
+2024,Depreciation And Amortization,ttm,0.0,,
+2024,Delta WC,ttm,-601000000.0,,
+2024,Tax Provision,ttm,243000000.0,,
+2024,Revenue,ttm,18082000000.0,,
+2024,EBITDA,ttm,981000000.0,,
+2024,Net Income,ttm,572000000.0,,
+2024,Total Debt,ttm,3332000000.0,,
+2024,Cash,ttm,3375000000.0,,
+2024,Operating Cash Flow,ttm,3115000000.0,,
+2024,Net Debt,ttm,-43000000.0,,
+2024,Current Assets,ttm,16443000000.0,,
+2024,Current Liabilities,ttm,16198000000.0,,
+2024,Pretax Income,ttm,817000000.0,,
+2024,Total Assets,ttm,25277000000.0,,
+2024,effective_tax_rate,ttm,0.3,,
+2024,ReinvestmentRate,ttm,0.9,,
+2024,FCFE,ttm,75000000.0,,
+2024,capital_invested,ttm,9079000000.0,,
+2024,ROCE,ttm,0.11,,
+2024,operating_margin,ttm,0.05,,
+2024,sales_to_capital,ttm,1.99,,

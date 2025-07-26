@@ -1,0 +1,16 @@
+Gordon Growth Model Value for ASSA-B.ST: 145.28
+D1 (next dividend): 6.57
+Required Return: 0.0712
+Growth Rate: 0.1140
+Last Dividend: 5.90
+Method: multi-stage, Periods: 5
+Current Price: 295.80
+Potential Upside: -50.88%
+Analyst Forward Dividend: 5.90
+Your Projected D1: 6.57
+Difference: 0.67 (11.40%)
+Return on Equity (ROE): 14.52%
+Cost of Equity (Required Return): 7.12%
+Debt/Equity Ratio: 74.28
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

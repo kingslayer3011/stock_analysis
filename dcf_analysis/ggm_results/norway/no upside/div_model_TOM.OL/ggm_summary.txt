@@ -1,0 +1,16 @@
+Gordon Growth Model Value for TOM.OL: 36.09
+D1 (next dividend): 2.35
+Required Return: 0.0915
+Growth Rate: 0.0928
+Last Dividend: 2.15
+Method: multi-stage, Periods: 5
+Current Price: 153.80
+Potential Upside: -76.53%
+Analyst Forward Dividend: 2.15
+Your Projected D1: 2.35
+Difference: 0.20 (9.28%)
+Return on Equity (ROE): 17.22%
+Cost of Equity (Required Return): 9.15%
+Debt/Equity Ratio: 80.57
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

@@ -1,0 +1,16 @@
+Gordon Growth Model Value for DSV.CO: 171.40
+D1 (next dividend): 8.02
+Required Return: 0.0752
+Growth Rate: 0.1457
+Last Dividend: 7.00
+Method: multi-stage, Periods: 5
+Current Price: 1517.00
+Potential Upside: -88.70%
+Analyst Forward Dividend: 7.00
+Your Projected D1: 8.02
+Difference: 1.02 (14.57%)
+Return on Equity (ROE): 11.55%
+Cost of Equity (Required Return): 7.52%
+Debt/Equity Ratio: 72.24
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

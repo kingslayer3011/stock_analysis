@@ -1,0 +1,15 @@
+Gordon Growth Model Value for ELUX-B.ST: 222.75
+D1 (next dividend): 10.46
+Required Return: 0.0748
+Growth Rate: 0.1371
+Last Dividend: 9.20
+Method: multi-stage, Periods: 5
+Current Price: 69.02
+Potential Upside: 222.74%
+Analyst forward dividend estimate not available.
+Return on Equity (ROE): -1.26%
+Cost of Equity (Required Return): 7.48%
+WARNING: ROE is less than the required return (cost of equity). Long-term growth may be questionable.
+Debt/Equity Ratio: 517.30
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

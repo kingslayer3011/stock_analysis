@@ -1,0 +1,16 @@
+Gordon Growth Model Value for TEL2-B.ST: 157.67
+D1 (next dividend): 5.99
+Required Return: 0.0537
+Growth Rate: -0.0639
+Last Dividend: 6.40
+Method: multi-stage, Periods: 5
+Current Price: 139.50
+Potential Upside: 13.03%
+Analyst Forward Dividend: 6.30
+Your Projected D1: 5.99
+Difference: -0.31 (-4.90%)
+Return on Equity (ROE): 16.69%
+Cost of Equity (Required Return): 5.37%
+Debt/Equity Ratio: 131.62
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

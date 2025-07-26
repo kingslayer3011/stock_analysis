@@ -1,0 +1,11 @@
+Ticker,SummaryFile,Value,Upside (%)
+CARL-B.CO,ggm_results\denmark\CARL-B.CO_ggm_summary.txt,649.82,-28.40
+COLO-B.CO,ggm_results\denmark\COLO-B.CO_ggm_summary.txt,211.82,-64.66
+DSV.CO,ggm_results\denmark\DSV.CO_ggm_summary.txt,145.40,-90.42
+GN.CO,ggm_results\denmark\GN.CO_ggm_summary.txt,19.74,-80.16
+JYSK.CO,ggm_results\denmark\JYSK.CO_ggm_summary.txt,nan,nan
+MAERSK-B.CO,ggm_results\denmark\MAERSK-B.CO_ggm_summary.txt,21993.59,88.38
+NOVO-B.CO,ggm_results\denmark\NOVO-B.CO_ggm_summary.txt,737.18,68.17
+PFA.CO,,,
+ROCK-B.CO,ggm_results\denmark\ROCK-B.CO_ggm_summary.txt,nan,nan
+TRYG.CO,ggm_results\denmark\TRYG.CO_ggm_summary.txt,416.25,154.12

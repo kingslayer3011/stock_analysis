@@ -1,0 +1,13 @@
+ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,per_share_value,current_share_price,average_growth_rate
+CARL-B.CO,Carlsberg A/S,134,5,standard,FCFF,cagr,Historical Cagr,0.06,2131,911,0.01
+CARL-B.CO,Carlsberg A/S,131,5,standard,FCFF,slope,Regression Slope,0.06,2109,911,0.01
+CARL-B.CO,Carlsberg A/S,177,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,2521,911,0.03
+CARL-B.CO,Carlsberg A/S,149,5,converged,FCFF,cagr,Historical Cagr,0.06,2265,911,0.02
+CARL-B.CO,Carlsberg A/S,131,5,converged,FCFF,slope,Regression Slope,0.06,2108,911,0.01
+CARL-B.CO,Carlsberg A/S,171,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,2471,911,0.03
+CARL-B.CO,Carlsberg A/S,134,10,standard,FCFF,cagr,Historical Cagr,0.06,2131,911,0.01
+CARL-B.CO,Carlsberg A/S,131,10,standard,FCFF,slope,Regression Slope,0.06,2109,911,0.01
+CARL-B.CO,Carlsberg A/S,177,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,2521,911,0.03
+CARL-B.CO,Carlsberg A/S,149,10,converged,FCFF,cagr,Historical Cagr,0.06,2265,911,0.02
+CARL-B.CO,Carlsberg A/S,131,10,converged,FCFF,slope,Regression Slope,0.06,2108,911,0.01
+CARL-B.CO,Carlsberg A/S,171,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,2471,911,0.03

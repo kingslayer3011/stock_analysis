@@ -1,0 +1,15 @@
+Gordon Growth Model Value for GN.CO: 20.55
+D1 (next dividend): 1.63
+Required Return: 0.1026
+Growth Rate: 0.0514
+Last Dividend: 1.55
+Method: multi-stage, Periods: 5
+Current Price: 99.50
+Potential Upside: -79.34%
+Analyst forward dividend estimate not available.
+Return on Equity (ROE): 8.52%
+Cost of Equity (Required Return): 10.26%
+WARNING: ROE is less than the required return (cost of equity). Long-term growth may be questionable.
+Debt/Equity Ratio: 109.48
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

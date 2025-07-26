@@ -1,0 +1,16 @@
+Gordon Growth Model Value for AXFO.ST: 438.53
+D1 (next dividend): 11.75
+Required Return: 0.0588
+Growth Rate: 0.3058
+Last Dividend: 9.00
+Method: multi-stage, Periods: 5
+Current Price: 283.60
+Potential Upside: 54.63%
+Analyst Forward Dividend: 8.50
+Your Projected D1: 11.75
+Difference: 3.25 (38.27%)
+Return on Equity (ROE): 35.49%
+Cost of Equity (Required Return): 5.88%
+Debt/Equity Ratio: 265.85
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

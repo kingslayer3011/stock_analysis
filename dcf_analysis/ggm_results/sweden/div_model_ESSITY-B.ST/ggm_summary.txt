@@ -1,0 +1,16 @@
+Gordon Growth Model Value for ESSITY-B.ST: 295.08
+D1 (next dividend): 8.68
+Required Return: 0.0507
+Growth Rate: 0.0516
+Last Dividend: 8.25
+Method: multi-stage, Periods: 5
+Current Price: 266.00
+Potential Upside: 10.93%
+Analyst Forward Dividend: 8.25
+Your Projected D1: 8.68
+Difference: 0.43 (5.16%)
+Return on Equity (ROE): 15.62%
+Cost of Equity (Required Return): 5.07%
+Debt/Equity Ratio: 51.03
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

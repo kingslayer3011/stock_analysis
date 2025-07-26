@@ -1,0 +1,16 @@
+Gordon Growth Model Value for VOLV-B.ST: 147.58
+D1 (next dividend): 9.51
+Required Return: 0.0750
+Growth Rate: -0.0942
+Last Dividend: 10.50
+Method: multi-stage, Periods: 5
+Current Price: 266.00
+Potential Upside: -44.52%
+Analyst Forward Dividend: 8.00
+Your Projected D1: 9.51
+Difference: 1.51 (18.88%)
+Return on Equity (ROE): 25.59%
+Cost of Equity (Required Return): 7.50%
+Debt/Equity Ratio: 127.71
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

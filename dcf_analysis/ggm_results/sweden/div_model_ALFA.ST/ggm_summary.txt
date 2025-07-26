@@ -1,0 +1,16 @@
+Gordon Growth Model Value for ALFA.ST: 181.79
+D1 (next dividend): 9.48
+Required Return: 0.0791
+Growth Rate: 0.1156
+Last Dividend: 8.50
+Method: multi-stage, Periods: 5
+Current Price: 398.50
+Potential Upside: -54.38%
+Analyst Forward Dividend: 8.50
+Your Projected D1: 9.48
+Difference: 0.98 (11.56%)
+Return on Equity (ROE): 18.74%
+Cost of Equity (Required Return): 7.91%
+Debt/Equity Ratio: 29.47
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

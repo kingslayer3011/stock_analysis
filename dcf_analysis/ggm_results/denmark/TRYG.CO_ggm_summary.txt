@@ -1,0 +1,16 @@
+Gordon Growth Model Value for TRYG.CO: 586.24
+D1 (next dividend): 10.36
+Required Return: 0.0449
+Growth Rate: 0.2786
+Last Dividend: 8.10
+Method: multi-stage, Periods: 5
+Current Price: 163.80
+Potential Upside: 257.90%
+Analyst Forward Dividend: 8.20
+Your Projected D1: 10.36
+Difference: 2.16 (26.30%)
+Return on Equity (ROE): 13.23%
+Cost of Equity (Required Return): 4.49%
+Debt/Equity Ratio: 17.57
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

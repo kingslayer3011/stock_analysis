@@ -1,0 +1,16 @@
+Gordon Growth Model Value for CARL-B.CO: 680.72
+D1 (next dividend): 28.46
+Required Return: 0.0638
+Growth Rate: 0.0542
+Last Dividend: 27.00
+Method: multi-stage, Periods: 5
+Current Price: 907.60
+Potential Upside: -25.00%
+Analyst Forward Dividend: 27.00
+Your Projected D1: 28.46
+Difference: 1.46 (5.42%)
+Return on Equity (ROE): 28.41%
+Cost of Equity (Required Return): 6.38%
+Debt/Equity Ratio: 124.59
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

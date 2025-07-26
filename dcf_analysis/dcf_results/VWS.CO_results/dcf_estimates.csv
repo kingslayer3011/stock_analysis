@@ -1,0 +1,13 @@
+ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,per_share_value,current_share_price,average_growth_rate
+VWS.CO,Vestas Wind Systems A/S,-85.57,5,standard,FCFF,cagr,Historical Cagr,0.11,17.39,121,0.2
+VWS.CO,Vestas Wind Systems A/S,-82.0,5,standard,FCFF,slope,Regression Slope,0.11,21.7,121,0.14
+VWS.CO,Vestas Wind Systems A/S,-102.0,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.11,-2.92,121,0.1
+VWS.CO,Vestas Wind Systems A/S,-91.31,5,converged,FCFF,cagr,Historical Cagr,0.11,10.48,121,0.11
+VWS.CO,Vestas Wind Systems A/S,-94.83,5,converged,FCFF,slope,Regression Slope,0.11,6.24,121,-0.13
+VWS.CO,Vestas Wind Systems A/S,-95.61,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.11,5.29,121,0.06
+VWS.CO,Vestas Wind Systems A/S,-85.57,10,standard,FCFF,cagr,Historical Cagr,0.11,17.39,121,0.2
+VWS.CO,Vestas Wind Systems A/S,-82.0,10,standard,FCFF,slope,Regression Slope,0.11,21.7,121,0.14
+VWS.CO,Vestas Wind Systems A/S,-102.0,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.11,-2.92,121,0.1
+VWS.CO,Vestas Wind Systems A/S,-91.31,10,converged,FCFF,cagr,Historical Cagr,0.11,10.48,121,0.11
+VWS.CO,Vestas Wind Systems A/S,-94.83,10,converged,FCFF,slope,Regression Slope,0.11,6.24,121,-0.13
+VWS.CO,Vestas Wind Systems A/S,-95.61,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.11,5.29,121,0.06

@@ -1,0 +1,13 @@
+ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,npv,per_share_value,current_share_price,average_growth_rate
+ISS.CO,ISS A/S,-12.6304,5,standard,FCFF,cagr,Historical Cagr,0.06,39473948702.872406,166.1771,190.2,0.0499
+ISS.CO,ISS A/S,16.1935,5,standard,FCFF,slope,Regression Slope,0.06,48698785124.15669,221.0,190.2,0.0473
+ISS.CO,ISS A/S,16.9937,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,48954877631.72475,222.5219,190.2,0.0375
+ISS.CO,ISS A/S,19.0606,5,converged,FCFF,cagr,Historical Cagr,0.06,49616394649.39459,226.4533,190.2,0.0424
+ISS.CO,ISS A/S,-2.7379,5,converged,FCFF,slope,Regression Slope,0.06,42639954432.68491,184.9925,190.2,0.0564
+ISS.CO,ISS A/S,31.798,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,53692884342.83366,250.6798,190.2,0.0338
+ISS.CO,ISS A/S,2.5385,10,standard,FCFF,cagr,Historical Cagr,0.06,44328626552.58809,195.0283,190.2,0.0521
+ISS.CO,ISS A/S,40.7889,10,standard,FCFF,slope,Regression Slope,0.06,56570348874.504456,267.7805,190.2,0.0428
+ISS.CO,ISS A/S,26.1475,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,51884504619.08012,239.9326,190.2,0.0386
+ISS.CO,ISS A/S,55.5659,10,converged,FCFF,cagr,Historical Cagr,0.06,61299603793.63611,295.8863,190.2,0.0372
+ISS.CO,ISS A/S,70.3455,10,converged,FCFF,slope,Regression Slope,0.06,66029713001.99926,323.9972,190.2,0.0471
+ISS.CO,ISS A/S,49.3617,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,59314006714.510635,284.086,190.2,0.0311

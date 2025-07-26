@@ -1,0 +1,16 @@
+Gordon Growth Model Value for COLO-B.CO: 175.51
+D1 (next dividend): 8.88
+Required Return: 0.0619
+Growth Rate: -0.1120
+Last Dividend: 10.00
+Method: multi-stage, Periods: 5
+Current Price: 599.40
+Potential Upside: -70.72%
+Analyst Forward Dividend: 22.00
+Your Projected D1: 8.88
+Difference: -13.12 (-59.64%)
+Return on Equity (ROE): 27.42%
+Cost of Equity (Required Return): 6.19%
+Debt/Equity Ratio: 143.22
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

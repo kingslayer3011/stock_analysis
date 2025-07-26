@@ -1,0 +1,16 @@
+Gordon Growth Model Value for ROCK-B.CO: nan
+D1 (next dividend): nan
+Required Return: 0.0914
+Growth Rate: nan
+Last Dividend: 6.30
+Method: multi-stage, Periods: 5
+Current Price: 289.40
+Potential Upside: nan%
+Analyst Forward Dividend: 6.30
+Your Projected D1: nan
+Difference: nan (nan%)
+Return on Equity (ROE): 18.08%
+Cost of Equity (Required Return): 9.14%
+Debt/Equity Ratio: N/A
+Interest Coverage Ratio: N/A
+Debt/Equity and Interest Coverage data not available.

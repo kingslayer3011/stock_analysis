@@ -1,0 +1,16 @@
+Gordon Growth Model Value for SAND.ST: 89.83
+D1 (next dividend): 6.13
+Required Return: 0.0924
+Growth Rate: 0.0658
+Last Dividend: 5.75
+Method: multi-stage, Periods: 5
+Current Price: 216.40
+Potential Upside: -58.49%
+Analyst Forward Dividend: 5.75
+Your Projected D1: 6.13
+Difference: 0.38 (6.58%)
+Return on Equity (ROE): 15.80%
+Cost of Equity (Required Return): 9.24%
+Debt/Equity Ratio: 49.68
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

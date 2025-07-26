@@ -1,0 +1,16 @@
+Gordon Growth Model Value for GJF.OL: 10.66
+D1 (next dividend): 0.60
+Required Return: 0.0488
+Growth Rate: -0.4008
+Last Dividend: 1.00
+Method: multi-stage, Periods: 5
+Current Price: 256.60
+Potential Upside: -95.85%
+Analyst Forward Dividend: 9.00
+Your Projected D1: 0.60
+Difference: -8.40 (-93.34%)
+Return on Equity (ROE): 25.71%
+Cost of Equity (Required Return): 4.88%
+Debt/Equity Ratio: 24.24
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

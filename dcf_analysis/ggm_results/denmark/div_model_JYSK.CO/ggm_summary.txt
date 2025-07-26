@@ -1,0 +1,16 @@
+Gordon Growth Model Value for JYSK.CO: nan
+D1 (next dividend): nan
+Required Return: 0.0579
+Growth Rate: nan
+Last Dividend: 24.00
+Method: multi-stage, Periods: 5
+Current Price: 638.50
+Potential Upside: nan%
+Analyst Forward Dividend: 24.00
+Your Projected D1: nan
+Difference: nan (nan%)
+Return on Equity (ROE): 10.67%
+Cost of Equity (Required Return): 5.79%
+Debt/Equity Ratio: N/A
+Interest Coverage Ratio: N/A
+Debt/Equity and Interest Coverage data not available.

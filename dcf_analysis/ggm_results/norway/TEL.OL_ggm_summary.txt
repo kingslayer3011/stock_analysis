@@ -1,0 +1,16 @@
+Gordon Growth Model Value for TEL.OL: 363.67
+D1 (next dividend): 10.23
+Required Return: 0.0483
+Growth Rate: 0.0235
+Last Dividend: 10.00
+Method: multi-stage, Periods: 5
+Current Price: 156.90
+Potential Upside: 131.79%
+Analyst Forward Dividend: 9.20
+Your Projected D1: 10.23
+Difference: 1.03 (11.25%)
+Return on Equity (ROE): 13.03%
+Cost of Equity (Required Return): 4.83%
+Debt/Equity Ratio: 119.52
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

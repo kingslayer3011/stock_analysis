@@ -1,0 +1,16 @@
+Gordon Growth Model Value for SALM.OL: 574.96
+D1 (next dividend): 23.71
+Required Return: 0.0646
+Growth Rate: 0.0779
+Last Dividend: 22.00
+Method: multi-stage, Periods: 5
+Current Price: 432.40
+Potential Upside: 32.97%
+Analyst Forward Dividend: 22.00
+Your Projected D1: 23.71
+Difference: 1.71 (7.79%)
+Return on Equity (ROE): 8.25%
+Cost of Equity (Required Return): 6.46%
+Debt/Equity Ratio: 106.78
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

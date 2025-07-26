@@ -1,0 +1,11 @@
+Ticker,Company Name,Industry,SummaryFile,Value,High Growth Rate,Upside (%)
+BAKKA.OL,P/F Bakkafrost,Farm Products,ggm_results\norway\BAKKA.OL_ggm_summary.txt,592.87,0.3097,30.88
+DNB.OL,DNB Bank ASA,Banks - Regional,ggm_results\norway\DNB.OL_ggm_summary.txt,490.88,0.0428,79.02
+GJF.OL,Gjensidige Forsikring ASA,Insurance - Property & Casualty,ggm_results\norway\GJF.OL_ggm_summary.txt,10.66,-0.4008,-95.85
+MOWI.OL,Mowi ASA,Farm Products,ggm_results\norway\MOWI.OL_ggm_summary.txt,199.22,0.2081,3.01
+NHY.OL,Norsk Hydro ASA,Aluminum,ggm_results\norway\NHY.OL_ggm_summary.txt,39.01,0.0891,-32.32
+ORK.OL,Orkla ASA,Packaged Foods,ggm_results\norway\ORK.OL_ggm_summary.txt,370.96,0.1689,240.64
+SALM.OL,SalMar ASA,Farm Products,ggm_results\norway\SALM.OL_ggm_summary.txt,574.96,0.0779,32.97
+TEL.OL,Telenor ASA,Telecom Services,ggm_results\norway\TEL.OL_ggm_summary.txt,363.67,0.0235,131.79
+TOM.OL,Tomra Systems ASA,Waste Management,ggm_results\norway\TOM.OL_ggm_summary.txt,36.09,0.0928,-76.53
+YAR.OL,Yara International ASA,Agricultural Inputs,ggm_results\norway\YAR.OL_ggm_summary.txt,32.33,-0.4641,-91.38

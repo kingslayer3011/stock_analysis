@@ -1,0 +1,17 @@
+Gordon Growth Model Value for YAR.OL: 32.33
+D1 (next dividend): 2.68
+Required Return: 0.0584
+Growth Rate: -0.4641
+Last Dividend: 5.00
+Method: multi-stage, Periods: 5
+Current Price: 375.20
+Potential Upside: -91.38%
+Analyst Forward Dividend: 5.00
+Your Projected D1: 2.68
+Difference: -2.32 (-46.41%)
+Return on Equity (ROE): 3.95%
+Cost of Equity (Required Return): 5.84%
+Debt/Equity Ratio: 54.37
+Interest Coverage Ratio: N/A
+WARNING: ROE is less than the required return (cost of equity). Long-term growth may be questionable.
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

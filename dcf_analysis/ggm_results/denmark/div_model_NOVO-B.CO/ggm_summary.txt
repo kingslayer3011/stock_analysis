@@ -1,0 +1,16 @@
+Gordon Growth Model Value for NOVO-B.CO: 1131.98
+D1 (next dividend): 21.35
+Required Return: 0.0490
+Growth Rate: 0.3512
+Last Dividend: 15.80
+Method: multi-stage, Periods: 5
+Current Price: 438.35
+Potential Upside: 158.24%
+Analyst Forward Dividend: 15.80
+Your Projected D1: 21.35
+Difference: 5.55 (35.12%)
+Return on Equity (ROE): 88.11%
+Cost of Equity (Required Return): 4.90%
+Debt/Equity Ratio: 85.70
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

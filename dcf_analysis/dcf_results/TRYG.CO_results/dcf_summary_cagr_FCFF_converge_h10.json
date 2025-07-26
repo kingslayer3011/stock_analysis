@@ -1,0 +1,12 @@
+{
+  "enterprise_value": 0.0,
+  "sum_pv": 0.0,
+  "terminal_value": NaN,
+  "npv": 0.0,
+  "cash": 0.0,
+  "debt": 0.0,
+  "equity_value": 0.0,
+  "per_share_value": 0.0,
+  "upside": -100.0,
+  "average_growth_rate": NaN
+}

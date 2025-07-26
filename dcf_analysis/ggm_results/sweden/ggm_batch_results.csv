@@ -1,0 +1,14 @@
+Ticker,Company Name,Industry,SummaryFile,Value,High Growth Rate,Upside (%)
+ALFA.ST,Alfa Laval AB (publ),Specialty Industrial Machinery,ggm_results\sweden\ALFA.ST_ggm_summary.txt,181.79,0.1156,-54.38
+ASSA-B.ST,ASSA ABLOY AB (publ),Security & Protection Services,ggm_results\sweden\ASSA-B.ST_ggm_summary.txt,145.28,0.1140,-50.88
+ATCO-A.ST,Atlas Copco AB (publ),Specialty Industrial Machinery,ggm_results\sweden\ATCO-A.ST_ggm_summary.txt,74.33,0.1482,-51.49
+ATCO-B.ST,Atlas Copco AB (publ),Specialty Industrial Machinery,ggm_results\sweden\ATCO-B.ST_ggm_summary.txt,83.50,0.2034,-37.62
+AXFO.ST,Axfood AB (publ),Grocery Stores,ggm_results\sweden\AXFO.ST_ggm_summary.txt,438.53,0.3058,54.63
+ELUX-B.ST,AB Electrolux (publ),"Furnishings, Fixtures & Appliances",ggm_results\sweden\ELUX-B.ST_ggm_summary.txt,222.75,0.1371,222.74
+ESSITY-B.ST,Essity AB (publ),Household & Personal Products,ggm_results\sweden\ESSITY-B.ST_ggm_summary.txt,295.08,0.0516,10.93
+HM-B.ST,H & M Hennes & Mauritz AB (publ),Apparel Manufacturing,ggm_results\sweden\HM-B.ST_ggm_summary.txt,103.28,0.0091,-24.01
+SAND.ST,Sandvik AB (publ),Specialty Industrial Machinery,ggm_results\sweden\SAND.ST_ggm_summary.txt,89.83,0.0658,-58.49
+SWED-A.ST,Swedbank AB (publ),Banks - Regional,ggm_results\sweden\SWED-A.ST_ggm_summary.txt,713.07,0.1380,185.92
+SWMA.ST,,,,,,
+TEL2-B.ST,Tele2 AB (publ),Telecom Services,ggm_results\sweden\TEL2-B.ST_ggm_summary.txt,157.67,-0.0639,13.03
+VOLV-B.ST,AB Volvo (publ),Farm & Heavy Construction Machinery,ggm_results\sweden\VOLV-B.ST_ggm_summary.txt,147.58,-0.0942,-44.52

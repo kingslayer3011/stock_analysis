@@ -1,0 +1,13 @@
+ticker,name,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,per_share_value,current_share_price,upside,average_growth_rate
+TRYG.CO,Tryg A/S,5,standard,FCFF,cagr,Historical Cagr,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,5,standard,FCFF,slope,Regression Slope,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,5,converged,FCFF,cagr,Historical Cagr,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,5,converged,FCFF,slope,Regression Slope,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,10,standard,FCFF,cagr,Historical Cagr,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,10,standard,FCFF,slope,Regression Slope,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,10,converged,FCFF,cagr,Historical Cagr,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,10,converged,FCFF,slope,Regression Slope,0.08,0.0,160,-100.0,
+TRYG.CO,Tryg A/S,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.08,0.0,160,-100.0,

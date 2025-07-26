@@ -1,0 +1,16 @@
+Gordon Growth Model Value for DNB.OL: 490.88
+D1 (next dividend): 17.47
+Required Return: 0.0567
+Growth Rate: 0.0428
+Last Dividend: 16.75
+Method: multi-stage, Periods: 5
+Current Price: 274.20
+Potential Upside: 79.02%
+Analyst Forward Dividend: 16.75
+Your Projected D1: 17.47
+Difference: 0.72 (4.28%)
+Return on Equity (ROE): 16.15%
+Cost of Equity (Required Return): 5.67%
+Debt/Equity Ratio: N/A
+Interest Coverage Ratio: N/A
+Debt/Equity and Interest Coverage data not available.

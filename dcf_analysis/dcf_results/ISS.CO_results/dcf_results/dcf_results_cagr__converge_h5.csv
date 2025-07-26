@@ -1,0 +1,12 @@
+Year,Revenue (M),growth_rate,operating_margin,EBIT (M),effective_tax_rate,nopat (M),sales_to_capital,reinvest (M),FCFF (M),discount_factor,pv (M),Type
+2021,71363,0.0,0.02,1430,0.4871,733,2.6465,,,,,Historical calendar year
+2022,73838,0.0347,0.0398,2936,0.1607,2464,2.4955,992,1851,,,Historical calendar year
+2023,78681,0.0656,0.0394,3103,0.2189,2424,2.9368,1649,4857,,,Historical calendar year
+2024,83761,0.0646,0.0485,4063,0.1995,3253,2.9555,1719,4254,,,Historical calendar year
+2025,81026,-0.0327,0.0425,3445,0.2303,2652,2.859,-957,3647,,,Historical ttm
+2025,85228,0.0519,0.0425,3624,0.2303,2789,2.859,1470,1319,0.9434,1245,Projected calendar year
+2026,89394,0.0489,0.0425,3801,0.2303,2925,2.859,1457,1468,0.89,1307,Projected calendar year
+2027,93497,0.0459,0.0425,3975,0.2303,3060,2.859,1435,1625,0.8396,1364,Projected calendar year
+2028,97508,0.0429,0.0425,4146,0.2303,3191,2.859,1403,1788,0.7921,1416,Projected calendar year
+2029,101401,0.0399,0.0425,4311,0.2303,3318,2.859,1362,1957,0.7473,1462,Projected calendar year
+,,0.025,,,,,,,57306,0.7473,42822,Terminal value

@@ -1,0 +1,13 @@
+ticker,name,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,per_share_value,current_share_price,upside,average_growth_rate
+GMAB.CO,Genmab A/S,5,standard,FCFF,cagr,Historical Cagr,0.12,2736,1296,111.0,0.15
+GMAB.CO,Genmab A/S,5,standard,FCFF,slope,Regression Slope,0.12,2051,1296,58.27,0.11
+GMAB.CO,Genmab A/S,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.12,1856,1296,43.21,0.05
+GMAB.CO,Genmab A/S,5,converged,FCFF,cagr,Historical Cagr,0.12,2374,1296,83.21,0.1
+GMAB.CO,Genmab A/S,5,converged,FCFF,slope,Regression Slope,0.12,1445,1296,11.51,-0.01
+GMAB.CO,Genmab A/S,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.12,1794,1296,38.45,0.04
+GMAB.CO,Genmab A/S,10,standard,FCFF,cagr,Historical Cagr,0.12,3980,1296,207.0,0.15
+GMAB.CO,Genmab A/S,10,standard,FCFF,slope,Regression Slope,0.12,2370,1296,82.89,0.09
+GMAB.CO,Genmab A/S,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.12,2008,1296,54.97,0.05
+GMAB.CO,Genmab A/S,10,converged,FCFF,cagr,Historical Cagr,0.12,2563,1296,97.79,0.07
+GMAB.CO,Genmab A/S,10,converged,FCFF,slope,Regression Slope,0.12,1412,1296,8.92,0.0
+GMAB.CO,Genmab A/S,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.12,1825,1296,40.8,0.03

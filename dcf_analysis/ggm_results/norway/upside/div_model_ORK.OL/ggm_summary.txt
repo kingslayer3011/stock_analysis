@@ -1,0 +1,16 @@
+Gordon Growth Model Value for ORK.OL: 370.96
+D1 (next dividend): 7.01
+Required Return: 0.0432
+Growth Rate: 0.1689
+Last Dividend: 6.00
+Method: multi-stage, Periods: 5
+Current Price: 108.90
+Potential Upside: 240.64%
+Analyst Forward Dividend: 4.00
+Your Projected D1: 7.01
+Difference: 3.01 (75.33%)
+Return on Equity (ROE): 13.39%
+Cost of Equity (Required Return): 4.32%
+Debt/Equity Ratio: 35.01
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

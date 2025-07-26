@@ -1,0 +1,13 @@
+ticker,name,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,per_share_value,current_share_price,upside,average_growth_rate
+DSV.CO,DSV A/S,5,standard,FCFF,cagr,Historical Cagr,0.08,1226,1505,-18.56,0.0
+DSV.CO,DSV A/S,5,standard,FCFF,slope,Regression Slope,0.08,1120,1505,-25.55,-0.02
+DSV.CO,DSV A/S,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.08,2262,1505,50.33,0.15
+DSV.CO,DSV A/S,5,converged,FCFF,cagr,Historical Cagr,0.08,1259,1505,-16.33,0.01
+DSV.CO,DSV A/S,5,converged,FCFF,slope,Regression Slope,0.08,1267,1505,-15.83,-0.0
+DSV.CO,DSV A/S,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.08,1953,1505,29.76,0.11
+DSV.CO,DSV A/S,10,standard,FCFF,cagr,Historical Cagr,0.08,1144,1505,-23.97,0.0
+DSV.CO,DSV A/S,10,standard,FCFF,slope,Regression Slope,0.08,980,1505,-34.89,-0.02
+DSV.CO,DSV A/S,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.08,3491,1505,132.0,0.15
+DSV.CO,DSV A/S,10,converged,FCFF,cagr,Historical Cagr,0.08,1241,1505,-17.55,0.02
+DSV.CO,DSV A/S,10,converged,FCFF,slope,Regression Slope,0.08,1230,1505,-18.26,0.01
+DSV.CO,DSV A/S,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.08,2135,1505,41.83,0.08

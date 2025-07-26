@@ -1,0 +1,16 @@
+Gordon Growth Model Value for MAERSK-B.CO: 24138.91
+D1 (next dividend): 1221.08
+Required Return: 0.0755
+Growth Rate: 0.0903
+Last Dividend: 1120.00
+Method: multi-stage, Periods: 5
+Current Price: 11675.00
+Potential Upside: 106.76%
+Analyst Forward Dividend: 1120.00
+Your Projected D1: 1221.08
+Difference: 101.08 (9.03%)
+Return on Equity (ROE): 13.17%
+Cost of Equity (Required Return): 7.55%
+Debt/Equity Ratio: 30.18
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

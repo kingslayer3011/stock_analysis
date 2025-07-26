@@ -1,0 +1,13 @@
+ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,per_share_value,current_share_price,average_growth_rate
+NOVO-B.CO,Novo Nordisk A/S,167.0,5,standard,FCFF,cagr,Historical Cagr,0.07,1207,451,0.15
+NOVO-B.CO,Novo Nordisk A/S,130.0,5,standard,FCFF,slope,Regression Slope,0.07,1036,451,0.12
+NOVO-B.CO,Novo Nordisk A/S,104.0,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.07,919,451,0.1
+NOVO-B.CO,Novo Nordisk A/S,107.0,5,converged,FCFF,cagr,Historical Cagr,0.07,933,451,0.11
+NOVO-B.CO,Novo Nordisk A/S,67.01,5,converged,FCFF,slope,Regression Slope,0.07,754,451,0.07
+NOVO-B.CO,Novo Nordisk A/S,73.32,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.07,782,451,0.07
+NOVO-B.CO,Novo Nordisk A/S,167.0,10,standard,FCFF,cagr,Historical Cagr,0.07,1207,451,0.15
+NOVO-B.CO,Novo Nordisk A/S,130.0,10,standard,FCFF,slope,Regression Slope,0.07,1036,451,0.12
+NOVO-B.CO,Novo Nordisk A/S,104.0,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.07,919,451,0.1
+NOVO-B.CO,Novo Nordisk A/S,107.0,10,converged,FCFF,cagr,Historical Cagr,0.07,933,451,0.11
+NOVO-B.CO,Novo Nordisk A/S,67.01,10,converged,FCFF,slope,Regression Slope,0.07,754,451,0.07
+NOVO-B.CO,Novo Nordisk A/S,73.32,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.07,782,451,0.07

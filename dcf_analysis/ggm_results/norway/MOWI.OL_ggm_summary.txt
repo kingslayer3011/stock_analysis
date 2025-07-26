@@ -1,0 +1,16 @@
+Gordon Growth Model Value for MOWI.OL: 199.22
+D1 (next dividend): 8.58
+Required Return: 0.0749
+Growth Rate: 0.2081
+Last Dividend: 7.10
+Method: multi-stage, Periods: 5
+Current Price: 193.40
+Potential Upside: 3.01%
+Analyst Forward Dividend: 6.90
+Your Projected D1: 8.58
+Difference: 1.68 (24.31%)
+Return on Equity (ROE): 8.30%
+Cost of Equity (Required Return): 7.49%
+Debt/Equity Ratio: 67.16
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

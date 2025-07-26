@@ -1,0 +1,87 @@
+Year,variable,method,value,parameter_value,growth_rate
+2025,Revenue,cagr,85470055229.0,0.05,0.05
+2026,Revenue,cagr,90157854774.0,0.05,0.05
+2027,Revenue,cagr,95102767344.0,0.05,0.05
+2028,Revenue,cagr,100318894890.0,0.05,0.05
+2029,Revenue,cagr,105821112813.0,0.05,0.05
+2030,Revenue,cagr,111625112391.0,0.05,0.05
+2031,Revenue,cagr,117747445524.0,0.05,0.05
+2032,Revenue,cagr,124205571940.0,0.05,0.05
+2033,Revenue,cagr,131017908986.0,0.05,0.05
+2034,Revenue,cagr,138203884149.0,0.05,0.05
+2025,Revenue,slope,87420000000.0,4203700000.0,0.08
+2026,Revenue,slope,91623700000.0,4203700000.0,0.05
+2027,Revenue,slope,95827400000.0,4203700000.0,0.05
+2028,Revenue,slope,100031100000.0,4203700000.0,0.04
+2029,Revenue,slope,104234800000.0,4203700000.0,0.04
+2030,Revenue,slope,108438500000.0,4203700000.0,0.04
+2031,Revenue,slope,112642200000.0,4203700000.0,0.04
+2032,Revenue,slope,116845900000.0,4203700000.0,0.04
+2033,Revenue,slope,121049600000.0,4203700000.0,0.04
+2034,Revenue,slope,125253300000.0,4203700000.0,0.03
+2025,Revenue,man_inp_growth,84267040000.0,0.04,0.04
+2026,Revenue,man_inp_growth,87637721600.0,0.04,0.04
+2027,Revenue,man_inp_growth,91143230464.0,0.04,0.04
+2028,Revenue,man_inp_growth,94788959683.0,0.04,0.04
+2029,Revenue,man_inp_growth,98580518070.0,0.04,0.04
+2030,Revenue,man_inp_growth,102523738793.0,0.04,0.04
+2031,Revenue,man_inp_growth,106624688344.0,0.04,0.04
+2032,Revenue,man_inp_growth,110889675878.0,0.04,0.04
+2033,Revenue,man_inp_growth,115325262913.0,0.04,0.04
+2034,Revenue,man_inp_growth,119938273430.0,0.04,0.04
+2025,effective_tax_rate,,0.23,0.0,0.0
+2026,effective_tax_rate,,0.23,0.0,0.0
+2027,effective_tax_rate,,0.23,0.0,0.0
+2028,effective_tax_rate,,0.23,0.0,0.0
+2029,effective_tax_rate,,0.23,0.0,0.0
+2030,effective_tax_rate,,0.23,0.0,0.0
+2031,effective_tax_rate,,0.23,0.0,0.0
+2032,effective_tax_rate,,0.23,0.0,0.0
+2033,effective_tax_rate,,0.23,0.0,0.0
+2034,effective_tax_rate,,0.23,0.0,0.0
+2025,operating_margin,,0.04,0.0,0.0
+2026,operating_margin,,0.04,0.0,0.0
+2027,operating_margin,,0.04,0.0,0.0
+2028,operating_margin,,0.04,0.0,0.0
+2029,operating_margin,,0.04,0.0,0.0
+2030,operating_margin,,0.04,0.0,0.0
+2031,operating_margin,,0.04,0.0,0.0
+2032,operating_margin,,0.04,0.0,0.0
+2033,operating_margin,,0.04,0.0,0.0
+2034,operating_margin,,0.04,0.0,0.0
+2025,sales_to_capital,,2.86,0.0,0.0
+2026,sales_to_capital,,2.86,0.0,0.0
+2027,sales_to_capital,,2.86,0.0,0.0
+2028,sales_to_capital,,2.86,0.0,0.0
+2029,sales_to_capital,,2.86,0.0,0.0
+2030,sales_to_capital,,2.86,0.0,0.0
+2031,sales_to_capital,,2.86,0.0,0.0
+2032,sales_to_capital,,2.86,0.0,0.0
+2033,sales_to_capital,,2.86,0.0,0.0
+2034,sales_to_capital,,2.86,0.0,0.0
+2024,FCFF,ttm,3646636397.0,,
+2024,FCF,ttm,2729000000.0,,
+2024,EBIT,ttm,3445000000.0,,
+2024,CapEx,ttm,652000000.0,,
+2024,Depreciation And Amortization,ttm,1481000000.0,,
+2024,Delta WC,ttm,-166000000.0,,
+2024,Tax Provision,ttm,634000000.0,,
+2024,Revenue,ttm,81026000000.0,,
+2024,EBITDA,ttm,5003000000.0,,
+2024,Net Income,ttm,1725000000.0,,
+2024,Total Debt,ttm,18341000000.0,,
+2024,Cash,ttm,6829000000.0,,
+2024,Operating Cash Flow,ttm,3381000000.0,,
+2024,Net Debt,ttm,11512000000.0,,
+2024,Current Assets,ttm,21370000000.0,,
+2024,Current Liabilities,ttm,22300000000.0,,
+2024,Pretax Income,ttm,2753000000.0,,
+2024,Total Assets,ttm,50641000000.0,,
+2024,Interest Expense,ttm,692000000.0,,
+2024,effective_tax_rate,ttm,0.23,,
+2024,ReinvestmentRate,ttm,0.7,,
+2024,capital_invested,ttm,28341000000.0,,
+2024,ROCE,ttm,0.12,,
+2024,operating_margin,ttm,0.04,,
+2024,sales_to_capital,ttm,2.86,,
+2024,FCFE,ttm,3646636397.0,,

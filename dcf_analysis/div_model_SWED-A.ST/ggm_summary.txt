@@ -1,0 +1,16 @@
+Gordon Growth Model Value for SWED-A.ST: 585.30
+D1 (next dividend): 22.79
+Required Return: 0.0606
+Growth Rate: 0.0500
+Last Dividend: 21.70
+Method: multi-stage, Periods: 5
+Current Price: 249.40
+Potential Upside: 134.68%
+Analyst Forward Dividend: 21.70
+Your Projected D1: 22.79
+Difference: 1.09 (5.00%)
+Return on Equity (ROE): 17.64%
+Cost of Equity (Required Return): 6.06%
+Debt/Equity Ratio: N/A
+Interest Coverage Ratio: N/A
+Debt/Equity and Interest Coverage data not available.

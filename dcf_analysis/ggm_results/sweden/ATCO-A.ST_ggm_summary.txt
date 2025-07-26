@@ -1,0 +1,16 @@
+Gordon Growth Model Value for ATCO-A.ST: 74.33
+D1 (next dividend): 3.44
+Required Return: 0.0748
+Growth Rate: 0.1482
+Last Dividend: 3.00
+Method: multi-stage, Periods: 5
+Current Price: 153.25
+Potential Upside: -51.49%
+Analyst Forward Dividend: 3.00
+Your Projected D1: 3.44
+Difference: 0.44 (14.82%)
+Return on Equity (ROE): 27.15%
+Cost of Equity (Required Return): 7.48%
+Debt/Equity Ratio: 29.85
+Interest Coverage Ratio: N/A
+WARNING: Debt/Equity ratio is high. Financial risk may be elevated.

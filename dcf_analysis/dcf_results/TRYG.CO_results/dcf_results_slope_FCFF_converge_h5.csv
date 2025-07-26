@@ -1,0 +1,12 @@
+Year,FCFF,growth_rate,PV,Discount Factor,Type
+2021,,0.0,,,Historical calendar year
+2022,,0.0,,,Historical calendar year
+2023,,0.0,,,Historical calendar year
+2024,,0.0,,,Historical calendar year
+2025,,0.0,,,Historical ttm
+2025,,,,0.9289950350166992,Projected calendar year
+2026,,,,0.8630317750856783,Projected calendar year
+2027,,,,0.8017522341162439,Projected calendar year
+2028,,,,0.7448238448075367,Projected calendar year
+2029,,,,0.6919376537882501,Projected calendar year
+,,0.02,,0.6919376537882501,Terminal value
