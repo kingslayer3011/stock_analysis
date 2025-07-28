@@ -1,11 +1,11 @@
 {
-  "enterprise_value": 49616394649.39459,
-  "terminal_value": 57305986798.19436,
-  "npv": 49616394649.39459,
+  "enterprise_value": 95688344136.80827,
+  "terminal_value": 106068837495.57794,
+  "npv": 95688344136.80827,
   "net_debt": 11512000000.0,
-  "equity_value": 38104394649.39459,
-  "per_share_value": 226.4533218201811,
-  "share_price": 190.2,
-  "upside": 19.060631871809203,
+  "equity_value": 84176344136.80827,
+  "per_share_value": 500.2575929588168,
+  "share_price": 190.3,
+  "upside": 162.87839882228943,
   "average_growth_rate": 0.04241090987725645
 }

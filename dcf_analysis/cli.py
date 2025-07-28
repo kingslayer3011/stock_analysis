@@ -52,37 +52,14 @@ def reduce_decimals(df, columns, decimals=4):
     return df
 
 
-def custom_round(val):
-    if isinstance(val, pd.Series):
-        return val.apply(custom_round)
-    elif isinstance(val, pd.DataFrame):
-        return val.applymap(custom_round)
-    try:
-        if pd.isnull(val):
-            return val
-        if abs(val) > 100:
-            return round(val)
-        else:
-            return round(val, 2)
-    except Exception:
-        return val
 
-
-def round_numeric_cols(df):
-    df = df.copy()
-    for col in df.select_dtypes(include=[np.number]).columns:
-        df[col] = custom_round(df[col])
-    return df
-
-def save_dcf_results(dcf_df, dcf_valuation_info, output_folder, suffix=""):
+def save_dcf_results(dcf_df, output_folder, suffix=""):
     # Ensure results are saved in a subfolder called 'dcf_results'
     dcf_results_folder = os.path.join(output_folder, "dcf_results")
     os.makedirs(dcf_results_folder, exist_ok=True)
     dcf_csv_path = os.path.join(dcf_results_folder, f"dcf_results{suffix}.csv")
     dcf_df.to_csv(dcf_csv_path, index=False)
-    summary_path = os.path.join(dcf_results_folder, f"dcf_summary{suffix}.json")
-    with open(summary_path, 'w') as f:
-        json.dump(dcf_valuation_info, f, indent=2)
+
 
 def save_wacc_estimate(wacc_estimate_results, output_folder, suffix=""):
     if wacc_estimate_results is None:
@@ -101,6 +78,12 @@ def parse_args():
     parser.add_argument("--wacc", type=float, help="WACC override.")
     parser.add_argument("--terminal_growth", type=float, help="Terminal growth override.")
     parser.add_argument("--expected_growth", type=float, help="Expected FCF or EBITDA growth rate override.")
+    parser.add_argument("--target_operating_margin", type=float, default=None, help="Target operating margin override.")
+    parser.add_argument("--target_effective_tax_rate", type=float, default=None, help="Target effective tax rate override.")
+    parser.add_argument("--target_sales_to_capital", type=float, default=None, help="Target sales to capital override.")
+    parser.add_argument("--initial_operating_margin", type=float, default=None, help="Initial operating margin override.")
+    parser.add_argument("--initial_effective_tax_rate", type=float, default=None, help="Initial effective tax rate override.")
+    parser.add_argument("--initial_sales_to_capital", type=float, default=None, help="Initial sales to capital override.")
     parser.add_argument("--units", choices=["ones", "thousands", "millions", "billions"],
                         help="Units for output values (ones, thousands, millions, billions).")
     parser.add_argument("--converge_growth", action="store_true",
@@ -147,6 +130,14 @@ def main():
     if not ticker:
         print("ERROR: 'ticker' must be specified either in the config or via --ticker", file=sys.stderr)
         sys.exit(1)
+
+    # --- Load config targets ---
+    target_operating_margin = final_params.get("target_operating_margin", None)
+    target_effective_tax_rate = final_params.get("target_effective_tax_rate", None)
+    target_sales_to_capital = final_params.get("target_sales_to_capital", None)
+    initial_operating_margin = final_params.get("initial_operating_margin", None)
+    initial_effective_tax_rate = final_params.get("initial_effective_tax_rate", None)
+    initial_sales_to_capital = final_params.get("initial_sales_to_capital", None)
 
     # Fetch company name and country via yfinance
     try:
@@ -227,7 +218,13 @@ def main():
         plot_projections=plot_projections,
         regression_plots_dir=regression_plots_dir,
         plot_regression_plots=args.plot_regression_plots or final_params.get("plot_regression_plots", True),
-        variables=["Revenue", "operating_margin", "effective_tax_rate", "sales_to_capital"]
+        variables=["Revenue", "operating_margin", "effective_tax_rate", "sales_to_capital"],
+        target_operating_margin=target_operating_margin,
+        target_effective_tax_rate=target_effective_tax_rate,
+        target_sales_to_capital=target_sales_to_capital,
+        initial_operating_margin=initial_operating_margin,
+        initial_effective_tax_rate=initial_effective_tax_rate,
+        initial_sales_to_capital=initial_sales_to_capital
     )
 
     df_proj_converge = project_all(
@@ -238,7 +235,14 @@ def main():
         man_inp_growth=config.get("man_inp_growth", None),
         plot_projections=plot_projections,
         regression_plots_dir=regression_plots_dir,
-        plot_regression_plots=args.plot_regression_plots or final_params.get("plot_regression_plots", True)
+        plot_regression_plots=args.plot_regression_plots or final_params.get("plot_regression_plots", True),
+        variables=["Revenue", "operating_margin", "effective_tax_rate", "sales_to_capital"],
+        target_operating_margin=target_operating_margin,
+        target_effective_tax_rate=target_effective_tax_rate,
+        target_sales_to_capital=target_sales_to_capital,
+        initial_operating_margin=initial_operating_margin,
+        initial_effective_tax_rate=initial_effective_tax_rate,
+        initial_sales_to_capital=initial_sales_to_capital
     )
 
     if plot_projections:
@@ -250,13 +254,13 @@ def main():
 
     proj_csv_path = os.path.join(output_folder, "projected_values.csv")
     df_proj_out = change_units(df_proj, [c for c in ["Revenue", "EBITDA", "FCF"] if c in df_proj.columns], to=units)
-    round_numeric_cols(df_proj_out).to_csv(proj_csv_path, index=False)
+    df_proj_out.to_csv(proj_csv_path, index=False)
 
 
     # === Run DCF for multiple forecast horizons ===
     dcf_estimates_list = []
-    unit_cols = ["Revenue", "EBIT", "nopat", "reinvest", "FCFF", "pv", "enterprise_value", "terminal_value", "net_debt"]
-    dec_cols = ["growth_rate", "operating_margin", "effective_tax_rate", "discount_factor", "sales_to_capital", "per_share_value", "upside", "average_growth_rate"]
+    unit_cols = ["Revenue", "EBIT", "nopat", "reinvest", "capital_invested", "FCFF", "pv", "Enterprise_value", "Terminal_value", "Npv", "Net_debt", "Equity_value"]
+    dec_cols = ["growth_rate", "operating_margin", "effective_tax_rate", "ROCE", "discount_factor", "sales_to_capital", "per_share_value", "upside", "average_growth_rate"]
     number_shares = val_info.get("number_shares")
     share_price = val_info.get("share_price")
 
@@ -292,7 +296,7 @@ def main():
 
                 dcf_out = change_units(dcf_df, [c for c in unit_cols if c in dcf_df.columns], to=units)
                 dcf_out = reduce_decimals(dcf_out, [c for c in dec_cols if c in dcf_out.columns])
-                save_dcf_results(dcf_out, dcf_info, output_folder, suffix=suffix)
+                save_dcf_results(dcf_out, output_folder, suffix=suffix)
         
                 # Insert current share price after per_share_value
                 dcf_row = {
@@ -314,6 +318,7 @@ def main():
                 dcf_row["upside"] = dcf_info["upside"]
                 dcf_row["average_growth_rate"] = dcf_info["average_growth_rate"]
                 dcf_estimates_list.append(dcf_row)
+
 
     dcf_estimates = pd.DataFrame(dcf_estimates_list)
     dcf_estimates = change_units(dcf_estimates, [c for c in unit_cols if c in dcf_estimates.columns], to=units)
@@ -364,6 +369,7 @@ def main():
         print(f"Warning: Could not generate upside plot: {e}")
 
     plot_fcff_components(df_hist, output_folder)
+
 
 if __name__ == "__main__":
     main()

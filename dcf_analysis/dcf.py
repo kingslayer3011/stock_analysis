@@ -294,19 +294,20 @@ def run_dcf(
     df_proj_sub = df_proj.loc[(df_proj["Year"] <= last_full_year + forecast_horizon)].copy()
     df_proj_fcf = df_proj_sub.loc[(df_proj_sub["method"] == p_method) & (df_proj_sub["variable"] == "Revenue"), ["Year", 'value', "growth_rate"]].copy().reset_index(drop=True)
     df_proj_fcf.rename(columns={'value': "Revenue"}, inplace=True)
-    df_proj_fcf["operating_margin"] = df_proj_sub.loc[(df_proj_sub["method"] == '') & (df_proj_sub["variable"] == "operating_margin"), ['value']].copy().reset_index(drop=True)
+    df_proj_fcf["operating_margin"] = df_proj_sub.loc[(df_proj_sub["method"] == str(forecast_horizon)) & (df_proj_sub["variable"] == "operating_margin"), ['value']].copy().reset_index(drop=True)
     df_proj_fcf["EBIT"] = df_proj_fcf["Revenue"] * df_proj_fcf["operating_margin"]
-    df_proj_fcf["effective_tax_rate"] = df_proj_sub.loc[(df_proj_sub["method"] == '') & (df_proj_sub["variable"] == "effective_tax_rate"), ['value']].copy().reset_index(drop=True)
+    df_proj_fcf["effective_tax_rate"] = df_proj_sub.loc[(df_proj_sub["method"] == str(forecast_horizon)) & (df_proj_sub["variable"] == "effective_tax_rate"), ['value']].copy().reset_index(drop=True)
     df_proj_fcf["nopat"] = df_proj_fcf["EBIT"] * (1 - df_proj_fcf["effective_tax_rate"])
-    df_proj_fcf["sales_to_capital"] = df_proj_sub.loc[(df_proj_sub["method"] == '') & (df_proj_sub["variable"] == "sales_to_capital"), ['value']].copy().reset_index(drop=True)
+    df_proj_fcf["sales_to_capital"] = df_proj_sub.loc[(df_proj_sub["method"] == str(forecast_horizon)) & (df_proj_sub["variable"] == "sales_to_capital"), ['value']].copy().reset_index(drop=True)
 
     revenue_series = pd.concat([
             pd.Series([df_hist["Revenue"].iloc[-1]]),  # last historical Revenue as a Series
             df_proj_fcf["Revenue"].reset_index(drop=True)
         ], ignore_index=True)
-    df_proj_fcf["reinvest"] = revenue_series.diff().dropna().reset_index(drop=True) / df_proj_fcf["sales_to_capital"]
+    df_proj_fcf["reinvest"] = (revenue_series.diff().dropna().reset_index(drop=True) / df_proj_fcf["sales_to_capital"]).clip(lower=0)
+    df_proj_fcf["capital_invested"] = df_hist["capital_invested"].iloc[-1] + df_proj_fcf["reinvest"].cumsum()
+    df_proj_fcf["ROCE"] = df_proj_fcf["EBIT"] / df_proj_fcf["capital_invested"]
     df_proj_fcf["FCFF"] = df_proj_fcf["EBIT"].reset_index(drop=True) * (1- df_proj_fcf["effective_tax_rate"]) - df_proj_fcf["reinvest"].reset_index(drop=True)
-
 
     if forecast_horizon == 10:
         df_plot = df_proj_fcf.copy()
@@ -386,7 +387,7 @@ def run_dcf(
     df_hist_sub["growth_rate"] = df_hist_sub["growth_rate"].infer_objects(copy=False)
     df_hist_sub["nopat"] = df_hist_sub["EBIT"] * (1 - df_hist_sub["effective_tax_rate"])
     df_hist_sub["reinvest"] = df_hist_sub["Revenue"].diff().reset_index(drop=True) / df_hist_sub["sales_to_capital"]
-    df_hist_sub = df_hist_sub[["Year", "Revenue", "growth_rate", "operating_margin", "EBIT", "effective_tax_rate", "nopat", "sales_to_capital", "reinvest", "FCFF", "ttm"]].copy()
+    df_hist_sub = df_hist_sub[["Year", "Revenue", "growth_rate", "operating_margin", "EBIT", "effective_tax_rate", "nopat", "sales_to_capital", "reinvest", "capital_invested", "ROCE", "FCFF", "ttm"]].copy()
     df_hist_sub['Year'] = pd.to_datetime(df_hist_sub['Year']).dt.year
     df_hist_sub["discount_factor"] = np.nan
     df_hist_sub["pv"] = np.nan

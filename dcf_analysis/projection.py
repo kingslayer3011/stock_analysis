@@ -228,110 +228,122 @@ def project_man_inp_growth(series, last_year, projection_years, man_inp_growth, 
     return projections
 
 def project_operating_margin(
-    df_hist, projection_years, terminal_value=None):
-    """ Projects operating margin using regression slope and CAGR methods.
-    terminal_value: Optional terminal value to converge to.                        
+    df_hist, projection_years, initial_value=None, terminal_value=None):
+    """
+    Projects operating margin using convex combination of last value and terminal value.
+    terminal_value: Optional terminal value to converge to.
     """
     if 'operating_margin' not in df_hist.columns:
-        raise ValueError("DataFrame must contain 'Operating Margin' column")
+        raise ValueError("DataFrame must contain 'operating_margin' column")
     s = df_hist['operating_margin'].dropna()
-    if len(s) < 2:
+    if len(s) < 1:
         return pd.DataFrame(columns=['Year', 'method', 'value', 'parameter_value', 'growth_rate'])
-    last_year = df_hist[df_hist["ttm"] == 0].index.max().year
-    last_value = s.iloc[-1] if not s.empty else np.nan
-    # Converge to terminal value if provided. if no terminal_value, use last_value for all projections.
-    if terminal_value is not None:
-        growth_rate = (terminal_value / last_value) ** (1 / (projection_years - 1)) - 1
-    else:
-        growth_rate = 0
+    last_year = df_hist[df_hist.get("ttm", 0) == 0].index.max().year
+
+    if initial_value is None:
+        initial_value = s.iloc[-1] if not s.empty else np.nan
+
     projections = []
     for i in range(1, projection_years + 1):
         projected_year = last_year + i
-        projected_value = last_value * (1 + growth_rate) ** i
+        if terminal_value is not None:
+            alpha = i / projection_years
+            projected_value = (1 - alpha) * initial_value + alpha * terminal_value
+            growth_rate = (projected_value / initial_value - 1) if initial_value != 0 and not np.isnan(initial_value) else np.nan
+        else:
+            projected_value = initial_value
+            growth_rate = 0
         projections.append({
             'variable': 'operating_margin',
             'Year': projected_year,
-            'method': '',
+            'method': str(projection_years),
             'value': projected_value,
-            'parameter_value': growth_rate,
+            'parameter_value': np.nan,
             'growth_rate': growth_rate
         })
     df_proj = pd.DataFrame(projections)
-
     return df_proj
 
-def project_effective_tax_rate(
-    df_hist, projection_years, terminal_value=None):
-    """ Projects effective tax rate using regression slope and CAGR methods.
+def project_effective_tax_rate(df_hist, projection_years, initial_value=None, terminal_value=None):
+    """
+    Projects effective tax rate using convex combination of last value and terminal value.
     terminal_value: Optional terminal value to converge to.
     """
     if 'effective_tax_rate' not in df_hist.columns:
         raise ValueError("DataFrame must contain 'effective_tax_rate' column")
     s = df_hist['effective_tax_rate'].dropna()
-    if len(s) < 2:
+    if len(s) < 1:
         return pd.DataFrame(columns=['Year', 'method', 'value', 'parameter_value', 'growth_rate'])
-    last_year = df_hist[df_hist["ttm"] == 0].index.max().year
-    last_value = s.iloc[-1] if not s.empty else np.nan
-    # Converge to terminal value if provided. if no terminal_value, use last_value for all projections.
-    if terminal_value is not None:
-        growth_rate = (terminal_value / last_value) ** (1 / (projection_years - 1)) - 1
-    else:
-        growth_rate = 0
+    last_year = df_hist[df_hist.get("ttm", 0) == 0].index.max().year
+
+    if initial_value is None:
+        initial_value = s.iloc[-1] if not s.empty else np.nan
+
     projections = []
     for i in range(1, projection_years + 1):
         projected_year = last_year + i
-        projected_value = last_value * (1 + growth_rate) ** i
+        if terminal_value is not None:
+            alpha = i / projection_years
+            projected_value = (1 - alpha) * initial_value + alpha * terminal_value
+            growth_rate = (projected_value / initial_value - 1) if initial_value != 0 and not np.isnan(initial_value) else np.nan
+        else:
+            projected_value = initial_value
+            growth_rate = 0
         projections.append({
             'variable': 'effective_tax_rate',
             'Year': projected_year,
-            'method': '',
+            'method': str(projection_years),
             'value': projected_value,
-            'parameter_value': growth_rate,
+            'parameter_value': np.nan,
             'growth_rate': growth_rate
         })
     df_proj = pd.DataFrame(projections)
-
     return df_proj
 
 def project_sales_to_capital(
-    df_hist, projection_years, terminal_value=None):
-    """ Projects sales to capital using terminal value.
+    df_hist, projection_years, initial_value=None, terminal_value=None):
+    """
+    Projects sales to capital using convex combination of last value and terminal value.
     terminal_value: Optional terminal value to converge to.
     """
     if 'sales_to_capital' not in df_hist.columns:
-        raise ValueError("DataFrame must contain 'Sales to Capital' column")
+        raise ValueError("DataFrame must contain 'sales_to_capital' column")
     s = df_hist['sales_to_capital'].dropna()
-    if len(s) < 2:
+    if len(s) < 1:
         return pd.DataFrame(columns=['Year', 'method', 'value', 'parameter_value', 'growth_rate'])
-    last_year = df_hist[df_hist["ttm"] == 0].index.max().year
-    last_value = s.iloc[-1] if not s.empty else np.nan
-    # Converge to terminal value if provided. if no terminal_value, use last_value for all projections.
-    if terminal_value is not None:
-        growth_rate = (terminal_value / last_value) ** (1 / (projection_years - 1)) - 1
-    else:
-        growth_rate = 0
+    last_year = df_hist[df_hist.get("ttm", 0) == 0].index.max().year
+
+    if initial_value is None:
+        initial_value = s.iloc[-1] if not s.empty else np.nan
+
     projections = []
     for i in range(1, projection_years + 1):
         projected_year = last_year + i
-        projected_value = last_value * (1 + growth_rate) ** i
+        if terminal_value is not None:
+            alpha = i / projection_years
+            projected_value = (1 - alpha) * initial_value + alpha * terminal_value
+            growth_rate = (projected_value / initial_value - 1) if initial_value != 0 and not np.isnan(initial_value) else np.nan
+        else:
+            projected_value = initial_value
+            growth_rate = 0
         projections.append({
             'variable': 'sales_to_capital',
             'Year': projected_year,
-            'method': '',
+            'method': str(projection_years),
             'value': projected_value,
-            'parameter_value': growth_rate,
+            'parameter_value': np.nan,
             'growth_rate': growth_rate
         })
     df_proj = pd.DataFrame(projections)
-
     return df_proj
 
 
 
 def project_all(
-    df_hist, projection_years, terminal_growth=None, converge_growth=False, man_inp_growth=None,
+    df_hist, projection_years, target_horizons=[5,10], terminal_growth=None, converge_growth=False, man_inp_growth=None,
     plot_projections=False, regression_plots_dir=None, plot_regression_plots=True,
-    variables=None, term_operating_margin=None, term_effective_tax_rate=None, term_sales_to_capital=None
+    variables=None, target_operating_margin=None, target_effective_tax_rate=None, target_sales_to_capital=None, 
+    initial_operating_margin=None, initial_effective_tax_rate=None, initial_sales_to_capital=None
 ):
     """
     Projects every column in df_hist using CAGR, regression‐slope, and manual‐input methods,
@@ -379,26 +391,29 @@ def project_all(
 
         # Use specialized projection functions for Operating Margin and effective_tax_rate
         if col == "operating_margin":
-            op_margin_proj = project_operating_margin(df_full_years, projection_years, terminal_value=term_operating_margin)
-            for p in op_margin_proj.to_dict('records'):
-                p['variable'] = col
-                results.append(p)
+            for h in target_horizons:
+                op_margin_proj = project_operating_margin(df_full_years, h, initial_value=initial_operating_margin, terminal_value=target_operating_margin)
+                for p in op_margin_proj.to_dict('records'):
+                    p['variable'] = col
+                    results.append(p)
 
             continue  # skip generic projections for this column
 
         if col == "effective_tax_rate":
-            tax_proj = project_effective_tax_rate(df_full_years, projection_years, terminal_value=term_effective_tax_rate)
-            for p in tax_proj.to_dict('records'):
-                p['variable'] = col
-                results.append(p)
-            continue  # skip generic projections for this column
+            for h in target_horizons:
+                tax_proj = project_effective_tax_rate(df_full_years, h, initial_value=initial_effective_tax_rate, terminal_value=target_effective_tax_rate)
+                for p in tax_proj.to_dict('records'):
+                    p['variable'] = col
+                    results.append(p)
+                continue  # skip generic projections for this column
 
         if col == "sales_to_capital":
-            sales_to_capital_proj = project_sales_to_capital(df_full_years, projection_years, terminal_value=term_sales_to_capital)
-            for p in sales_to_capital_proj.to_dict('records'):
-                p['variable'] = col
-                results.append(p)
-            continue
+            for h in target_horizons:
+                sales_to_capital_proj = project_sales_to_capital(df_full_years, h, initial_value=initial_sales_to_capital, terminal_value=target_sales_to_capital)
+                for p in sales_to_capital_proj.to_dict('records'):
+                    p['variable'] = col
+                    results.append(p)
+                continue
 
         # CAGR‐based projections
         cagr_proj = project_cagr(s, last_year, projection_years, terminal_growth, converge_growth, last_value=last_value)
