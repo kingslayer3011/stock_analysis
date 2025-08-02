@@ -18,6 +18,11 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import dcf
 
+"""import debugpy
+debugpy.listen(("localhost", 5682))  # You can use any open port, e.g., 5678
+print("Waiting for debugger attach...")
+debugpy.wait_for_client()"""
+
 def change_units(df, columns, to="ones"):
     scale = 1
     suffix = ""
@@ -311,10 +316,11 @@ def main():
                 }
                 # dcf_info contains: enterprise_value, terminal_value, npv, per_share_value, upside, average_growth_rate
                 # We want: ... per_share_value, current_share_price, upside ...
-                for k in ["enterprise_value", "terminal_value", "npv"]:
+                for k in ["enterprise_value", "terminal_value", "npv", "net_debt"]:
                     dcf_row[k] = dcf_info[k]
                 dcf_row["per_share_value"] = dcf_info["per_share_value"]
                 dcf_row["current_share_price"] = share_price
+                dcf_row["n_shares"] = number_shares
                 dcf_row["upside"] = dcf_info["upside"]
                 dcf_row["average_growth_rate"] = dcf_info["average_growth_rate"]
                 dcf_estimates_list.append(dcf_row)
@@ -326,7 +332,7 @@ def main():
     # Save DCF estimates to CSV
     col_order = [
         "ticker", "name", "upside", "horizon", "proj_type", "fcf_source", "p_method", "method_label", "used_wacc",
-        "enterprise_value", "terminal_value", "npv", "per_share_value", "current_share_price", "average_growth_rate"
+        "enterprise_value", "terminal_value", "npv", "net_debt", "per_share_value", "current_share_price", "n_shares", "average_growth_rate"
     ]
     dcf_estimates = dcf_estimates[[c for c in col_order if c in dcf_estimates.columns]]
     dcf_estimates.to_csv(os.path.join(output_folder, "dcf_estimates.csv"), index=False)

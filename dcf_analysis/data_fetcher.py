@@ -125,10 +125,13 @@ def build_ttm_row(raw_income_ttm, raw_cashflow_ttm, raw_balance_ttm, safe_value,
         "FCF":         safe_value(raw_cashflow_ttm, "Free Cash Flow"),
         "Depreciation And Amortization": depreciation_amortization,
         "Total Debt":  safe_value(raw_balance_ttm, "Total Debt"),
+        "Total Equity": safe_value(raw_balance_ttm, "Total Equity Gross Minority Interest"),
         "Net Debt":    np.nan,  # will set below
         "Cash":        safe_value(raw_balance_ttm, "Cash And Cash Equivalents"),
         "CapEx": abs(safe_value(raw_cashflow_ttm, "Capital Expenditure")) if pd.notna(safe_value(raw_cashflow_ttm, "Capital Expenditure")) else np.nan,
         "Operating Cash Flow": safe_value(raw_cashflow_ttm, "Operating Cash Flow"),
+        "Dividends":   safe_value(raw_cashflow_ttm, "Common Stock Dividend Paid"),
+        "Ordinary Shares Number": safe_value(raw_balance_ttm, "Ordinary Shares Number"),
         "Current Assets": safe_value(raw_balance_ttm, "Current Assets"),
         "Current Liabilities": safe_value(raw_balance_ttm, "Current Liabilities"),
         "Delta WC":    delta_wc_ttm,  # <-- Use calculated TTM change in WC
@@ -164,8 +167,8 @@ def get_historical_data(
         logger = logging.getLogger("data_fetcher")
     if fields is None:
         fields = [
-            "Revenue", "EBITDA", "EBIT", "Net Income", "FCF", "Depreciation And Amortization", "Total Debt", "Cash",
-            "CapEx", "Operating Cash Flow", "Net Debt", "Current Assets", "Current Liabilities", "Delta WC",
+            "Revenue", "EBITDA", "EBIT", "Net Income", "FCF", "Depreciation And Amortization", "Total Debt", "Total Equity", "Cash",
+            "CapEx", "Operating Cash Flow", "Dividends", "Ordinary Shares Number", "Net Debt", "Current Assets", "Current Liabilities", "Delta WC",
             "Tax Provision", "Pretax Income", "Total Assets", "Interest Expense"  # <-- Added here
         ]
 
@@ -202,23 +205,27 @@ def get_historical_data(
     hist_income     = safe_row(raw_income, "Net Income")
     hist_fcf        = safe_row(raw_cashflow, "Free Cash Flow")
     hist_ocf        = safe_row(raw_cashflow, "Operating Cash Flow")
+    hist_div       = safe_row(raw_cashflow, "Common Stock Dividend Paid")
     hist_net_debt   = safe_row(raw_balance, "Net Debt")
     hist_cur_assets = safe_row(raw_balance, "Current Assets")
     hist_cur_liab   = safe_row(raw_balance, "Current Liabilities")
     hist_capex      = safe_row(raw_cashflow, "Capital Expenditure")
     hist_depr_amort = safe_row(raw_cashflow, "Depreciation And Amortization")
     hist_debt       = safe_row(raw_balance, "Total Debt")
+    hist_equity     = safe_row(raw_balance, "Total Equity Gross Minority Interest")
     hist_cash       = safe_row(raw_balance, "Cash And Cash Equivalents")
     hist_total_assets = safe_row(raw_balance, "Total Assets")
     hist_delta_wc   = safe_row(raw_cashflow, "Change In Working Capital")
     hist_tax_provision = safe_row(raw_income, "Tax Provision")
     hist_pretax_income = safe_row(raw_income, "Pretax Income")
-    hist_interest_expense = safe_row(raw_income, "Interest Expense")  # <-- Added here
+    hist_interest_expense = safe_row(raw_income, "Interest Expense")  
+    hist_number_shares = safe_row(raw_balance, "Ordinary Shares Number")  # <-- Add this line
 
     # Create unified index, converting all indices to string dates (YYYY-MM-DD) if they are Timestamps
     indices = [s.index for s in [
         hist_revenue, hist_ebitda, hist_ebit, hist_income, hist_fcf, hist_ocf, hist_net_debt, hist_capex,
-        hist_depr_amort, hist_debt, hist_cash, hist_total_assets, hist_interest_expense  # <-- Added here
+        hist_depr_amort, hist_debt, hist_equity, hist_cash, hist_total_assets, hist_interest_expense, hist_div,
+        hist_number_shares
     ] if s is not None]
     def to_str_date(idx):
         if isinstance(idx, pd.Timestamp):
@@ -254,9 +261,11 @@ def get_historical_data(
             "FCF": hist_fcf[period] if hist_fcf is not None and period in hist_fcf else np.nan,
             "Depreciation And Amortization": depreciation_amortization,
             "Total Debt": hist_debt[period] if hist_debt is not None and period in hist_debt else np.nan,
+            "Total Equity": hist_equity[period] if hist_equity is not None and period in hist_equity else np.nan,
             "Cash": hist_cash[period] if hist_cash is not None and period in hist_cash else np.nan,
             "CapEx": abs(hist_capex[period]) if hist_capex is not None and period in hist_capex and pd.notna(hist_capex[period]) else np.nan,
             "Operating Cash Flow": hist_ocf[period] if hist_ocf is not None and period in hist_ocf else np.nan,
+            "Dividends": hist_div[period] if hist_div is not None and period in hist_div else np.nan,
             "Net Debt": net_debt_val,
             "Current Assets": hist_cur_assets[period] if hist_cur_assets is not None and period in hist_cur_assets else np.nan,
             "Current Liabilities": hist_cur_liab[period] if hist_cur_liab is not None and period in hist_cur_liab else np.nan,
@@ -264,7 +273,8 @@ def get_historical_data(
             "Tax Provision": hist_tax_provision[period] if hist_tax_provision is not None and period in hist_tax_provision else np.nan,
             "Pretax Income": hist_pretax_income[period] if hist_pretax_income is not None and period in hist_pretax_income else np.nan,
             "Total Assets": hist_total_assets[period] if hist_total_assets is not None and period in hist_total_assets else np.nan,
-            "Interest Expense": hist_interest_expense[period] if hist_interest_expense is not None and period in hist_interest_expense else np.nan  # <-- Added here
+            "Interest Expense": hist_interest_expense[period] if hist_interest_expense is not None and period in hist_interest_expense else np.nan,
+            "Ordinary Shares Number": hist_number_shares[period] if hist_number_shares is not None and period in hist_number_shares else np.nan
         }
         df_rows.append(build_row(raw_dict, index=period))
 
@@ -363,19 +373,19 @@ def get_historical_data(
 
 
     # Add additional columns 
-    full_df["capital_invested"] = full_df["Total Assets"] - full_df["Current Liabilities"]
-    full_df["ROCE"] = full_df["EBIT"] / full_df["capital_invested"]
+    full_df["capital_invested"] = full_df["Total Debt"] + full_df["Total Equity"] - full_df["Cash"]
+    full_df["ROCE"] = full_df["EBIT"] * (1-full_df["effective_tax_rate"]) / full_df["capital_invested"]
     full_df["operating_margin"] = full_df["EBIT"] / full_df["Revenue"]
     full_df["sales_to_capital"] = full_df["Revenue"] / full_df["capital_invested"]
+    full_df["Dividends"] = -full_df["Dividends"]  # Make Dividends negative to match cash outflow
+
+    # Add stock price for each date in full_df
+
 
     # === FCFF and FCFE calculation as one of the last steps (including TTM row) ===
     # Calculate FCFF and FCFE for all rows (including TTM)
     full_df["FCFF"] = full_df.apply(lambda row: calculate_fcff(row), axis=1)
     full_df["FCFE"] = full_df.apply(lambda row: calculate_fcfe(row), axis=1)
-
-    # Overwrite FCFF with FCF
-    #full_df["FCFF_from_INCS"] = full_df["FCFF"].copy()
-    #full_df["FCFF"] = full_df["FCF"].copy()
 
     first_cols = [
         "FCFF", "FCF", "EBIT", "CapEx", "Depreciation And Amortization", "Delta WC", "Tax Provision"
