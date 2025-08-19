@@ -131,6 +131,7 @@ def build_ttm_row(raw_income_ttm, raw_cashflow_ttm, raw_balance_ttm, safe_value,
         "CapEx": abs(safe_value(raw_cashflow_ttm, "Capital Expenditure")) if pd.notna(safe_value(raw_cashflow_ttm, "Capital Expenditure")) else np.nan,
         "Operating Cash Flow": safe_value(raw_cashflow_ttm, "Operating Cash Flow"),
         "Dividends":   safe_value(raw_cashflow_ttm, "Common Stock Dividend Paid"),
+        "RnD":         safe_value(raw_cashflow_ttm, "Research And Development"),
         "Ordinary Shares Number": safe_value(raw_balance_ttm, "Ordinary Shares Number"),
         "Current Assets": safe_value(raw_balance_ttm, "Current Assets"),
         "Current Liabilities": safe_value(raw_balance_ttm, "Current Liabilities"),
@@ -168,7 +169,7 @@ def get_historical_data(
     if fields is None:
         fields = [
             "Revenue", "EBITDA", "EBIT", "Net Income", "FCF", "Depreciation And Amortization", "Total Debt", "Total Equity", "Cash",
-            "CapEx", "Operating Cash Flow", "Dividends", "Ordinary Shares Number", "Net Debt", "Current Assets", "Current Liabilities", "Delta WC",
+            "CapEx", "Operating Cash Flow", "Dividends", "RnD", "Ordinary Shares Number", "Net Debt", "Current Assets", "Current Liabilities", "Delta WC",
             "Tax Provision", "Pretax Income", "Total Assets", "Interest Expense"  # <-- Added here
         ]
 
@@ -206,6 +207,7 @@ def get_historical_data(
     hist_fcf        = safe_row(raw_cashflow, "Free Cash Flow")
     hist_ocf        = safe_row(raw_cashflow, "Operating Cash Flow")
     hist_div       = safe_row(raw_cashflow, "Common Stock Dividend Paid")
+    hist_rnd        = safe_row(raw_cashflow, "Research And Development")
     hist_net_debt   = safe_row(raw_balance, "Net Debt")
     hist_cur_assets = safe_row(raw_balance, "Current Assets")
     hist_cur_liab   = safe_row(raw_balance, "Current Liabilities")
@@ -224,7 +226,7 @@ def get_historical_data(
     # Create unified index, converting all indices to string dates (YYYY-MM-DD) if they are Timestamps
     indices = [s.index for s in [
         hist_revenue, hist_ebitda, hist_ebit, hist_income, hist_fcf, hist_ocf, hist_net_debt, hist_capex,
-        hist_depr_amort, hist_debt, hist_equity, hist_cash, hist_total_assets, hist_interest_expense, hist_div,
+        hist_depr_amort, hist_debt, hist_equity, hist_cash, hist_total_assets, hist_interest_expense, hist_div, hist_rnd,
         hist_number_shares
     ] if s is not None]
     def to_str_date(idx):
@@ -266,6 +268,7 @@ def get_historical_data(
             "CapEx": abs(hist_capex[period]) if hist_capex is not None and period in hist_capex and pd.notna(hist_capex[period]) else np.nan,
             "Operating Cash Flow": hist_ocf[period] if hist_ocf is not None and period in hist_ocf else np.nan,
             "Dividends": hist_div[period] if hist_div is not None and period in hist_div else np.nan,
+            "RnD": hist_rnd[period] if hist_rnd is not None and period in hist_rnd else np.nan,
             "Net Debt": net_debt_val,
             "Current Assets": hist_cur_assets[period] if hist_cur_assets is not None and period in hist_cur_assets else np.nan,
             "Current Liabilities": hist_cur_liab[period] if hist_cur_liab is not None and period in hist_cur_liab else np.nan,

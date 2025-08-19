@@ -1,13 +1,13 @@
-ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,npv,per_share_value,current_share_price,average_growth_rate
-ISS.CO,ISS A/S,-33.9248,5,standard,FCFF,cagr,Historical Cagr,0.06,32669958994.4607,125.7411,190.3,0.0499
-ISS.CO,ISS A/S,139.8625,5,standard,FCFF,slope,Regression Slope,0.06,88318413024.35414,456.4583,190.3,0.0473
-ISS.CO,ISS A/S,157.5212,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,93972907327.14067,490.0628,190.3,0.0375
-ISS.CO,ISS A/S,162.8784,5,converged,FCFF,cagr,Historical Cagr,0.06,95688344136.80827,500.2576,190.3,0.0424
-ISS.CO,ISS A/S,6.3691,5,converged,FCFF,slope,Regression Slope,0.06,45572461922.98293,202.4203,190.3,0.0564
-ISS.CO,ISS A/S,249.5852,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,123452754216.24103,665.2607,190.3,0.0338
-ISS.CO,ISS A/S,7.4699,10,standard,FCFF,cagr,Historical Cagr,0.06,45924954139.38681,204.5152,190.3,0.0521
-ISS.CO,ISS A/S,260.1456,10,standard,FCFF,slope,Regression Slope,0.06,126834290106.1877,685.3571,190.3,0.0428
-ISS.CO,ISS A/S,184.0142,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,102456254877.44691,540.4791,190.3,0.0386
-ISS.CO,ISS A/S,361.7264,10,converged,FCFF,cagr,Historical Cagr,0.06,159361513895.95258,878.6654,190.3,0.0372
-ISS.CO,ISS A/S,414.4145,10,converged,FCFF,slope,Regression Slope,0.06,176232781618.48367,978.9309,190.3,0.0471
-ISS.CO,ISS A/S,339.9116,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,152376180384.9092,837.1518,190.3,0.0311
+ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,enterprise_value,terminal_value,npv,net_debt,per_share_value,current_share_price,n_shares,average_growth_rate
+ISS.CO,ISS A/S,143.6923,5,standard,FCFF,cagr,Historical Cagr,0.06,86802,99079,86802,11512,448.3939,184.0,167911008,0.0499
+ISS.CO,ISS A/S,140.3421,5,standard,FCFF,slope,Regression Slope,0.06,85767,97593,85767,11512,442.2295,184.0,167911008,0.0473
+ISS.CO,ISS A/S,137.6725,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,84942,96823,84942,11512,437.3174,184.0,167911008,0.0458
+ISS.CO,ISS A/S,132.8776,5,converged,FCFF,cagr,Historical Cagr,0.06,83460,94940,83460,11512,428.4948,184.0,167911008,0.0424
+ISS.CO,ISS A/S,163.9563,5,converged,FCFF,slope,Regression Slope,0.06,93062,106298,93062,11512,485.6797,184.0,167911008,0.0564
+ISS.CO,ISS A/S,128.7542,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,82187,93411,82187,11512,420.9078,184.0,167911008,0.0396
+ISS.CO,ISS A/S,178.2452,10,standard,FCFF,cagr,Historical Cagr,0.06,97477,129398,97477,11512,511.9712,184.0,167911008,0.0521
+ISS.CO,ISS A/S,154.1517,10,standard,FCFF,slope,Regression Slope,0.06,90033,117273,90033,11512,467.6391,184.0,167911008,0.0428
+ISS.CO,ISS A/S,165.6975,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.06,93600,123573,93600,11512,488.8834,184.0,167911008,0.0477
+ISS.CO,ISS A/S,139.4112,10,converged,FCFF,cagr,Historical Cagr,0.06,85479,110576,85479,11512,440.5167,184.0,167911008,0.0372
+ISS.CO,ISS A/S,177.2753,10,converged,FCFF,slope,Regression Slope,0.06,97177,126710,97177,11512,510.1866,184.0,167911008,0.0471
+ISS.CO,ISS A/S,134.1301,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.06,83847,108286,83847,11512,430.7993,184.0,167911008,0.0352

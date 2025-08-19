@@ -300,12 +300,15 @@ def run_dcf(
     df_proj_fcf["nopat"] = df_proj_fcf["EBIT"] * (1 - df_proj_fcf["effective_tax_rate"])
     df_proj_fcf["sales_to_capital"] = df_proj_sub.loc[(df_proj_sub["method"] == str(forecast_horizon)) & (df_proj_sub["variable"] == "sales_to_capital"), ['value']].copy().reset_index(drop=True)
 
+    # Calculate reinvestments and capital invested, "CapEx", "Delta WC"
     revenue_series = pd.concat([
             pd.Series([df_hist["Revenue"].iloc[-1]]),  # last historical Revenue as a Series
             df_proj_fcf["Revenue"].reset_index(drop=True)
         ], ignore_index=True)
     df_proj_fcf["reinvest"] = (revenue_series.diff().dropna().reset_index(drop=True) / df_proj_fcf["sales_to_capital"]).clip(lower=0)
     df_proj_fcf["capital_invested"] = df_hist["capital_invested"].iloc[-1] + df_proj_fcf["reinvest"].cumsum()
+
+    # Calculate ROCE and FCFF
     df_proj_fcf["ROCE"] = df_proj_fcf["nopat"] / df_proj_fcf["capital_invested"]
     df_proj_fcf["FCFF"] = df_proj_fcf["nopat"].reset_index(drop=True)- df_proj_fcf["reinvest"].reset_index(drop=True)
 
@@ -399,21 +402,29 @@ def run_dcf(
 
     # Valuation summary calculations
     enterprise_value = pv_forecast_horizon + pv_terminal
-    equity_value = enterprise_value - df_hist['Net Debt'].dropna().iloc[-1]
+    net_debt = df_hist['Net Debt'].dropna().iloc[-1] 
+    equity_value = enterprise_value - net_debt
     per_share_value = equity_value / number_shares
     upside = 100 * (per_share_value - share_price) / share_price
 
     valuation_summary = {
-        "enterprise_value": enterprise_value,
-        "terminal_value": float(terminal_val),
-        "npv": enterprise_value,
-        "net_debt": df_hist['Net Debt'].dropna().iloc[-1],
-        "equity_value": equity_value,
+        "pv_forecast_horizon": int(pv_forecast_horizon/1000000),
+        "terminal_value": int(terminal_val/1000000),
+        "enterprise_value": int(enterprise_value/1000000),
+        "npv": int(enterprise_value/1000000),
+        "net_debt": int(net_debt/1000000),
+        "equity_value": int(equity_value/1000000),
         "per_share_value": per_share_value,
         "share_price": share_price,
+        "market_cap": int((number_shares * share_price)/1000000),
         "upside": upside,
         "average_growth_rate": df_proj_fcf["growth_rate"].mean(),
     }
+
+    if(p_method == "man_inp_growth" and forecast_horizon == 10):
+        # Print as pd df transposed
+        valuation_summary_df = pd.DataFrame([valuation_summary]).T
+        print(valuation_summary_df)
 
     return full_df, valuation_summary
 

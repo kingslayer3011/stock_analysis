@@ -1,0 +1,13 @@
+ticker,name,upside,horizon,proj_type,fcf_source,p_method,method_label,used_wacc,enterprise_value,terminal_value,npv,net_debt,per_share_value,current_share_price,n_shares,average_growth_rate
+PNDORA.CO,Pandora A/S,15.4276,5,standard,FCFF,cagr,Historical Cagr,0.08,86336,88250,86336,9970,994.7547,861.8,76769200,0.0928
+PNDORA.CO,Pandora A/S,22.1422,5,standard,FCFF,slope,Regression Slope,0.08,90778,93556,90778,9970,1052.6211,861.8,76769200,0.0589
+PNDORA.CO,Pandora A/S,20.6997,5,standard,FCFF,man_inp_growth,Manual Input Growth,0.08,89824,92062,89824,9970,1040.1904,861.8,76769200,0.0625
+PNDORA.CO,Pandora A/S,28.7499,5,converged,FCFF,cagr,Historical Cagr,0.08,95150,99560,95150,9970,1109.5671,861.8,76769200,0.0725
+PNDORA.CO,Pandora A/S,22.0848,5,converged,FCFF,slope,Regression Slope,0.08,90740,92794,90740,9970,1052.1264,861.8,76769200,0.0383
+PNDORA.CO,Pandora A/S,26.6362,5,converged,FCFF,man_inp_growth,Manual Input Growth,0.08,93752,97059,93752,9970,1091.3509,861.8,76769200,0.0513
+PNDORA.CO,Pandora A/S,75.4285,10,standard,FCFF,cagr,Historical Cagr,0.08,126032,146279,126032,9970,1511.8426,861.8,76769200,0.099
+PNDORA.CO,Pandora A/S,60.9372,10,standard,FCFF,slope,Regression Slope,0.08,116445,131134,116445,9970,1386.957,861.8,76769200,0.0564
+PNDORA.CO,Pandora A/S,59.5532,10,standard,FCFF,man_inp_growth,Manual Input Growth,0.08,115529,129122,115529,9970,1375.0295,861.8,76769200,0.0659
+PNDORA.CO,Pandora A/S,78.1777,10,converged,FCFF,cagr,Historical Cagr,0.08,127851,149104,127851,9970,1535.5358,861.8,76769200,0.0583
+PNDORA.CO,Pandora A/S,44.4383,10,converged,FCFF,slope,Regression Slope,0.08,105529,113333,105529,9970,1244.7697,861.8,76769200,0.0343
+PNDORA.CO,Pandora A/S,58.6696,10,converged,FCFF,man_inp_growth,Manual Input Growth,0.08,114945,127869,114945,9970,1367.415,861.8,76769200,0.0434
