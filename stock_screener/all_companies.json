@@ -1,0 +1,716 @@
+[
+  {
+    "ticker": "MAERSK-B.CO",
+    "country": "Denmark",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Goods",
+    "company_name": "A.P. Møller - Mærsk A/S B"
+  },
+  {
+    "ticker": "AMBU-B.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Medical Devices",
+    "company_name": "Ambu A/S B"
+  },
+  {
+    "ticker": "BAVA.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Biotechnology",
+    "company_name": "Bavarian Nordic A/S"
+  },
+  {
+    "ticker": "CARL-B.CO",
+    "country": "Denmark",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Food",
+    "company_name": "Carlsberg A/S B"
+  },
+  {
+    "ticker": "COLO-B.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Medical Devices",
+    "company_name": "Coloplast A/S B"
+  },
+  {
+    "ticker": "DANSKE.CO",
+    "country": "Denmark",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Danske Bank A/S"
+  },
+  {
+    "ticker": "DEMANT.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Medical Devices",
+    "company_name": "Demant A/S"
+  },
+  {
+    "ticker": "DSV.CO",
+    "country": "Denmark",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "DSV A/S"
+  },
+  {
+    "ticker": "GMAB.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Biotechnology",
+    "company_name": "Genmab A/S"
+  },
+  {
+    "ticker": "GN.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Medical Devices",
+    "company_name": "GN Store Nord A/S"
+  },
+  {
+    "ticker": "ISS.CO",
+    "country": "Denmark",
+    "company_sector": "Industrials",
+    "company_industry": "Facility Services",
+    "company_name": "ISS A/S"
+  },
+  {
+    "ticker": "JYSK.CO",
+    "country": "Denmark",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Jyske Bank A/S"
+  },
+  {
+    "ticker": "NKT.CO",
+    "country": "Denmark",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Goods",
+    "company_name": "NKT A/S"
+  },
+  {
+    "ticker": "NDA.CO",
+    "country": "Denmark",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Nordea Bank A/S"
+  },
+  {
+    "ticker": "NOVO-B.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Pharmaceuticals",
+    "company_name": "Novo Nordisk A/S B"
+  },
+  {
+    "ticker": "NSIS-B.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Chemicals",
+    "company_name": "Novozymes A/S B"
+  },
+  {
+    "ticker": "PNDORA.CO",
+    "country": "Denmark",
+    "company_sector": "Consumer Discretionary",
+    "company_industry": "Apparel",
+    "company_name": "Pandora A/S"
+  },
+  {
+    "ticker": "ROCK-B.CO",
+    "country": "Denmark",
+    "company_sector": "Materials",
+    "company_industry": "Construction Materials",
+    "company_name": "Rockwool International A/S B"
+  },
+  {
+    "ticker": "RBREW.CO",
+    "country": "Denmark",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Food",
+    "company_name": "Royal Unibrew A/S"
+  },
+  {
+    "ticker": "SYDB.CO",
+    "country": "Denmark",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Sydbank A/S"
+  },
+  {
+    "ticker": "TRYG.CO",
+    "country": "Denmark",
+    "company_sector": "Financials",
+    "company_industry": "Insurance",
+    "company_name": "Tryg A/S"
+  },
+  {
+    "ticker": "VWS.CO",
+    "country": "Denmark",
+    "company_sector": "Energy",
+    "company_industry": "Renewable Energy",
+    "company_name": "Vestas Wind Systems A/S"
+  },
+  {
+    "ticker": "ZEAL.CO",
+    "country": "Denmark",
+    "company_sector": "Health Care",
+    "company_industry": "Pharmaceuticals",
+    "company_name": "Zealand Pharma A/S"
+  },
+  {
+    "ticker": "ORSTED.CO",
+    "country": "Denmark",
+    "company_sector": "Utilities",
+    "company_industry": "Electric Utilities",
+    "company_name": "Ørsted A/S"
+  },
+  {
+    "ticker": "ABB.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "ABB Ltd"
+  },
+  {
+    "ticker": "ADDT-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Addtech AB B"
+  },
+  {
+    "ticker": "ALFA.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Automobiles",
+    "company_name": "Alfa Laval AB"
+  },
+  {
+    "ticker": "ASSA-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Building Products",
+    "company_name": "Assa Abloy AB B"
+  },
+  {
+    "ticker": "AZN.ST",
+    "country": "Sweden",
+    "company_sector": "Health Care",
+    "company_industry": "Pharmaceuticals",
+    "company_name": "AstraZeneca PLC"
+  },
+  {
+    "ticker": "ATCO-A.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Electrical Components & Equipment",
+    "company_name": "Atlas Copco AB A"
+  },
+  {
+    "ticker": "BOL.ST",
+    "country": "Sweden",
+    "company_sector": "Materials",
+    "company_industry": "Forestry Products",
+    "company_name": "BillerudKorsnäs AB"
+  },
+  {
+    "ticker": "EPI-A.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Epiroc AB A"
+  },
+  {
+    "ticker": "EQT.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Private Equity",
+    "company_name": "EQT AB"
+  },
+  {
+    "ticker": "ERIC-B.ST",
+    "country": "Sweden",
+    "company_sector": "Information Technology",
+    "company_industry": "Communications Equipment",
+    "company_name": "Telefonaktiebolaget LM Ericsson B"
+  },
+  {
+    "ticker": "ESSITY-B.ST",
+    "country": "Sweden",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Household Products",
+    "company_name": "Essity AB B"
+  },
+  {
+    "ticker": "EVO.ST",
+    "country": "Sweden",
+    "company_sector": "Consumer Discretionary",
+    "company_industry": "Leisure Products",
+    "company_name": "Evolution AB"
+  },
+  {
+    "ticker": "SHB-A.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Handelsbanken A"
+  },
+  {
+    "ticker": "HM-B.ST",
+    "country": "Sweden",
+    "company_sector": "Consumer Discretionary",
+    "company_industry": "Textile Apparel & Luxury Goods",
+    "company_name": "Hennes & Mauritz AB B"
+  },
+  {
+    "ticker": "HEXA-B.ST",
+    "country": "Sweden",
+    "company_sector": "Information Technology",
+    "company_industry": "Electronic Equipment & Instruments",
+    "company_name": "Hexagon AB B"
+  },
+  {
+    "ticker": "INDU-C.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Investment Banking & Brokerage",
+    "company_name": "Industrivärden C"
+  },
+  {
+    "ticker": "INVE-B.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Asset Management & Custody Banks",
+    "company_name": "Investor AB B"
+  },
+  {
+    "ticker": "LIFCO-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Specialty Industrial Machinery",
+    "company_name": "Lifco AB B"
+  },
+  {
+    "ticker": "NIBE-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Building Products",
+    "company_name": "NIBE Industrier AB B"
+  },
+  {
+    "ticker": "NDA-SE.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Nordea Bank Abp"
+  },
+  {
+    "ticker": "SAAB-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Aerospace & Defense",
+    "company_name": "Saab AB B"
+  },
+  {
+    "ticker": "SAND.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Sandvik AB"
+  },
+  {
+    "ticker": "SCA-B.ST",
+    "country": "Sweden",
+    "company_sector": "Materials",
+    "company_industry": "Paper Products",
+    "company_name": "SCA AB B"
+  },
+  {
+    "ticker": "SEB-A.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "SEB A"
+  },
+  {
+    "ticker": "SKA-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "SKF AB B"
+  },
+  {
+    "ticker": "SKF-B.ST",
+    "country": "Sweden",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "SKF AB B"
+  },
+  {
+    "ticker": "SWED-A.ST",
+    "country": "Sweden",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Swedbank AB A"
+  },
+  {
+    "ticker": "TEL2-B.ST",
+    "country": "Sweden",
+    "company_sector": "Communication Services",
+    "company_industry": "Telecom Services",
+    "company_name": "Tele2 AB B"
+  },
+  {
+    "ticker": "AKERBP.OL",
+    "country": "Norway",
+    "company_sector": "Energy",
+    "company_industry": "Oil & Gas Exploration & Production",
+    "company_name": "Aker BP ASA"
+  },
+  {
+    "ticker": "BWLPG.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "BW LPG Ltd"
+  },
+  {
+    "ticker": "DNB.OL",
+    "country": "Norway",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "DNB ASA"
+  },
+  {
+    "ticker": "EQNR.OL",
+    "country": "Norway",
+    "company_sector": "Energy",
+    "company_industry": "Oil & Gas Integrated",
+    "company_name": "Equinor ASA"
+  },
+  {
+    "ticker": "FLNG.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "Flex LNG Ltd"
+  },
+  {
+    "ticker": "GJF.OL",
+    "country": "Norway",
+    "company_sector": "Financials",
+    "company_industry": "Insurance",
+    "company_name": "Gjensidige Forsikring ASA"
+  },
+  {
+    "ticker": "GOGL.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "Golden Ocean Group Ltd"
+  },
+  {
+    "ticker": "HAFNI.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "Hafnia ASA"
+  },
+  {
+    "ticker": "HAUTO.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "Hurtigruten ASA"
+  },
+  {
+    "ticker": "KOG.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Kongsberg Gruppen ASA"
+  },
+  {
+    "ticker": "MOWI.OL",
+    "country": "Norway",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Food Products",
+    "company_name": "Mowi ASA"
+  },
+  {
+    "ticker": "MPCC.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "MPC Container Ships ASA"
+  },
+  {
+    "ticker": "NOD.OL",
+    "country": "Norway",
+    "company_sector": "Information Technology",
+    "company_industry": "Semiconductors",
+    "company_name": "Nordic Semiconductor ASA"
+  },
+  {
+    "ticker": "NHY.OL",
+    "country": "Norway",
+    "company_sector": "Materials",
+    "company_industry": "Metals & Mining",
+    "company_name": "Norsk Hydro ASA"
+  },
+  {
+    "ticker": "NAS.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "Norwegian Air Shuttle ASA"
+  },
+  {
+    "ticker": "ORK.OL",
+    "country": "Norway",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Food Products",
+    "company_name": "Orkla ASA"
+  },
+  {
+    "ticker": "SALM.OL",
+    "country": "Norway",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Food Products",
+    "company_name": "SalMar ASA"
+  },
+  {
+    "ticker": "STB.OL",
+    "country": "Norway",
+    "company_sector": "Financials",
+    "company_industry": "Insurance",
+    "company_name": "Storebrand ASA"
+  },
+  {
+    "ticker": "SUBC.OL",
+    "country": "Norway",
+    "company_sector": "Energy",
+    "company_industry": "Oil & Gas Equipment & Services",
+    "company_name": "Subsea 7 S.A."
+  },
+  {
+    "ticker": "TEL.OL",
+    "country": "Norway",
+    "company_sector": "Communication Services",
+    "company_industry": "Telecommunications Services",
+    "company_name": "Telenor ASA"
+  },
+  {
+    "ticker": "TGS.OL",
+    "country": "Norway",
+    "company_sector": "Energy",
+    "company_industry": "Oil & Gas Equipment & Services",
+    "company_name": "TGS ASA"
+  },
+  {
+    "ticker": "TOM.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Tomra Systems ASA"
+  },
+  {
+    "ticker": "VAR.OL",
+    "country": "Norway",
+    "company_sector": "Energy",
+    "company_industry": "Oil & Gas Services",
+    "company_name": "Vår Energi ASA"
+  },
+  {
+    "ticker": "WWI.OL",
+    "country": "Norway",
+    "company_sector": "Industrials",
+    "company_industry": "Transportation",
+    "company_name": "Wallenius Wilhelmsen ASA"
+  },
+  {
+    "ticker": "YAR.OL",
+    "country": "Norway",
+    "company_sector": "Materials",
+    "company_industry": "Chemicals",
+    "company_name": "Yara International ASA"
+  },
+  {
+    "ticker": "ELISA.HE",
+    "country": "Finland",
+    "company_sector": "Communication Services",
+    "company_industry": "Telecom Services",
+    "company_name": "Elisa Oyj"
+  },
+  {
+    "ticker": "FORTUM.HE",
+    "country": "Finland",
+    "company_sector": "Utilities",
+    "company_industry": "Electric Utilities",
+    "company_name": "Fortum Oyj"
+  },
+  {
+    "ticker": "HIAB.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Cargotec Oyj (Hiab)"
+  },
+  {
+    "ticker": "HUH1V.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Containers & Packaging",
+    "company_name": "Huhtamäki Oyj"
+  },
+  {
+    "ticker": "KALMAR.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Cargotec Oyj (Kalmar)"
+  },
+  {
+    "ticker": "KEMIRA.HE",
+    "country": "Finland",
+    "company_sector": "Materials",
+    "company_industry": "Specialty Chemicals",
+    "company_name": "Kemira Oyj"
+  },
+  {
+    "ticker": "KESKOB.HE",
+    "country": "Finland",
+    "company_sector": "Consumer Staples",
+    "company_industry": "Food & Staples Retailing",
+    "company_name": "Kesko Oyj B"
+  },
+  {
+    "ticker": "KOJAMO.HE",
+    "country": "Finland",
+    "company_sector": "Real Estate",
+    "company_industry": "Real Estate Management & Development",
+    "company_name": "Kojamo Oyj"
+  },
+  {
+    "ticker": "KNEBV.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Konecranes Oyj"
+  },
+  {
+    "ticker": "KCR.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Kone Oyj"
+  },
+  {
+    "ticker": "MANTA.HE",
+    "country": "Finland",
+    "company_sector": "Financials",
+    "company_industry": "Capital Markets",
+    "company_name": "Mandatum Life Insurance Company Ltd"
+  },
+  {
+    "ticker": "METSO.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Metso Outotec Oyj"
+  },
+  {
+    "ticker": "NESTE.HE",
+    "country": "Finland",
+    "company_sector": "Energy",
+    "company_industry": "Oil & Gas Refining & Marketing",
+    "company_name": "Neste Oyj"
+  },
+  {
+    "ticker": "NOKIA.HE",
+    "country": "Finland",
+    "company_sector": "Information Technology",
+    "company_industry": "Communications Equipment",
+    "company_name": "Nokia Oyj"
+  },
+  {
+    "ticker": "TYRES.HE",
+    "country": "Finland",
+    "company_sector": "Consumer Discretionary",
+    "company_industry": "Auto Parts & Equipment",
+    "company_name": "Nokian Tyres plc"
+  },
+  {
+    "ticker": "NDA.HE",
+    "country": "Finland",
+    "company_sector": "Financials",
+    "company_industry": "Banks",
+    "company_name": "Nordea Bank Abp"
+  },
+  {
+    "ticker": "ORNBV.HE",
+    "country": "Finland",
+    "company_sector": "Health Care",
+    "company_industry": "Pharmaceuticals",
+    "company_name": "Orion Oyj B"
+  },
+  {
+    "ticker": "OUT1V.HE",
+    "country": "Finland",
+    "company_sector": "Materials",
+    "company_industry": "Steel",
+    "company_name": "Outokumpu Oyj"
+  },
+  {
+    "ticker": "QTCOM.HE",
+    "country": "Finland",
+    "company_sector": "Information Technology",
+    "company_industry": "Software",
+    "company_name": "Qt Group Oyj"
+  },
+  {
+    "ticker": "SAMPO.HE",
+    "country": "Finland",
+    "company_sector": "Financials",
+    "company_industry": "Insurance",
+    "company_name": "Sampo Oyj"
+  },
+  {
+    "ticker": "STERV.HE",
+    "country": "Finland",
+    "company_sector": "Materials",
+    "company_industry": "Paper Products",
+    "company_name": "Stora Enso Oyj R"
+  },
+  {
+    "ticker": "TIETO.HE",
+    "country": "Finland",
+    "company_sector": "Information Technology",
+    "company_industry": "IT Consulting & Services",
+    "company_name": "Tietoevry Oyj"
+  },
+  {
+    "ticker": "UPM.HE",
+    "country": "Finland",
+    "company_sector": "Materials",
+    "company_industry": "Paper Products",
+    "company_name": "UPM-Kymmene Oyj"
+  },
+  {
+    "ticker": "VALMT.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Valmet Oyj"
+  },
+  {
+    "ticker": "WRT1V.HE",
+    "country": "Finland",
+    "company_sector": "Industrials",
+    "company_industry": "Industrial Machinery",
+    "company_name": "Wärtsilä Oyj Abp"
+  }
+]
